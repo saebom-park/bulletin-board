@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bulletin_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: spring1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  thymeleaf:
+    cache: false # 개발 중엔 캐시 끄기
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+# MyBatis
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+  type-aliases-package: com.saebom.bulletinboard.domain
+
+logging:
+  level:
+    root: info
+    com.saebom.bulletinboard: debug
+    org.mybatis: debug
+    org.springframework.jdbc: debug

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content" class="bb-stack bb-stack--lg">
+
+    <div class="bb-card bb-card--spaced bb-profile-container">
+        <div class="bb-card__body">
+
+            <div class="bb-result">
+                <div class="bb-result__icon bb-result__icon--danger">
+                    !
+                </div>
+                <div class="bb-result__title">
+                    회원 탈퇴가 완료되었어요
+                </div>
+                <div class="bb-result__subtitle">
+                    그동안 Saebom Board를 이용해 주셔서 감사합니다.
+                </div>
+
+                <p class="bb-result__text bb-danger-text">
+                    이 계정으로는 더 이상 로그인하실 수 없습니다.<br/>
+                    작성하신 게시글과 댓글은 서비스 기록을 위해<br/>
+                    일부가 남겨질 수 있습니다.
+                </p>
+
+                <p class="bb-form-hint" style="margin-top: 8px;">
+                    * 관련 법령에 따라 일정 기간 일부 정보는 최소한으로 보관될 수 있습니다.
+                </p>
+
+                <div class="bb-result-actions">
+                    <a th:href="@{/articles}" class="bb-btn bb-btn--primary">
+                        홈으로 이동
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

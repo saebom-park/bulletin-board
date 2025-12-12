@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content" class="bb-stack bb-stack--lg">
+
+    <div class="bb-card bb-card--spaced bb-profile-container">
+        <div class="bb-card__header">
+            <h1 class="bb-page-title">내 정보</h1>
+            <p class="bb-page-subtitle">
+                Saebom Board 계정 정보를 확인할 수 있습니다.
+            </p>
+        </div>
+
+        <div class="bb-card__body">
+
+            <!-- 상세 정보 테이블 (아이디/이름/이메일/가입일/최종 수정일) -->
+            <dl class="bb-profile-list">
+                <div class="bb-profile-row">
+                    <dt><span>아이디</span></dt>
+                    <dd th:text="${member.username}"></dd>
+                </div>
+
+                <div class="bb-profile-row">
+                    <dt><span>이름</span></dt>
+                    <dd th:text="${member.name}"></dd>
+                </div>
+
+                <div class="bb-profile-row">
+                    <dt><span>이메일</span></dt>
+                    <dd th:text="${member.email}"></dd>
+                </div>
+
+                <div class="bb-profile-row">
+                    <dt><span>가입일</span></dt>
+                    <dd th:text="${#temporals.format(member.createdAt, 'yyyy.MM.dd HH:mm')}"></dd>
+                </div>
+
+                <div class="bb-profile-row">
+                    <dt><span>최종 수정일</span></dt>
+                    <dd th:text="${#temporals.format(member.updatedAt, 'yyyy.MM.dd HH:mm')}"></dd>
+                </div>
+            </dl>
+
+            <div class="bb-actions bb-actions--right bb-profile-actions">
+                <a th:href="@{/members/me/edit}" class="bb-btn bb-btn--subtle">
+                    정보 수정
+                </a>
+                <a th:href="@{/members/me/password/check}" class="bb-btn bb-btn--ghost">
+                    비밀번호 변경
+                </a>
+            </div>
+
+            <div class="bb-profile-danger">
+                <div class="bb-profile-danger__texts">
+                    <div class="bb-profile-danger__title">계정 삭제 안내</div>
+                    <p class="bb-profile-danger__desc">
+                        Saebom Board 계정을 삭제하면 복구할 수 없습니다.
+                    </p>
+                </div>
+
+                <a th:href="@{/members/me/withdraw}"
+                   class="bb-profile-danger__btn">
+                    회원 탈퇴
+                </a>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+</body>
+</html>

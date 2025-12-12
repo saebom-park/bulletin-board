@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>로그인</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bulletin.css}">
+</head>
+
+<body class="bb-body">
+<div class="bb-login-wrapper">
+
+    <div class="bb-login-card">
+
+        <h1 class="bb-login-title">로그인</h1>
+        <p class="bb-login-sub">서비스를 이용하려면 로그인해주세요.</p>
+
+        <form th:action="@{/login}" th:object="${loginForm}" method="post">
+
+            <input type="hidden" name="redirectURL" th:value="${redirectURL}"/>
+
+            <div class="bb-login-form-group">
+                <label class="bb-login-label">아이디</label>
+                <input class="bb-login-input"
+                       type="text"
+                       th:field="*{username}"
+                       th:classappend="${#fields.hasErrors('username')} ? ' bb-input--error'">
+                <div th:if="${#fields.hasErrors('username')}"
+                     th:errors="*{username}"
+                     class="bb-login-error">
+                </div>
+            </div>
+
+            <div class="bb-login-form-group">
+                <label class="bb-login-label">비밀번호</label>
+                <input class="bb-login-input"
+                       type="password"
+                       th:field="*{password}"
+                       th:classappend="${#fields.hasErrors('password')} ? ' bb-input--error'">
+                <div th:if="${#fields.hasErrors('password')}"
+                     th:errors="*{password}"
+                     class="bb-login-error">
+                </div>
+            </div>
+
+            <div th:if="${#fields.hasGlobalErrors()}"
+                 class="bb-login-error"
+                 style="margin-bottom: 10px;">
+                <p th:each="err : ${#fields.globalErrors()}"
+                   th:text="${err}"></p>
+            </div>
+
+            <button type="submit" class="bb-login-btn">로그인</button>
+        </form>
+
+    </div>
+
+</div>
+</body>
+</html>

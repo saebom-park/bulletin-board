@@ -1,0 +1,1477 @@
+/* ===========================
+   Reset & Base
+   =========================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+:root {
+    --bs-bg: #f4f6fb;
+    --bs-sidebar-bg: #0f172a;
+    --bs-sidebar-border: #111827;
+    --bs-card-bg: #ffffff;
+    --bs-border-subtle: #e2e8f0;
+
+    --bs-text-main: #111827;
+    --bs-text-muted: #6b7280;
+    --bs-text-soft: #9ca3af;
+
+    --bs-primary: #00d6a3;
+    --bs-primary-dark: #00b58a;
+
+    --bs-danger: #ef4444;
+
+    --bs-radius-lg: 18px;
+    --bs-radius-md: 12px;
+    --bs-radius-sm: 8px;
+
+    --bs-shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.08);
+
+    --bs-font-main: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, "Noto Sans KR", sans-serif;
+}
+
+body.bb-body {
+    min-height: 100%;
+    font-family: var(--bs-font-main);
+    background-color: var(--bs-bg);
+    color: var(--bs-text-main);
+}
+
+/* ===========================
+   Layout
+   =========================== */
+
+.bb-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+
+.bb-sidebar {
+    width: 240px;
+    background: radial-gradient(circle at top, #111827 0, #020617 50%);
+    color: #e5e7eb;
+    padding: 24px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.bb-sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 2px;
+}
+
+.bb-sidebar__logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #00d6a3, #22c55e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+    color: #0f172a;
+}
+
+.bb-sidebar__title {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.bb-sidebar__subtitle {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.bb-sidebar__nav {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bb-sidebar__nav-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.bb-sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 999px;
+    font-size: 13px;
+    color: #e5e7eb;
+    text-decoration: none;
+    opacity: 0.85;
+    transition: background 0.18s ease, opacity 0.18s ease, transform 0.12s ease;
+}
+
+.bb-sidebar__link:hover {
+    background: rgba(148, 163, 184, 0.18);
+    opacity: 1;
+    transform: translateX(1px);
+}
+
+.bb-sidebar__link-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+
+.bb-sidebar__link--active {
+    background: rgba(15, 23, 42, 0.9);
+    opacity: 1;
+}
+
+/* Sidebar footer */
+
+.bb-sidebar__footer {
+    margin-top: auto;
+    font-size: 11px;
+    color: #6b7280;
+}
+
+/* ===========================
+   Sidebar User Card
+   =========================== */
+
+.bb-sidebar__user-card {
+    padding: 14px 12px;
+    border-radius: var(--bs-radius-lg);
+    background: radial-gradient(circle at top left,
+    rgba(34,197,94,0.16), rgba(15,23,42,0.98));
+    border: 1px solid rgba(148,163,184,0.45);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 118px;
+}
+
+.bb-sidebar__user-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.bb-sidebar__user-avatar {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #ecfdf5;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: -0.03em;
+}
+
+.bb-sidebar__user-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;            /* 줄바꿈 자연스럽게 */
+}
+
+.bb-sidebar__user-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #f9fafb;
+}
+
+.bb-sidebar__user-meta {
+    font-size: 11px;
+    line-height: 1.3;
+    color: #cbd5f5;
+}
+
+.bb-sidebar__name-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 오른쪽 뱃지 */
+.bb-sidebar__user-badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #ecfdf5;
+    color: #059669;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.bb-sidebar__user-inline {
+    display: flex;
+    gap: 8px;
+}
+
+.bb-sidebar__user-inline--spaced {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+/* 로그인 상태 → 가운데 정렬 */
+.bb-sidebar__user-inline--center {
+    justify-content: center;
+}
+
+.bb-sidebar__inline-btn {
+    padding: 6px 10px;
+    background: rgba(255,255,255,0.08);
+    color: #e5e7eb;
+    font-size: 12px;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.16);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background .12s ease, opacity .12s ease;
+}
+
+.bb-sidebar__inline-btn:hover {
+    background: rgba(255,255,255,0.16);
+    opacity: 1;
+}
+
+/* 로그아웃 전용 색감 */
+.bb-sidebar__inline-btn--logout {
+    color: #fca5a5;
+    border-color: rgba(251,113,133,0.25);
+    cursor: pointer;
+}
+
+.bb-sidebar__inline-btn--logout:hover {
+    background: rgba(251,113,133,0.14);
+    color: #f87171;
+}
+
+/* 게스트 전용 약간 더 부드러운 아바타 색 */
+.bb-sidebar__user-avatar--guest {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    opacity: 0.9;
+}
+
+/* 회원가입 버튼을 조금 더 라이트하게 */
+.bb-sidebar__inline-btn--outline {
+    background: transparent;
+    border: 1px solid rgba(148, 163, 184, 0.6);
+}
+
+/* Header brand link (Saebom Board 클릭 영역) */
+.bb-header__brand-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+/* Brand 아래에 페이지 타이틀 묶음 */
+.bb-header__page {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* 햄버거 버튼 기본은 데스크탑에서 숨김 */
+.bb-header__menu-btn {
+    display: none;
+    align-items: center;       /* 버튼 안에서 아이콘 수직 가운데 */
+    justify-content: center;   /* 버튼 안에서 아이콘 수평 가운데 */
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+/* 아이콘 컨테이너 */
+.bb-header__menu-icon {
+    position: relative;
+    width: 14px;   /* 햄버거 가로 길이 */
+    height: 10px;  /* 햄버거 전체 높이 */
+}
+
+/* 3줄 공통 스타일 */
+.bb-header__menu-icon::before,
+.bb-header__menu-icon::after,
+.bb-header__menu-icon span {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0f172a; /* 짙은 남색/검정 느낌 */
+    border-radius: 999px;
+}
+
+/* 가운데 줄 */
+.bb-header__menu-icon span {
+    top: 4px;
+}
+
+/* 위/아래 줄 */
+.bb-header__menu-icon::before {
+    top: 0;
+}
+
+.bb-header__menu-icon::after {
+    bottom: 0;
+}
+
+/* 사이드바 열렸을 때 스크롤 잠그기 */
+.bb-body--no-scroll {
+    overflow: hidden;
+}
+
+/* 사이드바 백드롭 기본 숨김 (데스크탑) */
+.bb-sidebar-backdrop {
+    display: none;
+}
+
+/* Main area */
+
+.bb-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 24px 28px;
+}
+
+/* Header */
+
+.bb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.bb-header__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bb-header__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.bb-header__subtitle {
+    font-size: 12px;
+    color: var(--bs-text-soft);
+}
+
+.bb-header__right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--bs-text-soft);
+}
+
+.bb-header__pill {
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+/* Content */
+
+.bb-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ===========================
+   Cards & Sections
+   =========================== */
+
+.bb-card {
+    background: var(--bs-card-bg);
+    border-radius: var(--bs-radius-lg);
+    box-shadow: var(--bs-shadow-soft);
+    padding: 20px 22px 22px;
+}
+
+.bb-card--spaced {
+    padding: 22px 24px 24px;
+}
+
+.bb-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 10px;
+}
+
+.bb-card__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.bb-card__meta {
+    font-size: 12px;
+    color: var(--bs-text-soft);
+}
+
+/* Section spacing inside cards */
+
+.bb-section {
+    margin-top: 10px;
+}
+
+.bb-section + .bb-section {
+    margin-top: 18px;
+}
+
+/* ===========================
+   Buttons & Links
+   =========================== */
+
+a {
+    color: var(--bs-primary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+a:hover {
+    color: var(--bs-primary-dark);
+}
+
+/* Reset form buttons */
+
+button,
+input[type="submit"] {
+    font-family: inherit;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+/* Button base */
+
+.bb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+/* Sizes */
+
+.bb-btn--sm {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+/* Variants */
+
+/* Primary Button: White Text */
+.bb-btn--primary {
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.bb-btn--primary:hover {
+    background: var(--bs-primary-dark);
+    border-color: var(--bs-primary-dark);
+    color: #ffffff; /* Hover에서도 글씨 유지 */
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15),
+    0 10px 20px rgba(16, 185, 129, 0.35);
+    transform: translateY(-1px);
+}
+
+.bb-btn--ghost {
+    background: #f9fafb;
+    border-color: #e5e7eb;
+    color: var(--bs-text-main);
+}
+
+.bb-btn--ghost:hover {
+    background: #eef2ff;
+    border-color: #cbd5f5;
+}
+
+.bb-btn--subtle {
+    background: transparent;
+    border-color: rgba(148, 163, 184, 0.4);
+    color: var(--bs-text-muted);
+}
+
+.bb-btn--subtle:hover {
+    background: rgba(148, 163, 184, 0.08);
+}
+
+.bb-btn--danger {
+    background: #fee2e2;
+    border-color: #fecaca;
+    color: var(--bs-danger);
+}
+
+.bb-btn--danger:hover {
+    background: #fecaca;
+}
+
+/* Disabled */
+
+.bb-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+    box-shadow: none;
+    transform: none;
+}
+
+/* 중복확인 버튼 기본 상태(활성) → 텍스트 초록색 */
+#usernameCheckBtn {
+    color: #16a34a; /* 초록 */
+    font-weight: 600;
+}
+
+/* disabled 상태 → 텍스트 회색 */
+#usernameCheckBtn:disabled {
+    color: #9ca3af !important;  /* 연회색 */
+    cursor: not-allowed;
+    opacity: 1;                 /* 흐려지지 않게 유지 */
+}
+
+/* Action groups */
+
+.bb-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.bb-actions--right {
+    justify-content: flex-end;
+}
+
+/* ===========================
+   Typography & Meta
+   =========================== */
+
+.bb-page-title {
+    margin: 0 0 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.bb-page-subtitle {
+    margin: 0 0 14px;
+    font-size: 13px;
+    color: var(--bs-text-soft);
+}
+
+.bb-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-size: 12px;
+    color: var(--bs-text-soft);
+    margin-bottom: 10px;
+}
+
+.bb-meta-label {
+    font-weight: 500;
+    color: #4b5563;
+}
+
+/* Content text */
+
+.bb-content-text {
+    font-size: 14px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+/* ===========================
+   Table (List)
+   =========================== */
+
+.bb-table-wrapper {
+    border-radius: var(--bs-radius-md);
+    border: 1px solid var(--bs-border-subtle);
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+thead {
+    background: #f8fafc;
+}
+
+th, td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+}
+
+th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bs-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+tbody tr:hover {
+    background: #f9fafb;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody td a {
+    font-weight: 500;
+    color: var(--bs-text-main);
+}
+
+tbody td a:hover {
+    color: var(--bs-primary);
+}
+
+/* Empty row */
+
+.bb-table-empty {
+    text-align: center;
+    padding: 18px 0;
+    color: var(--bs-text-soft);
+}
+
+/* ===========================
+   Forms
+   =========================== */
+
+.bb-form-group {
+    margin-bottom: 16px;
+}
+
+.bb-form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.bb-form-label--hidden {
+    position: absolute;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.bb-input,
+.bb-textarea {
+    width: 100%;
+    border-radius: var(--bs-radius-md);
+    border: 1px solid #d1d5db;
+    padding: 9px 11px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background-color: #f9fafb;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.bb-input:focus,
+.bb-textarea:focus {
+    border-color: var(--bs-primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18);
+}
+
+.bb-textarea {
+    resize: vertical;
+    min-height: 200px;
+}
+
+/* Field error */
+
+.bb-field-error {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--bs-danger);
+}
+
+.bb-input.bb-input--error,
+.bb-textarea.bb-input--error {
+    border-color: var(--bs-danger);
+    background: #fef2f2;
+}
+
+/* ===========================
+   Comments
+   =========================== */
+
+.bb-comments {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bb-comments__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.bb-comments__title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.bb-comments__subtitle {
+    font-size: 12px;
+    color: var(--bs-text-soft);
+}
+
+.bb-comment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.bb-comment-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.bb-comment-item:last-child {
+    border-bottom: none;
+}
+
+.bb-comment-content {
+    font-size: 14px;
+    white-space: pre-wrap;
+}
+
+.bb-comment-meta {
+    margin-top: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    font-size: 12px;
+    color: var(--bs-text-soft);
+}
+
+.bb-comment-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 6px;
+}
+
+/* ===========================
+   Utility
+   =========================== */
+
+.bb-divider {
+    height: 1px;
+    border: none;
+    background: #edf2f7;
+    margin: 16px 0;
+}
+
+.bb-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.bb-stack--lg {
+    gap: 14px;
+}
+
+.bb-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.bb-row--between {
+    justify-content: space-between;
+}
+
+/* ===========================
+   Login Page
+   =========================== */
+
+.bb-login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bs-bg);
+    padding: 20px;
+}
+
+.bb-login-card {
+    width: 100%;
+    max-width: 380px;
+    background: var(--bs-card-bg);
+    border-radius: var(--bs-radius-lg);
+    box-shadow: var(--bs-shadow-soft);
+    padding: 32px 30px 36px;
+    text-align: center;
+}
+
+.bb-login-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bs-text-main);
+    letter-spacing: -0.02em;
+}
+
+.bb-login-sub {
+    margin: 8px 0 24px;
+    font-size: 13px;
+    color: var(--bs-text-soft);
+}
+
+.bb-login-form-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.bb-login-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.bb-login-input {
+    width: 100%;
+    border-radius: var(--bs-radius-md);
+    border: 1px solid #d1d5db;
+    padding: 9px 11px;
+    font-size: 14px;
+    background: #f9fafb;
+    font-family: inherit;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.bb-login-input:focus {
+    border-color: var(--bs-primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18);
+    outline: none;
+}
+
+/* 에러 메시지 (게시판 폼과 톤 맞춤) */
+.bb-login-error {
+    color: var(--bs-danger);
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* 로그인 버튼 */
+.bb-login-btn {
+    width: 100%;
+    margin-top: 22px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--bs-primary);
+    border: 1px solid var(--bs-primary);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+.bb-login-btn:hover {
+    background: var(--bs-primary-dark);
+    border-color: var(--bs-primary-dark);
+    box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+    transform: translateY(-1px);
+}
+
+/* ===========================
+   Notice / Info Message (Login Prompt)
+   =========================== */
+
+.bb-info-box {
+    padding: 16px 18px;
+    border-radius: var(--bs-radius-md);
+    background: #f0fdf4; /* 아주 연한 초록 */
+    border: 1px solid #bbf7d0; /* 연녹색 라인 */
+    color: #166534; /* 깊은 녹색 텍스트 */
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.bb-info-box a {
+    color: var(--bs-primary);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.bb-info-box a:hover {
+    color: var(--bs-primary-dark);
+}
+
+/* ===========================
+   Signup Page
+   =========================== */
+
+.bb-signup-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bs-bg);
+    padding: 20px;
+}
+
+.bb-signup-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bs-card-bg);
+    border-radius: var(--bs-radius-lg);
+    box-shadow: var(--bs-shadow-soft);
+    padding: 32px 30px 36px;
+}
+
+.bb-signup-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--bs-text-main);
+    letter-spacing: -0.02em;
+}
+
+.bb-signup-sub {
+    margin: 8px 0 24px;
+    font-size: 13px;
+    color: var(--bs-text-soft);
+}
+
+/* 아이디 중복확인 버튼 */
+.bb-check-btn {
+    margin-left: 6px;
+}
+
+/* AJAX 피드백 메시지 */
+.bb-field-feedback {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+/* 성공 메시지 */
+.bb-field-success {
+    color: #16a34a;
+}
+
+.bb-signup-card .bb-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bb-signup-card .bb-row .bb-input {
+    flex: 1;    /* 입력창이 남은 공간을 차지하게 함 */
+}
+
+.bb-check-btn {
+    white-space: nowrap; /* 버튼 줄바꿈 방지 */
+}
+
+/* Username check icons */
+.bb-check-icon {
+    display: none;                 /* 기본은 숨김 */
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    vertical-align: -2px;
+}
+
+.bb-check-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* 성공 상태일 때: 초록 체크만 보이도록 */
+.bb-field-success .bb-check-icon--success {
+    display: inline-flex;
+    color: #16a34a;
+}
+
+/* 실패 상태일 때: 빨간 X만 보이도록 */
+.bb-field-error .bb-check-icon--error {
+    display: inline-flex;
+    color: #ef4444;
+}
+
+/* 텍스트 스타일(이미 있다면 생략 가능) */
+.bb-field-feedback {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.bb-field-success {
+    color: #16a34a;
+}
+
+.bb-field-error {
+    color: var(--bs-danger);
+}
+
+/* ===========================
+   Profile (My Page)
+   =========================== */
+
+.bb-profile-list {
+    margin: 0;
+    padding: 0;
+    border-radius: var(--bs-radius-md);
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.bb-profile-row {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    padding: 10px 14px;
+    font-size: 14px;
+    column-gap: 16px;
+    align-items: center;
+    border-top: 1px solid #f3f4f6;
+}
+
+.bb-profile-row:first-child {
+    border-top: none;
+}
+
+/* dt 텍스트를 칩 형태로 */
+.bb-profile-row dt {
+    margin: 0;
+}
+
+.bb-profile-row dt span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4b5563;
+}
+
+.bb-profile-row dd {
+    margin: 0;
+    color: #111827;
+    word-break: break-all;
+}
+
+/* 하단 버튼 영역 여백 */
+.bb-profile-actions {
+    margin-top: 20px;
+}
+
+/* My Page card width fix */
+.bb-profile-container {
+    max-width: 100%;
+}
+
+/* 작은 힌트 텍스트 */
+.bb-form-hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: #6b7280; /* gray-500 */
+}
+
+/* 회원 탈퇴 영역 */
+.bb-profile-danger {
+    margin-top: 20px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #fef2f2;            /* 연한 레드 배경 */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.bb-profile-danger__texts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.bb-profile-danger__title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #b91c1c;                 /* red-700 */
+}
+
+.bb-profile-danger__desc {
+    font-size: 12px;
+    color: #6b7280;                 /* gray-500 */
+}
+
+/* 탈퇴 버튼: 과하게 크지 않은 아웃라인 버튼 */
+.bb-profile-danger__btn {
+    align-self: center;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid #f97373;      /* red-400 */
+    background: #ffffff;
+    font-size: 12px;
+    color: #b91c1c;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.bb-profile-danger__btn:hover {
+    background: #fee2e2;            /* hover 시 살짝만 강조 */
+}
+
+.bb-link-danger {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    color: #ef4444; /* red-500 */
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.bb-link-danger:hover {
+    color: #b91c1c; /* red-700 */
+}
+
+/* 탈퇴 페이지 Danger 스타일 */
+.bb-profile-badge--danger {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.bb-btn--danger {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+.bb-btn--danger:hover {
+    background: #dc2626;
+}
+
+.bb-danger-text {
+    font-size: 12px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    color: #b91c1c;
+    line-height: 1.5;
+}
+
+/* 기본: 모바일 카드 레이아웃 숨김 (데스크탑에서만 테이블 보이게) */
+.bb-article-list-mobile {
+    display: none;
+}
+
+.bb-article-actions-bottom {
+    margin-top: 12px;
+    display: flex;
+    justify-content: flex-end;  /* 우측 정렬 */
+    align-items: center;
+    gap: 8px;
+}
+
+.bb-article-actions-bottom form {
+    margin: 0;
+    display: inline-block;      /* 줄바꿈 방지 */
+}
+
+/* 결과 메시지 공통 블록 */
+.bb-result {
+    text-align: center;
+    padding: 24px 20px 20px;
+}
+
+.bb-result__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* 성공용 아이콘 배경 */
+.bb-result__icon--success {
+    background: linear-gradient(135deg, #10b981, #22c55e);
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+}
+
+/* 위험/탈퇴용 아이콘 배경 */
+.bb-result__icon--danger {
+    background: linear-gradient(135deg, #ef4444, #f97373);
+    box-shadow: 0 10px 25px rgba(248, 113, 113, 0.35);
+}
+
+.bb-result__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #020617;
+    margin-bottom: 6px;
+}
+
+.bb-result__subtitle {
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 14px;
+}
+
+.bb-result__text {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* 하단 버튼 영역 정렬 */
+.bb-result-actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+
+    .bb-layout {
+        min-height: 100vh;
+    }
+
+    /* 사이드바: 화면 밖으로 숨겨놨다가, 클래스 붙으면 들어오게 */
+    .bb-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 220px;
+        z-index: 1000;
+        transform: translateX(-100%);            /* 기본: 왼쪽 밖으로 숨김 */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .bb-sidebar--open {
+        transform: translateX(0);                /* open일 때 왼쪽에서 슬라이드 인 */
+        box-shadow: 14px 0 40px rgba(15, 23, 42, 0.45);
+    }
+
+    .bb-main {
+        padding: 14px 14px 24px;
+    }
+
+    .bb-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .bb-header__title-group {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    /* 모바일에서만 햄버거 버튼 보이게 */
+    .bb-header__menu-btn {
+        display: inline-flex;
+        margin-top: 4px;
+    }
+
+    /* 사이드바 뒷배경(어두운 레이어) */
+    .bb-sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        z-index: 900;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .bb-sidebar-backdrop--visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* 모바일 카드 레이아웃 */
+@media (max-width: 768px) {
+
+    .bb-login-wrapper {
+        align-items: flex-start;  /* 위쪽 정렬 */
+        padding-top: 100px;        /* 위에만 여백 */
+    }
+
+    .bb-signup-wrapper {
+        align-items: flex-start;  /* 위쪽 정렬 */
+        padding-top: 100px;        /* 위에만 여백 */
+    }
+
+    .bb-login-card {
+        max-width: 100%;          /* 좌우 꽉 차게 (여백은 padding으로) */
+    }
+
+    .bb-profile-row {
+        grid-template-columns: 110px 1fr;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* 테이블 감추기 */
+    .bb-article-table-desktop {
+        display: none;
+    }
+
+    /* 카드 리스트 보이기 */
+    .bb-article-list-mobile {
+        display: block;
+        margin-top: 12px;
+    }
+
+    .bb-article-card-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .bb-article-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 12px 14px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    .bb-article-card__link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .bb-article-card__title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #020617;
+        margin-bottom: 6px;
+        line-height: 1.4;
+    }
+
+    .bb-article-card__meta {
+        font-size: 11px;
+        color: #6b7280;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        align-items: center;
+    }
+
+    .bb-article-card__dot {
+        color: #9ca3af;
+    }
+
+    .bb-article-card__views span {
+        margin-left: 2px;
+    }
+
+    .bb-article-actions-bottom {
+        margin-top: 10px;
+        gap: 6px;
+    }
+
+    .bb-card__header {
+        display: block;
+    }
+
+}

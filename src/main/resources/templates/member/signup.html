@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>회원가입</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bulletin.css}">
+</head>
+<body class="bb-body">
+
+<div class="bb-signup-wrapper">
+
+    <div class="bb-signup-card">
+
+        <h1 class="bb-signup-title">회원가입</h1>
+        <p class="bb-signup-sub">
+            Saebom Board를 이용하려면 기본 정보를 입력하고 회원가입을 완료해주세요.
+        </p>
+
+        <form th:action="@{/members/new}"
+              th:object="${memberCreateForm}"
+              method="post"
+              id="signupForm">
+
+            <!-- 아이디 -->
+            <div class="bb-form-group">
+                <label class="bb-form-label" for="usernameInput">아이디</label>
+
+                <div class="bb-row">
+                    <input type="text"
+                           th:field="*{username}"
+                           id="usernameInput"
+                           class="bb-input"/>
+
+                    <input type="hidden"
+                           id="usernameChecked"
+                           name="usernameChecked"
+                           th:value="${usernameChecked} ? 'true' : 'false'"/>
+
+                    <button type="button"
+                            class="bb-btn bb-btn--subtle bb-btn--sm bb-check-btn"
+                            id="usernameCheckBtn"
+                            th:disabled="${usernameChecked}"
+                            onclick="checkUsername()">
+                        중복확인
+                    </button>
+                </div>
+
+                <!-- 서버 단 유효성 오류 -->
+                <div th:if="${#fields.hasErrors('username')}"
+                     class="bb-field-error"
+                     id="usernameServerError">
+                    <!-- 실패 아이콘 -->
+                    <span class="bb-check-icon bb-check-icon--error" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18M6 18L18 6"
+                                  stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+
+                    <!-- 에러 메시지 텍스트 -->
+                    <span class="bb-check-text" th:errors="*{username}"></span>
+                </div>
+
+                <!-- AJAX 메시지 -->
+                <p id="username-check-message" class="bb-field-feedback">
+                    <!-- 성공 아이콘 -->
+                    <span class="bb-check-icon bb-check-icon--success" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M20 6L9 17L4 12"
+                                  stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+
+                    <!-- 실패 아이콘 -->
+                    <span class="bb-check-icon bb-check-icon--error" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18M6 18L18 6"
+                                  stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+
+                    <!-- 메시지 텍스트 -->
+                    <span class="bb-check-text"></span>
+                </p>
+
+            </div>
+
+            <!-- 비밀번호 -->
+            <div class="bb-form-group">
+                <label class="bb-form-label">비밀번호</label>
+                <input type="password"
+                       th:field="*{password}"
+                       class="bb-input"/>
+                <div th:if="${#fields.hasErrors('password')}"
+                     class="bb-field-error">
+
+                    <!-- X 아이콘 -->
+                    <span class="bb-check-icon bb-check-icon--error" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18M6 18L18 6"
+                                  stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+
+                    <!-- 에러 메시지 -->
+                    <span class="bb-check-text" th:errors="*{password}"></span>
+                </div>
+            </div>
+
+            <!-- 이름 -->
+            <div class="bb-form-group">
+                <label class="bb-form-label">이름</label>
+                <input type="text"
+                       th:field="*{name}"
+                       class="bb-input"/>
+                <div th:if="${#fields.hasErrors('name')}"
+                     class="bb-field-error">
+
+                    <span class="bb-check-icon bb-check-icon--error" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6L18 18M6 18L18 6"
+                                  stroke="currentColor" stroke-width="2"
+                                  stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+
+                    <span class="bb-check-text" th:errors="*{name}"></span>
+                </div>
+
+            </div>
+
+            <!-- 이메일 -->
+            <div class="bb-form-group">
+                <label class="bb-form-label">이메일</label>
+                <input type="text"
+                       th:field="*{email}"
+                       class="bb-input"/>
+                <div th:if="${#fields.hasErrors('email')}"
+                     th:errors="*{email}"
+                     class="bb-field-error">
+                </div>
+            </div>
+
+            <div class="bb-actions bb-actions--right" style="margin-top: 36px;">
+                <a th:href="@{/login}"
+                   class="bb-btn bb-btn--ghost">
+                    취소
+                </a>
+                <button type="submit"
+                        class="bb-btn bb-btn--primary">
+                    가입하기
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- AJAX 중복확인 script -->
+<script>
+    let lastVerifiedUsername = null;
+
+    async function checkUsername() {
+        const inputEl = document.getElementById('usernameInput');
+        const msgEl = document.getElementById('username-check-message');
+        const textEl = msgEl.querySelector('.bb-check-text');
+        const btnEl = document.getElementById('usernameCheckBtn');
+        const hiddenEl = document.getElementById('usernameChecked');
+        const username = inputEl.value.trim();
+
+        const serverErrorEl = document.getElementById('usernameServerError');
+
+        // 아이콘 요소
+        const iconSuccess = msgEl.querySelector('.bb-check-icon--success');
+        const iconError = msgEl.querySelector('.bb-check-icon--error');
+
+        if (serverErrorEl) {
+            serverErrorEl.style.display = "none";
+        }
+
+        // 상태 초기화
+        msgEl.className = "bb-field-feedback";
+        textEl.textContent = "";
+        iconSuccess.style.display = "none";
+        iconError.style.display = "none";
+
+        if (!username) {
+            msgEl.classList.add("bb-field-error");
+            textEl.textContent = "아이디를 입력해주세요.";
+            iconError.style.display = "inline-flex";
+            return;
+        }
+
+        try {
+            const res = await fetch(`/members/check-username?username=${encodeURIComponent(username)}`);
+            const data = await res.json();
+
+            if (!res.ok) {
+                msgEl.classList.add("bb-field-error");
+                textEl.textContent = data.message;
+                iconError.style.display = "inline-flex";
+                lastVerifiedUsername = null;
+                btnEl.disabled = false;
+                hiddenEl.value = "false";
+                return;
+            }
+
+            if (data.duplicate) {
+                // 실패 → X 아이콘
+                msgEl.classList.add("bb-field-error");
+                iconError.style.display = "inline-flex";
+                lastVerifiedUsername = null;
+                btnEl.disabled = false;
+                hiddenEl.value = "false";
+            } else {
+                // 성공 → 체크 아이콘
+                msgEl.classList.add("bb-field-success");
+                iconSuccess.style.display = "inline-flex";
+                lastVerifiedUsername = username;
+                btnEl.disabled = true;
+                hiddenEl.value = "true";
+            }
+
+            textEl.textContent = data.message;
+
+        } catch (err) {
+            console.error(err);
+            msgEl.classList.add("bb-field-error");
+            textEl.textContent = "중복 확인 중 오류가 발생했습니다.";
+            iconError.style.display = "inline-flex";
+        }
+    }
+
+    // 입력값이 바뀌면 다시 중복확인 가능하게 만들기
+    document.addEventListener('DOMContentLoaded', () => {
+        const inputEl = document.getElementById('usernameInput');
+        const btnEl = document.getElementById('usernameCheckBtn');
+        const hiddenEl = document.getElementById('usernameChecked');
+        const msgEl = document.getElementById('username-check-message');
+        const textEl = msgEl.querySelector('.bb-check-text');
+
+        const iconSuccess = msgEl.querySelector('.bb-check-icon--success');
+        const iconError = msgEl.querySelector('.bb-check-icon--error');
+
+        const serverErrorEl = document.getElementById('usernameServerError');
+
+        if (!inputEl || !btnEl || !hiddenEl || !msgEl) return;
+
+        inputEl.addEventListener('input', () => {
+            const current = inputEl.value.trim();
+
+            if (current !== lastVerifiedUsername) {
+                btnEl.disabled = false;
+                hiddenEl.value = "false";
+
+                // 초기화
+                msgEl.className = "bb-field-feedback";
+                textEl.textContent = "";
+
+                iconSuccess.style.display = "none";
+                iconError.style.display = "none";
+
+                if (serverErrorEl) {
+                    serverErrorEl.style.display = "none";
+                }
+            }
+        });
+
+        const formEl = document.getElementById('signupForm');
+        if (formEl) {
+            formEl.addEventListener('submit', (event) => {
+                const checked = hiddenEl.value === "true";
+
+                // 중복확인 안 됐으면 막기
+                if (!checked) {
+                    event.preventDefault();
+
+                    // 간단한 브라우저 팝업 (alert)
+                    alert("아이디 중복확인을 먼저 해주세요.");
+
+                    // 아이디 입력창에 포커스 주기
+                    inputEl.focus();
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

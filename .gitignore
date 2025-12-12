@@ -1,0 +1,27 @@
+# 빌드 결과물 무시
+/out/
+*.class
+
+# IntelliJ 자체 설정 무시
+.idea/
+*.iml
+
+# Gradle 자동 생성 파일 무시
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# OS 무시
+.DS_Store
+Thumbs.db
+
+# Backup 무시
+*backup*/
+*backup*
+*_backup*/
+*_backup*
+*old*/
+*old*
+*.bak
+*.backup
+*.old

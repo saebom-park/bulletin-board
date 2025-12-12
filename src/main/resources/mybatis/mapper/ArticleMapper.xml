@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saebom.bulletinboard.repository.ArticleMapper">
+
+    <sql id="articleColumns">
+        id,
+        member_id,
+        title,
+        content,
+        view_count,
+        created_at,
+        updated_at
+    </sql>
+
+    <resultMap id="articleResultMap" type="com.saebom.bulletinboard.domain.Article">
+        <id property="id" column="id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.saebom.bulletinboard.domain.Article"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO articles (
+            member_id,
+            title,
+            content,
+            view_count
+        )
+        VALUES (
+            #{memberId},
+            #{title},
+            #{content},
+            #{viewCount}
+        )
+    </insert>
+
+    <select id="findById"
+            parameterType="long"
+            resultMap="articleResultMap">
+        SELECT
+        <include refid="articleColumns"/>
+        FROM articles
+        WHERE id = #{id}
+    </select>
+
+    <select id="findAll"
+            resultMap="articleResultMap">
+        SELECT
+        <include refid="articleColumns"/>
+        FROM articles
+        ORDER BY id DESC
+    </select>
+
+    <select id="findByMemberId"
+            parameterType="long"
+            resultMap="articleResultMap">
+        SELECT
+        <include refid="articleColumns"/>
+        FROM articles
+        WHERE member_id = #{memberId}
+    </select>
+
+    <update id="update"
+            parameterType="com.saebom.bulletinboard.domain.Article">
+        UPDATE articles
+        SET
+            title = #{title},
+            content = #{content}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById"
+            parameterType="long">
+        DELETE FROM articles
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saebom.bulletinboard.repository.MemberMapper">
+
+    <sql id="memberColumns">
+        id,
+        username,
+        password,
+        name,
+        email,
+        role,
+        created_at,
+        updated_at,
+        password_changed_at,
+        last_login_at,
+        login_fail_count,
+        account_locked,
+        account_locked_at,
+        status
+    </sql>
+
+    <resultMap id="memberResultMap" type="com.saebom.bulletinboard.domain.Member">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="role" column="role"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="passwordChangedAt" column="password_changed_at"/>
+        <result property="lastLoginAt" column="last_login_at"/>
+        <result property="loginFailCount" column="login_fail_count"/>
+        <result property="accountLocked" column="account_locked"/>
+        <result property="accountLockedAt" column="account_locked_at"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+    <insert id="insert"
+            parameterType="com.saebom.bulletinboard.domain.Member"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO members (
+            username,
+            password,
+            name,
+            email,
+            role,
+            status
+        )
+        VALUES (
+            #{username},
+            #{password},
+            #{name},
+            #{email},
+            #{role},
+            #{status}
+        )
+    </insert>
+
+    <select id="findById"
+            parameterType="long"
+            resultMap="memberResultMap">
+        SELECT
+        <include refid="memberColumns"/>
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByUsername"
+            parameterType="string"
+            resultMap="memberResultMap">
+        SELECT
+        <include refid="memberColumns"/>
+        FROM members
+        WHERE username = #{username}
+    </select>
+
+    <select id="findAll"
+            resultMap="memberResultMap">
+        SELECT
+        <include refid="memberColumns"/>
+        FROM members
+        ORDER BY id DESC
+    </select>
+
+    <update id="update"
+            parameterType="com.saebom.bulletinboard.domain.Member">
+        UPDATE members
+        SET
+            name = #{name},
+            email = #{email}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE members
+        SET
+            password = #{password},
+            password_changed_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE members
+        SET
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById"
+            parameterType="long">
+        DELETE FROM members
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content" class="bb-stack bb-stack--lg">
+
+    <!-- 게시글 카드 -->
+    <div class="bb-card bb-card--spaced">
+        <div class="bb-card__header">
+            <div>
+                <h2 class="bb-page-title" th:text="${article.title}">게시글 제목</h2>
+                <div class="bb-meta-row">
+                    <span>
+                        <span class="bb-meta-label">작성자</span>
+                        <span th:text="${article.memberId}">작성자ID</span>
+                    </span>
+                    <span>
+                        <span class="bb-meta-label">조회수</span>
+                        <span th:text="${article.viewCount}">0</span>
+                    </span>
+                    <span>
+                        <span class="bb-meta-label">작성일</span>
+                        <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
+                            2025-01-01 12:00
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bb-section">
+            <div class="bb-content-text"
+                 th:text="${article.content}">
+                내용
+            </div>
+        </div>
+
+        <div class="bb-card__footer bb-article-actions-bottom">
+            <a th:href="@{/articles}"
+               class="bb-btn bb-btn--ghost bb-btn--sm">
+                목록
+            </a>
+            <a th:if="${loginMember != null and article.memberId == loginMember.id}"
+               th:href="@{/articles/{id}/edit(id=${article.id})}"
+               class="bb-btn bb-btn--subtle bb-btn--sm">
+                수정
+            </a>
+            <form th:if="${loginMember != null and article.memberId == loginMember.id}"
+                  th:action="@{/articles/{id}/delete(id=${article.id})}"
+                  method="post">
+                <button type="submit"
+                        class="bb-btn bb-btn--danger bb-btn--sm">
+                    삭제
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- 댓글 카드 -->
+    <div class="bb-card bb-card--spaced">
+        <div class="bb-comments">
+
+            <!-- 댓글 목록 -->
+            <div>
+                <div class="bb-comments__header">
+                    <div>
+                        <h3 class="bb-comments__title">댓글</h3>
+                        <p class="bb-comments__subtitle">
+                            댓글을 통해 의견을 나눌 수 있습니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(comments)}"
+                     class="bb-table-empty" style="padding-left:0;">
+                    아직 작성된 댓글이 없습니다.
+                </div>
+
+                <ul th:if="${!#lists.isEmpty(comments)}"
+                    class="bb-comment-list">
+
+                    <li th:each="comment : ${comments}"
+                        class="bb-comment-item">
+
+                        <!-- 수정 모드 -->
+                        <div th:if="${editCommentId != null and editCommentId == comment.id}">
+                            <form th:action="@{|/comments/${comment.id}/edit|}"
+                                  method="post"
+                                  th:object="${commentUpdateForm}">
+
+                                <input type="hidden" name="articleId" th:value="${article.id}"/>
+
+                                <textarea th:field="*{content}"
+                                          rows="3"
+                                          class="bb-textarea">
+                                </textarea>
+
+                                <div class="bb-actions bb-actions--right" style="margin-top:8px;">
+                                    <a th:href="@{|/articles/${article.id}|}"
+                                       class="bb-btn bb-btn--ghost bb-btn--sm">
+                                        취소
+                                    </a>
+                                    <button type="submit"
+                                            class="bb-btn bb-btn--primary bb-btn--sm">
+                                        저장
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- 일반 모드 -->
+                        <div th:unless="${editCommentId != null and editCommentId == comment.id}">
+                            <div class="bb-comment-content"
+                                 th:text="${comment.content}">
+                                댓글 내용
+                            </div>
+
+                            <div class="bb-comment-meta">
+                                <span>
+                                    <span class="bb-meta-label">작성자</span>
+                                    <span th:text="${comment.memberId}">작성자ID</span>
+                                </span>
+                                <span>•</span>
+                                <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">
+                                    2025-01-01 12:00
+                                </span>
+
+                                <span th:if="${loginMember != null and comment.memberId == loginMember.id}"
+                                      class="bb-comment-actions">
+                                    <a th:href="@{|/articles/${article.id}?editCommentId=${comment.id}|}"
+                                       class="bb-btn bb-btn--subtle bb-btn--sm">
+                                        수정
+                                    </a>
+                                    <form th:action="@{/comments/{id}/delete(id=${comment.id})}"
+                                          method="post">
+                                        <input type="hidden" name="articleId" th:value="${article.id}">
+                                        <button type="submit"
+                                                class="bb-btn bb-btn--danger bb-btn--sm">
+                                            삭제
+                                        </button>
+                                    </form>
+                                </span>
+                            </div>
+                        </div>
+
+                    </li>
+
+                </ul>
+            </div>
+
+            <hr class="bb-divider">
+
+            <!-- 댓글 작성 -->
+            <div th:if="${loginMember != null}">
+                <h4 class="bb-comments__title">댓글 작성</h4>
+
+                <form th:action="@{/articles/{articleId}/comments(articleId=${article.id})}"
+                      th:object="${commentCreateForm}"
+                      method="post">
+
+                    <div class="bb-form-group" style="margin-top:8px;">
+                        <label for="comment-content" class="bb-form-label bb-form-label--hidden">내용</label>
+                        <textarea id="comment-content"
+                                  rows="4"
+                                  th:field="*{content}"
+                                  class="bb-textarea"
+                                  th:classappend="${#fields.hasErrors('content')} ? ' bb-input--error'">
+                        </textarea>
+                        <div th:if="${#fields.hasErrors('content')}"
+                             th:errors="*{content}"
+                             class="bb-field-error">
+                        </div>
+                    </div>
+
+                    <div class="bb-actions bb-actions--right">
+                        <button type="submit"
+                                class="bb-btn bb-btn--primary">
+                            댓글 등록
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- 비로그인 안내 -->
+            <div th:if="${loginMember == null}" class="bb-info-box">
+                댓글을 작성하려면 <a th:href="@{/login}">로그인</a>이 필요합니다.
+            </div>
+
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

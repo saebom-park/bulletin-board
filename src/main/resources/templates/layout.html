@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Saebom Board</title>
+    <link rel="stylesheet" th:href="@{/css/bulletin.css}">
+</head>
+<body class="bb-body">
+
+<div class="bb-layout">
+
+    <!-- Sidebar -->
+    <aside class="bb-sidebar">
+
+        <!-- 로그인 상태: 사이드바 상단 회원 카드 -->
+        <div class="bb-sidebar__user-card"
+             th:if="${loginMember != null}">
+
+            <div class="bb-sidebar__user-main">
+                <div class="bb-sidebar__user-avatar"
+                     th:text="${#strings.substring(loginMember.name, 0, 1)}">
+                </div>
+
+                <div class="bb-sidebar__user-texts">
+
+                    <!-- 이름 + 뱃지 묶는 그룹 -->
+                    <div class="bb-sidebar__name-group">
+                        <div class="bb-sidebar__user-name"
+                             th:text="${loginMember.name}">
+                        </div>
+
+                        <!-- 뱃지 추가 -->
+                        <span class="bb-sidebar__user-badge">일반 회원</span>
+                    </div>
+
+                    <div class="bb-sidebar__user-meta"
+                         th:text="${loginMember.username}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bb-sidebar__user-inline--spaced bb-sidebar__user-inline--center">
+                <a th:href="@{/members/me}"
+                   class="bb-sidebar__inline-btn">
+                    MyPage
+                </a>
+                <form th:action="@{/logout}" method="post" style="margin:0;">
+                    <input type="hidden" name="redirectURL" th:value="${currentURL}" />
+                    <button type="submit"
+                            class="bb-sidebar__inline-btn bb-sidebar__inline-btn--logout">
+                        로그아웃
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 비로그인 상태: 게스트 카드 -->
+        <div class="bb-sidebar__user-card"
+             th:if="${loginMember == null}">
+
+            <div class="bb-sidebar__user-main">
+                <div class="bb-sidebar__user-avatar">G</div>
+                <div class="bb-sidebar__user-texts">
+                    <div class="bb-sidebar__user-name">게스트</div>
+                    <div class="bb-sidebar__user-meta">
+                        게시글 작성은 로그인 후 이용할 수 있어요.
+                    </div>
+                </div>
+            </div>
+
+            <div class="bb-sidebar__user-inline bb-sidebar__user-inline--center">
+                <a th:href="@{/login}" class="bb-sidebar__inline-btn">로그인</a>
+                <a th:href="@{/members/new}"
+                   class="bb-sidebar__inline-btn bb-sidebar__inline-btn--outline">
+                    회원가입
+                </a>
+            </div>
+        </div>
+
+
+        <nav class="bb-sidebar__nav">
+            <div class="bb-sidebar__nav-title">Overview</div>
+            <a th:href="@{/articles}" class="bb-sidebar__link bb-sidebar__link--active">
+                <span class="bb-sidebar__link-icon">◆</span>
+                <span>Articles</span>
+            </a>
+            <a href="#" class="bb-sidebar__link">
+                <span class="bb-sidebar__link-icon">◎</span>
+                <span>Members</span>
+            </a>
+        </nav>
+
+        <div class="bb-sidebar__footer">
+            <div>spring-dev-journey</div>
+            <div>bulletin-board · MyBatis</div>
+        </div>
+    </aside>
+
+    <!-- 모바일에서 사이드바 열렸을 때 덮는 배경 -->
+    <div class="bb-sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- Main -->
+    <div class="bb-main">
+
+        <!-- Header -->
+        <header class="bb-header">
+            <div class="bb-header__title-group">
+
+                <!-- 모바일 메뉴 버튼 -->
+                <button type="button"
+                        class="bb-header__menu-btn"
+                        id="sidebar-toggle"
+                        aria-label="메뉴 열기">
+                    <span class="bb-header__menu-icon"></span>
+                </button>
+
+                <!-- 로고 -->
+                <a th:href="@{/articles}" class="bb-header__brand-link">
+                    <img th:src="@{/img/logo-saebom-board.svg}"
+                         alt="Saebom Board"
+                         class="bb-header__logo-img">
+                </a>
+
+            </div>
+
+            <div class="bb-header__right">
+                <div class="bb-header__pill">
+                    v1.0 · Practice Project
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="bb-content">
+            <section th:insert="${content}"></section>
+        </main>
+
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+    (function () {
+        const sidebar = document.querySelector('.bb-sidebar');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const body = document.body;
+
+        if (!sidebar || !toggleBtn) return;
+
+        function openSidebar() {
+            sidebar.classList.add('bb-sidebar--open');
+            if (backdrop) {
+                backdrop.classList.add('bb-sidebar-backdrop--visible');
+                backdrop.style.display = 'block';
+            }
+            body.classList.add('bb-body--no-scroll');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('bb-sidebar--open');
+            if (backdrop) {
+                backdrop.classList.remove('bb-sidebar-backdrop--visible');
+                // transition 끝난 뒤에 display 끄고 싶으면 setTimeout 써도 됨
+                setTimeout(() => { backdrop.style.display = 'none'; }, 200);
+            }
+            body.classList.remove('bb-body--no-scroll');
+        }
+
+        toggleBtn.addEventListener('click', function () {
+            const isOpen = sidebar.classList.contains('bb-sidebar--open');
+            if (isOpen) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        if (backdrop) {
+            backdrop.addEventListener('click', closeSidebar);
+        }
+    })();
+</script>
+
+</body>
+</html>

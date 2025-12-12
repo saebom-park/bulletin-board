@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content" class="bb-stack bb-stack--lg">
+
+    <div class="bb-card bb-card--spaced bb-profile-container">
+        <div class="bb-card__header">
+            <h1 class="bb-page-title">정보 수정</h1>
+            <p class="bb-page-subtitle">
+                Saebom Board 계정 정보를 수정할 수 있습니다.
+            </p>
+        </div>
+
+        <div class="bb-card__body">
+
+            <form th:action="@{/members/me/edit}"
+                  th:object="${memberUpdateForm}"
+                  method="post"
+                  class="bb-form">
+
+                <!-- 아이디 (수정 불가) -->
+                <div class="bb-form-group">
+                    <label class="bb-form-label">아이디</label>
+                    <input type="text"
+                           th:value="${member.username}"
+                           class="bb-input"
+                           disabled />
+                </div>
+
+                <!-- 이름 -->
+                <div class="bb-form-group">
+                    <label class="bb-form-label">이름</label>
+                    <input type="text"
+                           th:field="*{name}"
+                           class="bb-input"/>
+
+                    <div th:if="${#fields.hasErrors('name')}"
+                         class="bb-field-error">
+                        <span class="bb-check-icon bb-check-icon--error" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M6 6L18 18M6 18L18 6"
+                                      stroke="currentColor" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="bb-check-text" th:errors="*{name}"></span>
+                    </div>
+                </div>
+
+                <!-- 이메일 -->
+                <div class="bb-form-group">
+                    <label class="bb-form-label">이메일</label>
+                    <input type="text"
+                           th:field="*{email}"
+                           class="bb-input"/>
+
+                    <div th:if="${#fields.hasErrors('email')}"
+                         class="bb-field-error">
+                        <span class="bb-check-icon bb-check-icon--error" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M6 6L18 18M6 18L18 6"
+                                      stroke="currentColor" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="bb-check-text" th:errors="*{email}"></span>
+                    </div>
+                </div>
+
+                <!-- 마지막 수정일 -->
+                <p class="bb-form-hint bb-form-hint--right"
+                   th:if="${member.updatedAt != null}"
+                   th:text="'마지막 수정일: ' + ${#temporals.format(member.updatedAt, 'yyyy.MM.dd HH:mm')}">
+                </p>
+
+                <div class="bb-actions bb-actions--right bb-profile-actions">
+                    <a th:href="@{/members/me}" class="bb-btn bb-btn--ghost">
+                        취소
+                    </a>
+                    <button type="submit" class="bb-btn bb-btn--primary">
+                        저장하기
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

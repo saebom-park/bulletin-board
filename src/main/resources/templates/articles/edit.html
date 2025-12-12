@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content">
+
+    <div class="bb-card bb-card--spaced">
+        <div class="bb-card__header">
+            <div>
+                <h2 class="bb-page-title">게시글 수정</h2>
+                <p class="bb-page-subtitle">
+                    내용을 수정하고 저장하면 기존 게시글이 업데이트됩니다.
+                </p>
+            </div>
+        </div>
+
+        <form th:action="@{/articles/{id}/edit(id=${articleId})}"
+              th:object="${articleUpdateForm}"
+              method="post">
+
+            <div class="bb-form-group">
+                <label for="title" class="bb-form-label">제목</label>
+                <input id="title" type="text" th:field="*{title}"
+                       class="bb-input"
+                       th:classappend="${#fields.hasErrors('title')} ? ' bb-input--error'">
+                <div th:if="${#fields.hasErrors('title')}"
+                     th:errors="*{title}"
+                     class="bb-field-error">
+                </div>
+            </div>
+
+            <div class="bb-form-group">
+                <label for="content" class="bb-form-label">내용</label>
+                <textarea id="content" rows="10"
+                          th:field="*{content}"
+                          class="bb-textarea"
+                          th:classappend="${#fields.hasErrors('content')} ? ' bb-input--error'">
+                </textarea>
+                <div th:if="${#fields.hasErrors('content')}"
+                     th:errors="*{content}"
+                     class="bb-field-error">
+                </div>
+            </div>
+
+            <div class="bb-actions bb-actions--right">
+                <a th:href="@{/articles/{id}(id=${articleId})}"
+                   class="bb-btn bb-btn--ghost">
+                    취소
+                </a>
+                <button type="submit"
+                        class="bb-btn bb-btn--primary">
+                    수정 완료
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</section>
+</body>
+</html>

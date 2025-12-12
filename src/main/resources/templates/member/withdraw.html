@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content" class="bb-stack bb-stack--lg">
+
+    <div class="bb-card bb-card--spaced bb-profile-container">
+
+        <div class="bb-card__header">
+            <h1 class="bb-page-title">회원 탈퇴</h1>
+            <p class="bb-page-subtitle">
+                계정을 삭제하려면 비밀번호를 다시 입력해주세요.<br>
+                탈퇴 후에는 계정을 복구할 수 없습니다.
+            </p>
+        </div>
+
+        <div class="bb-card__body">
+
+            <form th:action="@{/members/me/withdraw}"
+                  th:object="${memberWithdrawForm}"
+                  method="post"
+                  class="bb-form">
+
+                <!-- 비밀번호 확인 -->
+                <div class="bb-form-group">
+                    <label class="bb-form-label">현재 비밀번호</label>
+                    <input type="password"
+                           th:field="*{password}"
+                           class="bb-input"/>
+
+                    <!-- 개별 필드 에러 -->
+                    <div th:if="${#fields.hasErrors('password')}" class="bb-field-error">
+                        <span class="bb-check-icon bb-check-icon--error" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M6 6L18 18M6 18L18 6"
+                                      stroke="currentColor" stroke-width="2"
+                                      stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="bb-check-text" th:errors="*{password}"></span>
+                    </div>
+                </div>
+
+                <!-- 경고 문구 -->
+                <p class="bb-danger-text">
+                    ※ 회원 탈퇴 시 작성한 게시글/댓글은 삭제되지 않습니다.<br>
+                    ※ 계정 정보는 즉시 삭제되며 복구할 수 없습니다.
+                </p>
+
+                <div class="bb-actions bb-actions--right bb-profile-actions">
+                    <a th:href="@{/members/me}" class="bb-btn bb-btn--ghost">
+                        취소
+                    </a>
+
+                    <button type="submit" class="bb-btn bb-btn--danger">
+                        탈퇴하기
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</section>
+</body>
+</html>
