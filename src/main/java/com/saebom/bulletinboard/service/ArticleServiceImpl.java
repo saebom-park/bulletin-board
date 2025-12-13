@@ -1,6 +1,9 @@
 package com.saebom.bulletinboard.service;
 
 import com.saebom.bulletinboard.domain.Article;
+import com.saebom.bulletinboard.dto.article.ArticleDto;
+import com.saebom.bulletinboard.exception.ArticleNotFoundException;
+import com.saebom.bulletinboard.exception.NoPermissionException;
 import com.saebom.bulletinboard.repository.ArticleMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,69 +21,79 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Long createArticle(Long memberId, String title, String content) {
+    public Long createArticle(Long loginMemberId, String title, String content) {
 
-        Article article = Article.createArticle(memberId, title, content);
+        Article article = Article.createArticle(loginMemberId, title, content);
 
         int inserted = articleMapper.insert(article);
         if (inserted != 1) {
             throw new IllegalStateException("게시글 저장에 실패했습니다.");
         }
+
         return article.getId();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Article getArticle(Long id) {
+    public ArticleDto getArticle(Long articleId) {
 
-        Article article = articleMapper.findById(id);
-        if (article == null) {
-            throw new IllegalArgumentException("게시글을 찾을 수 없습니다. id=" + id);
+        ArticleDto articleDto = articleMapper.findById(articleId);
+        if (articleDto == null) {
+            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
         }
-        return article;
+
+        return articleDto;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Article> getArticles() {
+    public List<ArticleDto> getArticles() {
         return articleMapper.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Article> getArticlesByMember(Long memberId) {
+    public List<ArticleDto> getArticlesByMember(Long memberId) {
         return articleMapper.findByMemberId(memberId);
     }
 
     @Override
-    public void updateArticle(Long id, Long memberId, String title, String content) {
+    public void updateArticle(Long articleId, Long loginMemberId, String title, String content) {
 
-        Article article = getArticle(id);
-        if (!article.getMemberId().equals(memberId)) {
-            throw new IllegalStateException("본인 게시글만 수정할 수 있습니다.");
+        Article article = articleMapper.findDomainById(articleId);
+        if (article == null) {
+            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
         }
 
-        article.setTitle(title);
-        article.setContent(content);
+        validateOwner(article, loginMemberId);
+
+        article.update(title, content);
 
         int updated = articleMapper.update(article);
         if (updated != 1) {
-            throw new IllegalStateException("게시글 수정에 실패했습니다. id=" + id);
+            throw new IllegalStateException("게시글 수정에 실패했습니다.");
         }
     }
 
     @Override
-    public void deleteArticle(Long id, Long memberId) {
+    public void deleteArticle(Long articleId, Long loginMemberId) {
 
-        Article article = getArticle(id);
-
-        if (!article.getMemberId().equals(memberId)) {
-            throw new IllegalStateException("본인 게시글만 삭제할 수 있습니다.");
+        Article article = articleMapper.findDomainById(articleId);
+        if (article == null) {
+            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
         }
 
-        int deleted = articleMapper.deleteById(id);
+        validateOwner(article, loginMemberId);
+
+        int deleted = articleMapper.deleteById(articleId);
         if (deleted != 1) {
-            throw new IllegalStateException("게시글 삭제에 실패했습니다. id=" + id);
+            throw new IllegalStateException("게시글 삭제에 실패했습니다.");
+        }
+    }
+
+    private void validateOwner(Article article, Long loginMemberId) {
+        if (!article.getMemberId().equals(loginMemberId)) {
+            throw new NoPermissionException("본인 게시글만 접근할 수 있습니다.");
         }
     }
 

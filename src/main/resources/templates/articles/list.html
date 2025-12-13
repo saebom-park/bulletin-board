@@ -47,7 +47,7 @@
                                 제목
                             </a>
                         </td>
-                        <td th:text="${article.memberId}">작성자ID</td>
+                        <td th:text="|${article.memberName}(${article.memberUsername})|">작성자</td>
                         <td th:text="${article.viewCount}">0</td>
                         <td th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd')}">
                             2025-01-01

@@ -23,8 +23,14 @@ public class Comment {
     }
 
     // method
+    // 생성 책임
     public static Comment createComment(Long articleId, Long memberId, String content) {
         return new Comment(articleId, memberId, content);
+    }
+
+    // 상태 변경 책임 (수정)
+    public void update(String content) {
+        this.content = content;
     }
 
     // getter

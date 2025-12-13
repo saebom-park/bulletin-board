@@ -1,6 +1,9 @@
 package com.saebom.bulletinboard.service;
 
 import com.saebom.bulletinboard.domain.Comment;
+import com.saebom.bulletinboard.dto.comment.CommentDto;
+import com.saebom.bulletinboard.exception.CommentNotFoundException;
+import com.saebom.bulletinboard.exception.NoPermissionException;
 import com.saebom.bulletinboard.repository.CommentMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,69 +21,80 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Long createComment(Long articleId, Long memberId, String content) {
+    public Long createComment(Long articleId, Long loginMemberId, String content) {
 
-        Comment comment = Comment.createComment(articleId, memberId, content);
+        Comment comment = Comment.createComment(articleId, loginMemberId, content);
 
         int inserted = commentMapper.insert(comment);
         if (inserted != 1) {
             throw new IllegalStateException("댓글 저장에 실패했습니다.");
         }
+
         return comment.getId();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Comment getComment(Long id) {
+    public CommentDto getComment(Long commentId) {
 
-        Comment comment = commentMapper.findById(id);
-        if (comment == null) {
-            throw new IllegalArgumentException("댓글을 찾을 수 없습니다. id=" + id);
+        CommentDto commentDto = commentMapper.findById(commentId);
+        if (commentDto == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
         }
-        return comment;
+
+        return commentDto;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> getCommentsByArticle(Long articleId) {
+    public List<CommentDto> getCommentsByArticle(Long articleId) {
         return commentMapper.findByArticleId(articleId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> getCommentsByMember(Long memberId) {
+    public List<CommentDto> getCommentsByMember(Long memberId) {
         return commentMapper.findByMemberId(memberId);
     }
 
     @Override
-    public void updateComment(Long id, Long memberId, String content) {
+    public void updateComment(Long commentId, Long loginMemberId, String content) {
 
-        Comment comment = getComment(id);
-
-        if (!comment.getMemberId().equals(memberId)) {
-            throw new IllegalStateException("본인 댓글만 수정할 수 있습니다.");
+        Comment comment = commentMapper.findDomainById(commentId);
+        if (comment == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
         }
 
-        comment.setContent(content);
+        validateOwner(comment, loginMemberId);
+
+        comment.update(content);
 
         int updated = commentMapper.update(comment);
         if (updated != 1) {
-            throw new IllegalStateException("댓글 수정에 실패했습니다. id=" + id);
+            throw new IllegalStateException("댓글 수정에 실패했습니다.");
         }
     }
 
     @Override
-    public void deleteComment(Long id, Long memberId) {
+    public void deleteComment(Long commentId, Long loginMemberId) {
 
-        Comment comment = getComment(id);
-
-        if (!comment.getMemberId().equals(memberId)) {
-            throw new IllegalStateException("본인 댓글만 삭제할 수 있습니다.");
+        Comment comment = commentMapper.findDomainById(commentId);
+        if (comment == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
         }
 
-        int deleted = commentMapper.deleteById(id);
+        validateOwner(comment, loginMemberId);
+
+        int deleted = commentMapper.deleteById(commentId);
         if (deleted != 1) {
-            throw new IllegalStateException("댓글 삭제에 실패했습니다. id=" + id);
+            throw new IllegalStateException("댓글 삭제에 실패했습니다.");
+        }
+    }
+
+    private void validateOwner(Comment comment, Long loginMemberId) {
+
+        if (!comment.getMemberId().equals(loginMemberId)) {
+            throw new NoPermissionException("본인 댓글만 접근할 수 있습니다.");
         }
     }
 }

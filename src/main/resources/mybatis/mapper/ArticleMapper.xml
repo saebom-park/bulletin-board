@@ -5,17 +5,22 @@
 
 <mapper namespace="com.saebom.bulletinboard.repository.ArticleMapper">
 
-    <sql id="articleColumns">
-        id,
-        member_id,
-        title,
-        content,
-        view_count,
-        created_at,
-        updated_at
+    <sql id="articleBaseColumns">
+        a.id,
+        a.member_id,
+        a.title,
+        a.content,
+        a.view_count,
+        a.created_at,
+        a.updated_at
     </sql>
 
-    <resultMap id="articleResultMap" type="com.saebom.bulletinboard.domain.Article">
+    <sql id="articleAuthorColumns">
+        m.username AS member_username,
+        m.name AS member_name
+    </sql>
+
+    <resultMap id="articleDtoResultMap" type="com.saebom.bulletinboard.dto.article.ArticleDto">
         <id property="id" column="id"/>
         <result property="memberId" column="member_id"/>
         <result property="title" column="title"/>
@@ -23,10 +28,11 @@
         <result property="viewCount" column="view_count"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
+        <result property="memberUsername" column="member_username"/>
+        <result property="memberName" column="member_name"/>
     </resultMap>
 
     <insert id="insert"
-            parameterType="com.saebom.bulletinboard.domain.Article"
             useGeneratedKeys="true"
             keyProperty="id">
         INSERT INTO articles (
@@ -43,45 +49,55 @@
         )
     </insert>
 
-    <select id="findById"
-            parameterType="long"
-            resultMap="articleResultMap">
+    <select id="findDomainById"
+            resultType="com.saebom.bulletinboard.domain.Article">
         SELECT
-        <include refid="articleColumns"/>
-        FROM articles
-        WHERE id = #{id}
+        <include refid="articleBaseColumns"/>
+        FROM articles a
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findById"
+            resultMap="articleDtoResultMap">
+        SELECT
+        <include refid="articleBaseColumns"/>,
+        <include refid="articleAuthorColumns"/>
+        FROM articles a
+        JOIN members m ON a.member_id = m.id
+        WHERE a.id = #{id}
     </select>
 
     <select id="findAll"
-            resultMap="articleResultMap">
+            resultMap="articleDtoResultMap">
         SELECT
-        <include refid="articleColumns"/>
-        FROM articles
-        ORDER BY id DESC
+        <include refid="articleBaseColumns"/>,
+        <include refid="articleAuthorColumns"/>
+        FROM articles a
+        JOIN members m ON a.member_id = m.id
+        ORDER BY a.created_at DESC
     </select>
 
     <select id="findByMemberId"
-            parameterType="long"
-            resultMap="articleResultMap">
+            resultMap="articleDtoResultMap">
         SELECT
-        <include refid="articleColumns"/>
-        FROM articles
-        WHERE member_id = #{memberId}
+        <include refid="articleBaseColumns"/>,
+        <include refid="articleAuthorColumns"/>
+        FROM articles a
+        JOIN members m ON a.member_id = m.id
+        WHERE a.member_id = #{memberId}
     </select>
 
-    <update id="update"
-            parameterType="com.saebom.bulletinboard.domain.Article">
-        UPDATE articles
+    <update id="update">
+        UPDATE articles a
         SET
-            title = #{title},
-            content = #{content}
-        WHERE id = #{id}
+            a.title = #{title},
+            a.content = #{content}
+        WHERE a.id = #{id}
     </update>
 
-    <delete id="deleteById"
-            parameterType="long">
-        DELETE FROM articles
-        WHERE id = #{id}
+    <delete id="deleteById">
+        DELETE FROM articles a
+        WHERE a.id = #{id}
     </delete>
 
 </mapper>

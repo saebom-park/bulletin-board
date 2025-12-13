@@ -1,11 +1,11 @@
 package com.saebom.bulletinboard.controller;
 
-import com.saebom.bulletinboard.domain.Article;
-import com.saebom.bulletinboard.domain.Comment;
 import com.saebom.bulletinboard.dto.article.ArticleCreateForm;
 import com.saebom.bulletinboard.dto.article.ArticleUpdateForm;
+import com.saebom.bulletinboard.dto.article.ArticleDto;
 import com.saebom.bulletinboard.dto.comment.CommentCreateForm;
 import com.saebom.bulletinboard.dto.comment.CommentUpdateForm;
+import com.saebom.bulletinboard.dto.comment.CommentDto;
 import com.saebom.bulletinboard.service.ArticleService;
 import com.saebom.bulletinboard.service.CommentService;
 import com.saebom.bulletinboard.session.SessionConst;
@@ -33,7 +33,7 @@ public class ArticleController {
 
     @GetMapping
     public String list(Model model) {
-        List<Article> articles = articleService.getArticles();
+        List<ArticleDto> articles = articleService.getArticles();
         model.addAttribute("articles", articles);
         return "articles/list";
     }
@@ -45,8 +45,8 @@ public class ArticleController {
             HttpServletRequest request,
             Model model
     ) {
-        Article article = articleService.getArticle(id);
-        List<Comment> comments = commentService.getCommentsByArticle(id);
+        ArticleDto article = articleService.getArticle(id);
+        List<CommentDto> comments = commentService.getCommentsByArticle(id);
 
         Long loginMemberId = getLoginMemberId(request);
 
@@ -55,7 +55,7 @@ public class ArticleController {
         model.addAttribute("commentCreateForm", new CommentCreateForm());
 
         if (editCommentId != null) {
-            Comment comment = commentService.getComment(editCommentId);
+            CommentDto comment = commentService.getComment(editCommentId);
 
             if (loginMemberId == null || !comment.getMemberId().equals(loginMemberId)) {
                 return "redirect:/articles/" + id;
@@ -112,7 +112,7 @@ public class ArticleController {
             return "redirect:/login";
         }
 
-        Article article = articleService.getArticle(id);
+        ArticleDto article = articleService.getArticle(id);
 
         if (!article.getMemberId().equals(loginMemberId)) {
             return "redirect:/articles/" + id;

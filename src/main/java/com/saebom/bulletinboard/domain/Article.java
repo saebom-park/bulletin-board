@@ -25,8 +25,15 @@ public class Article {
     }
 
     // method
+    // 생성 책임
     public static Article createArticle(Long memberId, String title, String content) {
         return new Article(memberId, title, content, 0);
+    }
+
+    // 상태 변경 책임 (수정)
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 
     // getter

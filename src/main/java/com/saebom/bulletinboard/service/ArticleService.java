@@ -1,17 +1,17 @@
 package com.saebom.bulletinboard.service;
 
-import com.saebom.bulletinboard.domain.Article;
+import com.saebom.bulletinboard.dto.article.ArticleDto;
 
 import java.util.List;
 
 public interface ArticleService {
 
-    Long createArticle(Long memberId, String title, String content);
+    Long createArticle(Long loginMemberId, String title, String content);
 
-    Article getArticle(Long id);
-    List<Article> getArticles();
-    List<Article> getArticlesByMember(Long memberId);
+    ArticleDto getArticle(Long articleId);
+    List<ArticleDto> getArticles();
+    List<ArticleDto> getArticlesByMember(Long memberId);
 
-    void updateArticle(Long id, Long memberId, String title, String content);
-    void deleteArticle(Long id, Long memberId);
+    void updateArticle(Long articleId, Long loginMemberId, String title, String content);
+    void deleteArticle(Long articleId, Long loginMemberId);
 }

@@ -1,6 +1,7 @@
 package com.saebom.bulletinboard.repository;
 
 import com.saebom.bulletinboard.domain.Article;
+import com.saebom.bulletinboard.dto.article.ArticleDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -11,14 +12,17 @@ public interface ArticleMapper {
     // 게시글 저장
     int insert(Article article);
 
+    // 순수 게시글 조회
+    Article findDomainById(Long id);
+
     // PK로 게시글 조회
-    Article findById(Long id);
+    ArticleDto findById(Long id);
 
     // 게시글 전체 조회
-    List<Article> findAll();
+    List<ArticleDto> findAll();
 
     // 특정 회원의 게시글 조회
-    List<Article> findByMemberId(Long memberId);
+    List<ArticleDto> findByMemberId(Long memberId);
 
     // 게시글 수정
     int update(Article article);
