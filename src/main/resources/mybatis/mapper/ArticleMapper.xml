@@ -100,4 +100,11 @@
         WHERE a.id = #{id}
     </delete>
 
+    <update id="increaseViewCount">
+        UPDATE articles a
+        SET
+            a.view_count = a.view_count + 1
+        WHERE a.id = #{id}
+    </update>
+
 </mapper>

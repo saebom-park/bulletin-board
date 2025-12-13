@@ -13,10 +13,10 @@ public interface MemberMapper {
     int insert(Member member);
 
     // PK로 회원 조회
-    Member findById(Long id);
+    Member findById(@Param("id") Long id);
 
     // username으로 회원 조회
-    Member findByUsername(String username);
+    Member findByUsername(@Param("username") String username);
 
     // 회원 전체 조회
     List<Member> findAll();
@@ -33,6 +33,6 @@ public interface MemberMapper {
                      @Param("status") String status);
 
     // 회원 삭제
-    int deleteById(Long id);
+    int deleteById(@Param("id") Long id);
 
 }

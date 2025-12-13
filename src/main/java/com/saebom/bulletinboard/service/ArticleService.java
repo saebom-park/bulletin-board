@@ -14,4 +14,7 @@ public interface ArticleService {
 
     void updateArticle(Long articleId, Long loginMemberId, String title, String content);
     void deleteArticle(Long articleId, Long loginMemberId);
+
+    void increaseViewCount(Long articleId);
+
 }

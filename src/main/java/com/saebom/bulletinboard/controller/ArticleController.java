@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -25,6 +27,8 @@ public class ArticleController {
 
     private final ArticleService articleService;
     private final CommentService commentService;
+
+    private static final Logger log = LoggerFactory.getLogger(ArticleController.class);
 
     public ArticleController(ArticleService articleService, CommentService commentService) {
         this.articleService = articleService;
@@ -45,6 +49,13 @@ public class ArticleController {
             HttpServletRequest request,
             Model model
     ) {
+
+        try {
+            articleService.increaseViewCount(id);
+        } catch(Exception e) {
+            log.warn("게시글 조회수 증가 실패 - articleId={}", id, e);
+        }
+
         ArticleDto article = articleService.getArticle(id);
         List<CommentDto> comments = commentService.getCommentsByArticle(id);
 

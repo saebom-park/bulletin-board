@@ -91,6 +91,15 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
 
+    @Override
+    public void increaseViewCount(Long articleId) {
+
+        int increased = articleMapper.increaseViewCount(articleId);
+        if (increased != 1) {
+            throw new IllegalStateException("게시글 조회수 증가에 실패했습니다.");
+        }
+    }
+
     private void validateOwner(Article article, Long loginMemberId) {
         if (!article.getMemberId().equals(loginMemberId)) {
             throw new NoPermissionException("본인 게시글만 접근할 수 있습니다.");
