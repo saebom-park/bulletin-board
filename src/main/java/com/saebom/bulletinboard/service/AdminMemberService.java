@@ -9,5 +9,7 @@ public interface AdminMemberService {
 
     List<AdminMemberDto> getMembers();
 
+    List<AdminMemberDto> getMembersByStatus(Status status);
+
     void updateStatus(Long adminId, Long memberId, Status status);
 }

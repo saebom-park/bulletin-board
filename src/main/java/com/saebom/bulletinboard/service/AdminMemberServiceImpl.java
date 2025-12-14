@@ -22,6 +22,11 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     }
 
     @Override
+    public List<AdminMemberDto> getMembersByStatus(Status status) {
+        return adminMemberMapper.findByStatus(status.name());
+    }
+
+    @Override
     @Transactional
     public void updateStatus(Long adminId, Long memberId, Status status) {
 

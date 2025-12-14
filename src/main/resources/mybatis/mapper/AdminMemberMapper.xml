@@ -39,6 +39,15 @@
         ORDER BY id DESC
     </select>
 
+    <select id="findByStatus"
+            resultMap="adminMemberResultMap">
+        SELECT
+        <include refid="adminMemberColumns"/>
+        FROM members
+        WHERE status = #{status}
+        ORDER BY id DESC
+    </select>
+
     <update id="updateStatus">
         UPDATE members
         SET status = #{status}

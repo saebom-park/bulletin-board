@@ -22,11 +22,15 @@ public class AdminMemberController {
     public AdminMemberController(AdminMemberService adminMemberService) { this.adminMemberService = adminMemberService; }
 
     @GetMapping
-    public String list(Model model) {
+    public String list(@RequestParam(required = false) Status status, Model model) {
 
-        List<AdminMemberDto> members = adminMemberService.getMembers();
+        List<AdminMemberDto> members = (status == null)
+                ? adminMemberService.getMembers()
+                : adminMemberService.getMembersByStatus(status);
+
         model.addAttribute("members", members);
         model.addAttribute("statuses", Status.values());
+
         return "admin/members";
     }
 
