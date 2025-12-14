@@ -144,6 +144,34 @@
 
         <!-- Content -->
         <main class="bb-content">
+            <!-- Toast Messages (공통) -->
+            <div class="bb-toast-area"
+                 th:if="${successMessage != null or errorMessage != null}">
+
+                <div th:if="${successMessage}"
+                     class="bb-toast bb-toast--success"
+                     data-auto-dismiss="3000">
+                    <div class="bb-toast__icon">✓</div>
+                    <div class="bb-toast__body">
+                        <p class="bb-toast__title">완료</p>
+                        <p class="bb-toast__msg" th:text="${successMessage}">성공 메시지</p>
+                    </div>
+                    <button type="button" class="bb-toast__close" aria-label="닫기">×</button>
+                </div>
+
+                <div th:if="${errorMessage}"
+                     class="bb-toast bb-toast--danger"
+                     data-auto-dismiss="4500">
+                    <div class="bb-toast__icon">!</div>
+                    <div class="bb-toast__body">
+                        <p class="bb-toast__title">오류</p>
+                        <p class="bb-toast__msg" th:text="${errorMessage}">에러 메시지</p>
+                    </div>
+                    <button type="button" class="bb-toast__close" aria-label="닫기">×</button>
+                </div>
+
+            </div>
+
             <section th:insert="${content}"></section>
         </main>
 
@@ -153,12 +181,14 @@
 
 <script th:inline="javascript">
     (function () {
+        /* ===========================
+           Sidebar Toggle
+        =========================== */
+
         const sidebar = document.querySelector('.bb-sidebar');
         const toggleBtn = document.getElementById('sidebar-toggle');
         const backdrop = document.getElementById('sidebar-backdrop');
         const body = document.body;
-
-        if (!sidebar || !toggleBtn) return;
 
         function openSidebar() {
             sidebar.classList.add('bb-sidebar--open');
@@ -178,18 +208,48 @@
             body.classList.remove('bb-body--no-scroll');
         }
 
-        toggleBtn.addEventListener('click', function () {
-            const isOpen = sidebar.classList.contains('bb-sidebar--open');
-            if (isOpen) {
-                closeSidebar();
-            } else {
-                openSidebar();
-            }
-        });
+        if (sidebar && toggleBtn) {
+            toggleBtn.addEventListener('click', function () {
+                const isOpen = sidebar.classList.contains('bb-sidebar--open');
+                isOpen ? closeSidebar() : openSidebar();
+            });
+        }
 
         if (backdrop) {
             backdrop.addEventListener('click', closeSidebar);
         }
+
+        /* ===========================
+           Toast Auto Dismiss
+        =========================== */
+
+        const toasts = document.querySelectorAll('.bb-toast');
+        if (!toasts || toasts.length === 0) return;
+
+        function hideToast(toast) {
+            if (!toast || toast.classList.contains('bb-toast--hide')) return;
+            toast.classList.add('bb-toast--hide');
+
+            setTimeout(() => {
+                toast.remove();
+                const area = document.querySelector('.bb-toast-area');
+                if (area && area.children.length === 0) {
+                    area.remove();
+                }
+            }, 220);
+        }
+
+        toasts.forEach((toast) => {
+            const closeBtn = toast.querySelector('.bb-toast__close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => hideToast(toast));
+            }
+
+            const ms = Number(toast.getAttribute('data-auto-dismiss') || '0');
+            if (ms > 0) {
+                setTimeout(() => hideToast(toast), ms);
+            }
+        });
     })();
 </script>
 

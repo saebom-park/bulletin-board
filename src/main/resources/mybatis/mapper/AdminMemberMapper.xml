@@ -38,4 +38,10 @@
         FROM members
         ORDER BY id DESC
     </select>
+
+    <update id="updateStatus">
+        UPDATE members
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
 </mapper>

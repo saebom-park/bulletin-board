@@ -27,6 +27,7 @@
                         <select name="status" class="bb-select bb-select--sm">
                             <option value="">전체 상태</option>
                             <option th:each="s : ${statuses}"
+                                    th:block th:if="${s.name() != 'WITHDRAW'}"
                                     th:value="${s}"
                                     th:text="${statusLabels[s.name()]}"
                                     th:selected="${param.status != null and param.status[0] == s.name()}">
@@ -86,6 +87,7 @@
                                     class="bb-select bb-select--sm"
                                     th:form="|statusForm__${m.id}|">
                                 <option th:each="s : ${statuses}"
+                                        th:block th:if="${s.name() != 'WITHDRAW'}"
                                         th:value="${s}"
                                         th:text="${statusLabels[s.name()]}"
                                         th:selected="${s == m.status}">

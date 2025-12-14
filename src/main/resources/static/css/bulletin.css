@@ -159,6 +159,207 @@ body.bb-body {
 }
 
 /* ===========================
+   Alert / Flash Message
+   =========================== */
+
+.bb-alert {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    animation: bb-alert-fade-in 0.25s ease-out;
+}
+
+/* 아이콘 영역 (가상 아이콘) */
+.bb-alert::before {
+    content: "";
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* 성공 */
+.bb-alert--success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.bb-alert--success::before {
+    content: "✓";
+    background: #22c55e;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* 에러 */
+.bb-alert--danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #7f1d1d;
+}
+
+.bb-alert--danger::before {
+    content: "!";
+    background: #ef4444;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+/* 살짝 떠오르는 애니메이션 */
+@keyframes bb-alert-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===========================
+   Toast (Flash Message)
+   =========================== */
+
+.bb-toast-area {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: min(360px, calc(100vw - 36px));
+}
+
+.bb-toast {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 14px 14px 14px 14px;
+    border-radius: 16px;
+
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+    backdrop-filter: blur(10px);
+
+    animation: bb-toast-in 0.22s ease-out;
+}
+
+.bb-toast__icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    font-weight: 800;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.bb-toast__body {
+    min-width: 0;
+    flex: 1;
+}
+
+.bb-toast__title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.bb-toast__msg {
+    margin-top: 3px;
+    font-size: 13px;
+    line-height: 1.55;
+    opacity: 0.95;
+    word-break: break-word;
+}
+
+.bb-toast__close {
+    margin-left: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    font-weight: 800;
+    transition: background .12s ease, transform .12s ease;
+}
+
+.bb-toast__close:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-1px);
+}
+
+/* variants */
+.bb-toast--success {
+    background: rgba(240, 253, 244, 0.92);
+    border: 1px solid rgba(187, 247, 208, 0.95);
+    color: #166534;
+}
+.bb-toast--success .bb-toast__icon {
+    background: linear-gradient(135deg, #10b981, #22c55e);
+}
+
+.bb-toast--danger {
+    background: rgba(254, 242, 242, 0.92);
+    border: 1px solid rgba(254, 202, 202, 0.95);
+    color: #7f1d1d;
+}
+.bb-toast--danger .bb-toast__icon {
+    background: linear-gradient(135deg, #ef4444, #f97373);
+}
+
+/* out animation */
+.bb-toast--hide {
+    animation: bb-toast-out 0.18s ease-in forwards;
+}
+
+@keyframes bb-toast-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bb-toast-out {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-8px); }
+}
+
+/* mobile */
+@media (max-width: 768px) {
+    .bb-toast-area {
+        top: 12px;
+        right: 12px;
+        width: min(360px, calc(100vw - 24px));
+    }
+}
+
+/* ===========================
    Sidebar User Card
    =========================== */
 
