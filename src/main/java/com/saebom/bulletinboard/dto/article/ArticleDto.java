@@ -25,4 +25,16 @@ public class ArticleDto {
     public String getMemberUsername() { return memberUsername; }
     public String getMemberName() { return memberName; }
 
+    // 조회 전용 DTO
+    // MyBatis resultMap 매핑을 위해 setter 제공
+    public void setId(Long id) { this.id = id; }
+    public void setMemberId(Long memberId) { this.memberId = memberId; }
+    public void setTitle(String title) { this.title = title; }
+    public void setContent(String content) { this.content = content; }
+    public void setViewCount(int viewCount) { this.viewCount = viewCount; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setMemberUsername(String memberUsername) { this.memberUsername = memberUsername; }
+    public void setMemberName(String memberName) { this.memberName = memberName; }
+
 }
