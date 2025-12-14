@@ -31,6 +31,8 @@ public class LoginMemberInfoAdvice {
         String requestURI = request.getRequestURI();
         String queryString = request.getQueryString();
 
+        model.addAttribute("currentPath", requestURI);
+
         String currentURL = (queryString != null && !queryString.isBlank())
                 ? requestURI + "?" + queryString
                 : requestURI;

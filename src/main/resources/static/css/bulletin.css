@@ -230,14 +230,36 @@ body.bb-body {
     font-weight: 600;
 }
 
+/* ===========================
+   Role Badge (공통)
+   =========================== */
+
+.bb-role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+
+    background: #ecfdf5;   /* 연한 초록 */
+    color: #059669;        /* 초록 텍스트 */
+}
+
+/* 관리자 전용 색상 */
+.bb-role-badge--admin {
+    background: #eef2ff;   /* 연한 인디고 */
+    color: #3730a3;
+}
+
 .bb-sidebar__user-inline {
     display: flex;
     gap: 8px;
 }
 
 .bb-sidebar__user-inline--spaced {
-    display: flex;
-    gap: 8px;
     margin-top: 6px;
 }
 
@@ -562,13 +584,20 @@ input[type="submit"] {
     background: rgba(148, 163, 184, 0.08);
 }
 
-.bb-btn--danger {
+/*
+ * Danger 버튼은 기존 파일에서 2번 정의되어 충돌 위험이 있었음.
+ * - 현재 동작(마지막 정의가 이김)을 유지하기 위해,
+ *   강한 danger는 .bb-btn--danger로 유지
+ * - 연한 danger는 .bb-btn--danger-soft로 분리
+ */
+
+.bb-btn--danger-soft {
     background: #fee2e2;
-    border-color: #fecaca;
+    border: 1px solid #fecaca;
     color: var(--bs-danger);
 }
 
-.bb-btn--danger:hover {
+.bb-btn--danger-soft:hover {
     background: #fecaca;
 }
 
@@ -754,7 +783,16 @@ tbody td a:hover {
     min-height: 200px;
 }
 
-/* Field error */
+/* Field error / success / feedback (중복 제거) */
+
+.bb-field-feedback {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.bb-field-success {
+    color: #16a34a;
+}
 
 .bb-field-error {
     margin-top: 4px;
@@ -1025,22 +1063,13 @@ tbody td a:hover {
     color: var(--bs-text-soft);
 }
 
-/* 아이디 중복확인 버튼 */
+/* 아이디 중복확인 버튼 (중복 제거: 한 번에 합침) */
 .bb-check-btn {
     margin-left: 6px;
+    white-space: nowrap; /* 버튼 줄바꿈 방지 */
 }
 
-/* AJAX 피드백 메시지 */
-.bb-field-feedback {
-    margin-top: 4px;
-    font-size: 12px;
-}
-
-/* 성공 메시지 */
-.bb-field-success {
-    color: #16a34a;
-}
-
+/* 결과 메시지 공통 */
 .bb-signup-card .bb-row {
     display: flex;
     align-items: center;
@@ -1049,10 +1078,6 @@ tbody td a:hover {
 
 .bb-signup-card .bb-row .bb-input {
     flex: 1;    /* 입력창이 남은 공간을 차지하게 함 */
-}
-
-.bb-check-btn {
-    white-space: nowrap; /* 버튼 줄바꿈 방지 */
 }
 
 /* Username check icons */
@@ -1079,20 +1104,6 @@ tbody td a:hover {
 .bb-field-error .bb-check-icon--error {
     display: inline-flex;
     color: #ef4444;
-}
-
-/* 텍스트 스타일(이미 있다면 생략 가능) */
-.bb-field-feedback {
-    margin-top: 4px;
-    font-size: 12px;
-}
-
-.bb-field-success {
-    color: #16a34a;
-}
-
-.bb-field-error {
-    color: var(--bs-danger);
 }
 
 /* ===========================
@@ -1228,13 +1239,16 @@ tbody td a:hover {
     color: #b91c1c;
 }
 
+/* 강한 Danger 버튼 (기존 최종 동작 유지) */
 .bb-btn--danger {
     background: #ef4444;
     color: #ffffff;
+    border: 1px solid #ef4444;
 }
 
 .bb-btn--danger:hover {
     background: #dc2626;
+    border-color: #dc2626;
 }
 
 .bb-danger-text {
@@ -1320,6 +1334,60 @@ tbody td a:hover {
     display: flex;
     justify-content: center;
 }
+
+/* ===========================
+   Select (Admin / Forms)
+   =========================== */
+
+.bb-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    height: 34px;
+    padding: 0 38px 0 12px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+
+    background-color: #f9fafb;
+    color: var(--bs-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+
+    outline: none;
+    cursor: pointer;
+
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+/* 오른쪽 화살표(커스텀) */
+.bb-select {
+    background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+}
+
+.bb-select:focus {
+    border-color: var(--bs-primary);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18);
+}
+
+/* hover 톤 살짝 */
+.bb-select:hover {
+    background-color: #ffffff;
+}
+
+/* select 옆 버튼이랑 한 줄로 예쁘게 */
+.bb-admin-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
 
 /* Responsive */
 @media (max-width: 960px) {
@@ -1473,5 +1541,4 @@ tbody td a:hover {
     .bb-card__header {
         display: block;
     }
-
 }

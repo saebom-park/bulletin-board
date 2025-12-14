@@ -85,7 +85,7 @@
                         <!-- 작성자 · 작성일 · 조회수 -->
                         <div class="bb-article-card__meta">
                             <span class="bb-article-card__author"
-                                  th:text="${article.memberId}">
+                                  th:text="|${article.memberName}(${article.memberUsername})|">
                                 작성자ID
                             </span>
                             <span class="bb-article-card__dot">·</span>

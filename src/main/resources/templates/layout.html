@@ -16,7 +16,10 @@
 
         <!-- 로그인 상태: 사이드바 상단 회원 카드 -->
         <div class="bb-sidebar__user-card"
-             th:if="${loginMember != null}">
+             th:if="${loginMember != null}"
+             th:with="
+                roleText=${loginMember.role == 'ROLE_ADMIN' ? '관리자' : '일반 회원'}
+             ">
 
             <div class="bb-sidebar__user-main">
                 <div class="bb-sidebar__user-avatar"
@@ -31,8 +34,11 @@
                              th:text="${loginMember.name}">
                         </div>
 
-                        <!-- 뱃지 추가 -->
-                        <span class="bb-sidebar__user-badge">일반 회원</span>
+                        <!-- 뱃지: ROLE에 따라 -->
+                        <span class="bb-role-badge"
+                              th:classappend="${loginMember.role == 'ROLE_ADMIN'} ? ' bb-role-badge--admin' : ''"
+                              th:text="${roleText}">
+                        </span>
                     </div>
 
                     <div class="bb-sidebar__user-meta"
@@ -41,15 +47,12 @@
                 </div>
             </div>
 
-            <div class="bb-sidebar__user-inline--spaced bb-sidebar__user-inline--center">
-                <a th:href="@{/members/me}"
-                   class="bb-sidebar__inline-btn">
-                    MyPage
-                </a>
-                <form th:action="@{/logout}" method="post" style="margin:0;">
-                    <input type="hidden" name="redirectURL" th:value="${currentURL}" />
-                    <button type="submit"
-                            class="bb-sidebar__inline-btn bb-sidebar__inline-btn--logout">
+            <div class="bb-sidebar__user-inline bb-sidebar__user-inline--spaced bb-sidebar__user-inline--center">
+                <a href="/members/me" class="bb-sidebar__inline-btn">MyPage</a>
+
+                <form action="/logout" method="post" style="margin:0;">
+                    <input type="hidden" name="redirectURL" value="/articles">
+                    <button type="submit" class="bb-sidebar__inline-btn bb-sidebar__inline-btn--logout">
                         로그아웃
                     </button>
                 </form>
@@ -79,14 +82,21 @@
             </div>
         </div>
 
-
-        <nav class="bb-sidebar__nav">
+        <!-- Nav: active 처리 + Admin 메뉴 권한 분기 -->
+        <nav class="bb-sidebar__nav" th:with="path=${currentPath}">
             <div class="bb-sidebar__nav-title">Overview</div>
-            <a th:href="@{/articles}" class="bb-sidebar__link bb-sidebar__link--active">
+
+            <a th:href="@{/articles}"
+               class="bb-sidebar__link"
+               th:classappend="${#strings.startsWith(path, '/articles')} ? ' bb-sidebar__link--active' : ''">
                 <span class="bb-sidebar__link-icon">◆</span>
                 <span>Articles</span>
             </a>
-            <a href="#" class="bb-sidebar__link">
+
+            <a th:if="${loginMember != null and loginMember.role == 'ROLE_ADMIN'}"
+               th:href="@{/admin/members}"
+               class="bb-sidebar__link"
+               th:classappend="${#strings.startsWith(path, '/admin/members')} ? ' bb-sidebar__link--active' : ''">
                 <span class="bb-sidebar__link-icon">◎</span>
                 <span>Members</span>
             </a>
@@ -163,7 +173,6 @@
             sidebar.classList.remove('bb-sidebar--open');
             if (backdrop) {
                 backdrop.classList.remove('bb-sidebar-backdrop--visible');
-                // transition 끝난 뒤에 display 끄고 싶으면 setTimeout 써도 됨
                 setTimeout(() => { backdrop.style.display = 'none'; }, 200);
             }
             body.classList.remove('bb-body--no-scroll');

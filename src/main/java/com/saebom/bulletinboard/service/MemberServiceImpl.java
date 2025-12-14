@@ -125,7 +125,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void withdrawMember(Long id) {
-        updateStatusInternal(id, Status.INACTIVE);
+        updateStatusInternal(id, Status.WITHDRAW);
     }
 
     @Override
