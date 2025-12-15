@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saebom.bulletinboard.repository.ArticleMapper">
+<mapper namespace="com.saebom.bulletinboard.article.repository.ArticleMapper">
 
     <sql id="articleBaseColumns">
         a.id,
@@ -20,7 +20,7 @@
         m.name AS member_name
     </sql>
 
-    <resultMap id="articleDtoResultMap" type="com.saebom.bulletinboard.dto.article.ArticleDto">
+    <resultMap id="articleDtoResultMap" type="com.saebom.bulletinboard.article.dto.ArticleDto">
         <id property="id" column="id"/>
         <result property="memberId" column="member_id"/>
         <result property="title" column="title"/>
@@ -50,7 +50,7 @@
     </insert>
 
     <select id="findDomainById"
-            resultType="com.saebom.bulletinboard.domain.Article">
+            resultType="com.saebom.bulletinboard.article.domain.Article">
         SELECT
         <include refid="articleBaseColumns"/>
         FROM articles a

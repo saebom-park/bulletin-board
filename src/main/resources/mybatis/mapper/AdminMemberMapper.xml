@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saebom.bulletinboard.repository.AdminMemberMapper">
+<mapper namespace="com.saebom.bulletinboard.admin.member.repository.AdminMemberMapper">
 
     <sql id="adminMemberColumns">
         id,
@@ -16,7 +16,7 @@
         updated_at
     </sql>
 
-    <resultMap id="adminMemberResultMap" type="com.saebom.bulletinboard.dto.admin.AdminMemberDto">
+    <resultMap id="adminMemberResultMap" type="com.saebom.bulletinboard.admin.member.dto.MemberRowDto">
         <constructor>
             <idArg column="id" javaType="java.lang.Long"/>
             <arg column="username" javaType="java.lang.String"/>
@@ -24,7 +24,7 @@
             <arg column="email" javaType="java.lang.String"/>
             <arg column="role" javaType="java.lang.String"/>
             <arg column="status"
-                    javaType="com.saebom.bulletinboard.domain.Status"
+                    javaType="com.saebom.bulletinboard.global.domain.Status"
                     typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
             <arg column="created_at" javaType="java.time.LocalDateTime"/>
             <arg column="updated_at" javaType="java.time.LocalDateTime"/>
@@ -37,6 +37,13 @@
         <include refid="adminMemberColumns"/>
         FROM members
         ORDER BY id DESC
+    </select>
+
+    <select id="findById" resultMap="adminMemberResultMap">
+        SELECT
+        <include refid="adminMemberColumns"/>
+        FROM members
+        WHERE id = #{id}
     </select>
 
     <select id="findByStatus"

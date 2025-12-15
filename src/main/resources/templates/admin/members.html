@@ -38,13 +38,12 @@
                 </div>
             </div>
 
-            <!-- 테이블 -->
-            <div class="bb-table-wrapper">
+            <!-- 테이블 (데스크탑 전용) -->
+            <div class="bb-table-wrapper bb-admin-table-desktop">
                 <table class="bb-table">
                     <thead>
                     <tr>
                         <th>번호</th>
-                        <th class="bb-col-id">ID</th>
                         <th>아이디</th>
                         <th>이름</th>
                         <th>가입일</th>
@@ -63,17 +62,20 @@
 
                     <tr th:each="m, stat : ${members}">
                         <td th:text="${#lists.size(members) - stat.index}">1</td>
-                        <td class="bb-col-id" th:text="${m.id}">1</td>
 
                         <td>
                             <div class="bb-admin-user">
-                                <span class="bb-admin-username" th:text="${m.username}">user</span>
+                                <a th:href="@{|/admin/members/${m.id}|}"
+                                   class="bb-admin-username-link"
+                                   th:text="${m.username}">
+                                    아이디
+                                </a>
                             </div>
                         </td>
 
-                        <td th:text="${m.name}">name</td>
+                        <td th:text="${m.name}">이름</td>
 
-                        <td class="bb-col-email" th:text="${#temporals.format(m.createdAt, 'yyyy-MM-dd')}">createdAt</td>
+                        <td class="bb-col-email" th:text="${#temporals.format(m.createdAt, 'yyyy-MM-dd')}">2025-01-01</td>
 
                         <td class="bb-col-role">
                             <span class="bb-role-badge"
@@ -108,6 +110,75 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- 모바일 카드 리스트 -->
+            <div class="bb-admin-list-mobile">
+
+                <p class="bb-table-empty" th:if="${#lists.isEmpty(members)}">
+                    조회된 회원이 없습니다.
+                </p>
+
+                <ul class="bb-admin-card-list"
+                    th:if="${!#lists.isEmpty(members)}">
+
+                    <li th:each="m : ${members}" class="bb-admin-card">
+
+                        <!-- 카드 정보 영역만 링크 -->
+                        <a th:href="@{|/admin/members/${m.id}|}"
+                           class="bb-admin-card-link">
+
+                            <!-- 상단: 이름 + 권한 뱃지 -->
+                            <div class="bb-admin-card__top">
+                                <div class="bb-admin-card__name-group">
+                                    <span class="bb-admin-card__name" th:text="${m.name}">이름</span>
+
+                                    <span class="bb-role-badge"
+                                          th:classappend="${m.role == 'ROLE_ADMIN'} ? ' bb-role-badge--admin' : ''"
+                                          th:text="${roleLabels[m.role]}">
+                                        권한
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- 중단: 아이디 + 가입일 -->
+                            <div class="bb-admin-card__meta">
+                                <span class="bb-admin-card__username"
+                                      th:text="'@' + ${m.username}">
+                                    @아이디
+                                </span>
+
+                                <span class="bb-admin-card__dot">·</span>
+
+                                <span class="bb-admin-card__date"
+                                      th:text="'가입일: ' + ${#temporals.format(m.createdAt, 'yyyy-MM-dd')}">
+                                    가입일: 2025-01-01
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- 상태 변경 폼은 링크 밖 (클릭/submit 안전) -->
+                        <form th:action="@{|/admin/members/${m.id}/status|}"
+                              method="post"
+                              class="bb-admin-card__actions">
+
+                            <select name="status" class="bb-select bb-select--sm bb-select--block">
+                                <option th:each="s : ${statuses}"
+                                        th:block th:if="${s.name() != 'WITHDRAW'}"
+                                        th:value="${s}"
+                                        th:text="${statusLabels[s.name()]}"
+                                        th:selected="${s == m.status}">
+                                </option>
+                            </select>
+
+                            <button type="submit"
+                                    class="bb-btn bb-btn--primary bb-btn--sm bb-btn--block">
+                                적용
+                            </button>
+                        </form>
+
+                    </li>
+                </ul>
             </div>
 
             <p class="bb-form-hint" style="margin-top: 10px;">

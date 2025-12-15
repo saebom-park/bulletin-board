@@ -1589,6 +1589,98 @@ tbody td a:hover {
     gap: 8px;
 }
 
+/* Admin members: 모바일 카드 기본은 숨김 */
+.bb-admin-list-mobile { display: none; }
+.bb-admin-table-desktop { display: block; }
+
+/* 카드 리스트 */
+.bb-admin-card-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bb-admin-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.bb-admin-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.bb-admin-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 36px rgba(15, 23, 42, 0.12);
+}
+
+.bb-admin-card__top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.bb-admin-card__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #020617;
+}
+
+.bb-admin-card__username {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.bb-admin-card__meta {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.bb-admin-card__dot {
+    color: #9ca3af;
+}
+
+.bb-admin-card__actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.bb-select--block { flex: 1; }
+.bb-btn--block { white-space: nowrap; }
+
+.bb-admin-username-link {
+    color: var(--bs-text-main);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.bb-admin-username-link:hover {
+    color: var(--bs-primary);
+    text-decoration: underline;
+}
+
+/* 모바일에서만 카드 보이게 */
+@media (max-width: 768px) {
+    .bb-admin-table-desktop { display: none; }
+    .bb-admin-list-mobile { display: block; margin-top: 12px; }
+}
+
 
 /* Responsive */
 @media (max-width: 960px) {

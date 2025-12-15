@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.saebom.bulletinboard.repository.CommentMapper">
+<mapper namespace="com.saebom.bulletinboard.comment.repository.CommentMapper">
 
     <sql id="commentBaseColumns">
         c.id,
@@ -20,7 +20,7 @@
     </sql>
 
     <resultMap id="commentDtoResultMap"
-               type="com.saebom.bulletinboard.dto.comment.CommentDto">
+               type="com.saebom.bulletinboard.comment.dto.CommentDto">
         <id property="id" column="id"/>
         <result property="articleId" column="article_id"/>
         <result property="memberId" column="member_id"/>
@@ -47,7 +47,7 @@
     </insert>
 
     <select id="findDomainById"
-            resultType="com.saebom.bulletinboard.domain.Comment">
+            resultType="com.saebom.bulletinboard.comment.domain.Comment">
         SELECT
         <include refid="commentBaseColumns"/>
         FROM comments c
