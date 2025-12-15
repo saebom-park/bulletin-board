@@ -59,7 +59,7 @@ public class MemberController {
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("usernameCheck", false);
+            model.addAttribute("usernameChecked", false);
             return "member/signup";
         }
 
