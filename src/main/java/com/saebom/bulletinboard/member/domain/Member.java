@@ -26,12 +26,11 @@ public class Member {
 
     }
 
-    public Member(String username, String password, String name, String email, String role) {
+    public Member(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
-        this.role = role;
     }
 
     // getter

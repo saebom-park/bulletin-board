@@ -5,30 +5,48 @@
 
 <mapper namespace="com.saebom.bulletinboard.comment.repository.CommentMapper">
 
-    <sql id="commentBaseColumns">
+    <sql id="commentViewColumns">
         c.id,
-        c.article_id,
         c.member_id,
         c.content,
         c.created_at,
-        c.updated_at
-    </sql>
-
-    <sql id="commentAuthorColumns">
         m.username AS member_username,
         m.name AS member_name
     </sql>
 
-    <resultMap id="commentDtoResultMap"
-               type="com.saebom.bulletinboard.comment.dto.CommentDto">
-        <id property="id" column="id"/>
-        <result property="articleId" column="article_id"/>
-        <result property="memberId" column="member_id"/>
-        <result property="content" column="content"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="updatedAt" column="updated_at"/>
-        <result property="memberUsername" column="member_username"/>
-        <result property="memberName" column="member_name"/>
+    <sql id="commentEditColumns">
+        member_id,
+        content
+    </sql>
+
+    <sql id="commentAuthColumns">
+        id,
+        member_id
+    </sql>
+
+    <resultMap id="commentViewMap" type="com.saebom.bulletinboard.comment.dto.CommentView">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Long"/>
+            <arg column="member_id" javaType="java.lang.Long"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="created_at" javaType="java.time.LocalDateTime"/>
+            <arg column="member_username" javaType="java.lang.String"/>
+            <arg column="member_name" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="commentEditViewMap" type="com.saebom.bulletinboard.comment.dto.CommentEditView">
+        <constructor>
+            <arg column="member_id" javaType="java.lang.Long"/>
+            <arg column="content" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="commentAuthViewMap" type="com.saebom.bulletinboard.comment.dto.CommentAuthView">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Long"/>
+            <arg column="member_id" javaType="java.lang.Long"/>
+        </constructor>
     </resultMap>
 
     <insert id="insert"
@@ -46,55 +64,41 @@
         )
     </insert>
 
-    <select id="findDomainById"
-            resultType="com.saebom.bulletinboard.comment.domain.Comment">
+    <select id="selectListByArticleId"
+            resultMap="commentViewMap">
         SELECT
-        <include refid="commentBaseColumns"/>
-        FROM comments c
-        WHERE c.id = #{id}
-    </select>
-
-    <select id="findById"
-            resultMap="commentDtoResultMap">
-        SELECT
-        <include refid="commentBaseColumns"/>,
-        <include refid="commentAuthorColumns"/>
-        FROM comments c
-        JOIN members m ON c.member_id = m.id
-        WHERE c.id = #{id}
-    </select>
-
-    <select id="findByArticleId"
-            resultMap="commentDtoResultMap">
-        SELECT
-        <include refid="commentBaseColumns"/>,
-        <include refid="commentAuthorColumns"/>
+        <include refid="commentViewColumns"/>
         FROM comments c
         JOIN members m ON c.member_id = m.id
         WHERE c.article_id = #{articleId}
         ORDER BY c.created_at ASC
     </select>
 
-    <select id="findByMemberId"
-            resultMap="commentDtoResultMap">
+    <select id="selectEditViewById"
+            resultMap="commentEditViewMap">
         SELECT
-        <include refid="commentBaseColumns"/>,
-        <include refid="commentAuthorColumns"/>
-        FROM comments c
-        JOIN members m ON c.member_id = m.id
-        WHERE c.member_id = #{memberId}
-        ORDER BY c.created_at DESC
+        <include refid="commentEditColumns"/>
+        FROM comments
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAuthById"
+            resultMap="commentAuthViewMap">
+        SELECT
+        <include refid="commentAuthColumns"/>
+        FROM comments
+        WHERE id = #{id}
     </select>
 
     <update id="update">
-        UPDATE comments c
-        SET c.content = #{content}
-        WHERE c.id = #{id}
+        UPDATE comments
+        SET content = #{content}
+        WHERE id = #{id}
     </update>
 
     <delete id="deleteById">
-        DELETE FROM comments c
-        WHERE c.id = #{id}
+        DELETE FROM comments
+        WHERE id = #{id}
     </delete>
 
 </mapper>

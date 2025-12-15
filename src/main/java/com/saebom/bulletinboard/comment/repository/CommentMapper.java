@@ -1,7 +1,9 @@
 package com.saebom.bulletinboard.comment.repository;
 
 import com.saebom.bulletinboard.comment.domain.Comment;
-import com.saebom.bulletinboard.comment.dto.CommentDto;
+import com.saebom.bulletinboard.comment.dto.CommentAuthView;
+import com.saebom.bulletinboard.comment.dto.CommentEditView;
+import com.saebom.bulletinboard.comment.dto.CommentView;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,20 +15,16 @@ public interface CommentMapper {
     // 댓글 저장
     int insert(Comment comment);
 
-    // 순수 댓글 조회
-    Comment findDomainById(@Param("id") Long id);
-
-    // PK로 댓글 조회
-    CommentDto findById(@Param("id") Long id);
+    // 특정 게시글의 댓글 조회
+    List<CommentView> selectListByArticleId(@Param("articleId") Long articleId);
+    CommentEditView selectEditViewById(@Param("id") Long id);
 
     // 특정 게시글의 댓글 조회
-    List<CommentDto> findByArticleId(@Param("articleId") Long articleId);
-
-    // 특정 회원의 댓글 조회
-    List<CommentDto> findByMemberId(@Param("memberId") Long memberId);
+    CommentAuthView selectAuthById(@Param("id") Long id);
 
     // 댓글 수정
-    int update(Comment comment);
+    int update(@Param("id") Long id,
+               @Param("content") String content);
 
     // 댓글 삭제
     int deleteById(@Param("id") Long id);

@@ -5,6 +5,7 @@ import com.saebom.bulletinboard.member.dto.LoginMemberView;
 import com.saebom.bulletinboard.member.dto.MemberAuthView;
 import com.saebom.bulletinboard.member.dto.MemberEditView;
 import com.saebom.bulletinboard.member.dto.MemberProfileView;
+import com.saebom.bulletinboard.member.dto.MemberCreateForm;
 import com.saebom.bulletinboard.member.dto.MemberUpdateForm;
 import com.saebom.bulletinboard.global.domain.Role;
 import com.saebom.bulletinboard.global.domain.Status;
@@ -31,14 +32,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long registerMember(Member member) {
+    public Long registerMember(MemberCreateForm form) {
 
-        if (isUsernameDuplicate(member.getUsername())) {
-            throw new IllegalArgumentException("중복된 회원아이디 입니다. username=" + member.getUsername());
+        if (isUsernameDuplicate(form.getUsername())) {
+            throw new IllegalArgumentException("중복된 회원아이디 입니다.");
         }
 
-        String encodedPassword = passwordEncoder.encode(member.getPassword());
-        member.setPassword(encodedPassword);
+        String encodedPassword = passwordEncoder.encode(form.getPassword());
+        Member member = new Member(form.getUsername(), encodedPassword, form.getName(), form.getEmail());
         member.setRole(Role.USER.value());
         member.setStatus(Status.ACTIVE);
 

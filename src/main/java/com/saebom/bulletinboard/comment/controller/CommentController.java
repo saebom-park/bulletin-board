@@ -36,11 +36,7 @@ public class CommentController {
             return "redirect:/login";
         }
 
-        Long commentId = commentService.createComment(
-                articleId,
-                loginMemberId,
-                form.getContent()
-        );
+        Long commentId = commentService.createComment(articleId, loginMemberId, form);
 
         return "redirect:/articles/" + articleId;
     }
@@ -62,7 +58,7 @@ public class CommentController {
             return "redirect:/login";
         }
 
-        commentService.updateComment(commentId, loginMemberId, form.getContent());
+        commentService.updateComment(commentId, loginMemberId, form);
 
         return "redirect:/articles/" + articleId;
     }

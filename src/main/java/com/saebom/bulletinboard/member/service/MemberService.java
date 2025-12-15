@@ -1,9 +1,9 @@
 package com.saebom.bulletinboard.member.service;
 
-import com.saebom.bulletinboard.member.domain.Member;
 import com.saebom.bulletinboard.member.dto.LoginMemberView;
 import com.saebom.bulletinboard.member.dto.MemberEditView;
 import com.saebom.bulletinboard.member.dto.MemberProfileView;
+import com.saebom.bulletinboard.member.dto.MemberCreateForm;
 import com.saebom.bulletinboard.member.dto.MemberUpdateForm;
 
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public interface MemberService {
 
     // 회원 가입
-    Long registerMember(Member member);
+    Long registerMember(MemberCreateForm form);
 
     // 아이디 중복 체크
     boolean isUsernameDuplicate(String username);

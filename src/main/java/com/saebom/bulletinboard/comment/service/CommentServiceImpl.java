@@ -1,7 +1,11 @@
 package com.saebom.bulletinboard.comment.service;
 
 import com.saebom.bulletinboard.comment.domain.Comment;
-import com.saebom.bulletinboard.comment.dto.CommentDto;
+import com.saebom.bulletinboard.comment.dto.CommentAuthView;
+import com.saebom.bulletinboard.comment.dto.CommentCreateForm;
+import com.saebom.bulletinboard.comment.dto.CommentEditView;
+import com.saebom.bulletinboard.comment.dto.CommentUpdateForm;
+import com.saebom.bulletinboard.comment.dto.CommentView;
 import com.saebom.bulletinboard.global.exception.CommentNotFoundException;
 import com.saebom.bulletinboard.global.exception.NoPermissionException;
 import com.saebom.bulletinboard.comment.repository.CommentMapper;
@@ -21,9 +25,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Long createComment(Long articleId, Long loginMemberId, String content) {
+    public Long createComment(Long articleId, Long loginMemberId, CommentCreateForm form) {
 
-        Comment comment = Comment.createComment(articleId, loginMemberId, content);
+        Comment comment = Comment.createComment(articleId, loginMemberId, form.getContent());
 
         int inserted = commentMapper.insert(comment);
         if (inserted != 1) {
@@ -35,41 +39,20 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public CommentDto getComment(Long commentId) {
-
-        CommentDto commentDto = commentMapper.findById(commentId);
-        if (commentDto == null) {
-            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
-        }
-
-        return commentDto;
+    public List<CommentView> getCommentList(Long articleId) {
+        return commentMapper.selectListByArticleId(articleId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<CommentDto> getCommentsByArticle(Long articleId) {
-        return commentMapper.findByArticleId(articleId);
-    }
+    public CommentEditView getCommentEditView(Long commentId) { return commentMapper.selectEditViewById(commentId); }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<CommentDto> getCommentsByMember(Long memberId) {
-        return commentMapper.findByMemberId(memberId);
-    }
+    public void updateComment(Long commentId, Long loginMemberId, CommentUpdateForm form) {
 
-    @Override
-    public void updateComment(Long commentId, Long loginMemberId, String content) {
+        validateOwner(commentId, loginMemberId);
 
-        Comment comment = commentMapper.findDomainById(commentId);
-        if (comment == null) {
-            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
-        }
-
-        validateOwner(comment, loginMemberId);
-
-        comment.update(content);
-
-        int updated = commentMapper.update(comment);
+        int updated = commentMapper.update(commentId, form.getContent());
         if (updated != 1) {
             throw new IllegalStateException("댓글 수정에 실패했습니다.");
         }
@@ -78,12 +61,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(Long commentId, Long loginMemberId) {
 
-        Comment comment = commentMapper.findDomainById(commentId);
-        if (comment == null) {
-            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
-        }
-
-        validateOwner(comment, loginMemberId);
+        validateOwner(commentId, loginMemberId);
 
         int deleted = commentMapper.deleteById(commentId);
         if (deleted != 1) {
@@ -91,9 +69,15 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
-    private void validateOwner(Comment comment, Long loginMemberId) {
+    private void validateOwner(Long commentId, Long loginMemberId) {
 
-        if (!comment.getMemberId().equals(loginMemberId)) {
+        CommentAuthView commentAuthView = commentMapper.selectAuthById(commentId);
+
+        if (commentAuthView == null) {
+            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
+        }
+
+        if (!commentAuthView.getMemberId().equals(loginMemberId)) {
             throw new NoPermissionException("본인 댓글만 접근할 수 있습니다.");
         }
     }

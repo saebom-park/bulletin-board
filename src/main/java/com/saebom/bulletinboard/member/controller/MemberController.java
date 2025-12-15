@@ -63,13 +63,7 @@ public class MemberController {
             return "member/signup";
         }
 
-        Member member = new Member();
-        member.setUsername(form.getUsername());
-        member.setPassword(form.getPassword());
-        member.setName(form.getName());
-        member.setEmail(form.getEmail());
-
-        Long memberId = memberService.registerMember(member);
+        Long memberId = memberService.registerMember(form);
 
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, memberId);

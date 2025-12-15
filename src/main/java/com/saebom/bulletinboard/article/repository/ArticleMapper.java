@@ -1,7 +1,10 @@
 package com.saebom.bulletinboard.article.repository;
 
 import com.saebom.bulletinboard.article.domain.Article;
-import com.saebom.bulletinboard.article.dto.ArticleDto;
+import com.saebom.bulletinboard.article.dto.ArticleAuthView;
+import com.saebom.bulletinboard.article.dto.ArticleDetailView;
+import com.saebom.bulletinboard.article.dto.ArticleEditView;
+import com.saebom.bulletinboard.article.dto.ArticleListView;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,20 +16,22 @@ public interface ArticleMapper {
     // 게시글 저장
     int insert(Article article);
 
-    // 순수 게시글 조회
-    Article findDomainById(@Param("id") Long id);
-
-    // PK로 게시글 조회
-    ArticleDto findById(@Param("id") Long id);
-
     // 게시글 전체 조회
-    List<ArticleDto> findAll();
+    List<ArticleListView> selectList();
 
-    // 특정 회원의 게시글 조회
-    List<ArticleDto> findByMemberId(@Param("memberId") Long memberId);
+    // PK로 게시글 상세 조회
+    ArticleDetailView selectDetailById(@Param("id") Long id);
+
+    // PK로 게시글 수정 뷰 조회
+    ArticleEditView selectEditViewById(@Param("id") Long id);
+
+    // PK로 게시글 권한 조회
+    ArticleAuthView selectAuthById(@Param("id") Long id);
 
     // 게시글 수정
-    int update(Article article);
+    int update(@Param("id") Long id,
+               @Param("title") String title,
+               @Param("content") String content);
 
     // 게시글 삭제
     int deleteById(@Param("id") Long id);

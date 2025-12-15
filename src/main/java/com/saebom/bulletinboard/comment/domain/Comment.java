@@ -28,11 +28,6 @@ public class Comment {
         return new Comment(articleId, memberId, content);
     }
 
-    // 상태 변경 책임 (수정)
-    public void update(String content) {
-        this.content = content;
-    }
-
     // getter
     public Long getId() { return id; }
     public Long getArticleId() { return articleId; }
@@ -47,6 +42,5 @@ public class Comment {
     public void setMemberId(Long memberId) { this.memberId = memberId; }
     public void setContent(String content) { this.content = content; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
 }

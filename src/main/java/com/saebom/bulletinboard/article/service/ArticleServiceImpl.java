@@ -1,7 +1,12 @@
 package com.saebom.bulletinboard.article.service;
 
 import com.saebom.bulletinboard.article.domain.Article;
-import com.saebom.bulletinboard.article.dto.ArticleDto;
+import com.saebom.bulletinboard.article.dto.ArticleAuthView;
+import com.saebom.bulletinboard.article.dto.ArticleCreateForm;
+import com.saebom.bulletinboard.article.dto.ArticleDetailView;
+import com.saebom.bulletinboard.article.dto.ArticleEditView;
+import com.saebom.bulletinboard.article.dto.ArticleListView;
+import com.saebom.bulletinboard.article.dto.ArticleUpdateForm;
 import com.saebom.bulletinboard.global.exception.ArticleNotFoundException;
 import com.saebom.bulletinboard.global.exception.NoPermissionException;
 import com.saebom.bulletinboard.article.repository.ArticleMapper;
@@ -21,9 +26,9 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public Long createArticle(Long loginMemberId, String title, String content) {
+    public Long createArticle(Long loginMemberId, ArticleCreateForm form) {
 
-        Article article = Article.createArticle(loginMemberId, title, content);
+        Article article = Article.createArticle(loginMemberId, form.getTitle(), form.getContent());
 
         int inserted = articleMapper.insert(article);
         if (inserted != 1) {
@@ -35,41 +40,40 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional(readOnly = true)
-    public ArticleDto getArticle(Long articleId) {
-
-        ArticleDto articleDto = articleMapper.findById(articleId);
-        if (articleDto == null) {
-            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
-        }
-
-        return articleDto;
+    public List<ArticleListView> getArticleList() {
+        return articleMapper.selectList();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ArticleDto> getArticles() {
-        return articleMapper.findAll();
+    public ArticleDetailView getArticleDetail(Long articleId) {
+
+        ArticleDetailView articleDetailView = articleMapper.selectDetailById(articleId);
+        if (articleDetailView == null) {
+            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+
+        return articleDetailView;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ArticleDto> getArticlesByMember(Long memberId) {
-        return articleMapper.findByMemberId(memberId);
-    }
+    public ArticleEditView getArticleEditView(Long articleId) {
 
-    @Override
-    public void updateArticle(Long articleId, Long loginMemberId, String title, String content) {
-
-        Article article = articleMapper.findDomainById(articleId);
-        if (article == null) {
+        ArticleEditView articleEditView = articleMapper.selectEditViewById(articleId);
+        if (articleEditView == null) {
             throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
         }
 
-        validateOwner(article, loginMemberId);
+        return articleEditView;
+    }
 
-        article.update(title, content);
+    @Override
+    public void updateArticle(Long articleId, Long loginMemberId, ArticleUpdateForm form) {
 
-        int updated = articleMapper.update(article);
+        validateOwner(articleId, loginMemberId);
+
+        int updated = articleMapper.update(articleId, form.getTitle(), form.getContent());
         if (updated != 1) {
             throw new IllegalStateException("게시글 수정에 실패했습니다.");
         }
@@ -78,12 +82,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void deleteArticle(Long articleId, Long loginMemberId) {
 
-        Article article = articleMapper.findDomainById(articleId);
-        if (article == null) {
-            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
-        }
-
-        validateOwner(article, loginMemberId);
+        validateOwner(articleId, loginMemberId);
 
         int deleted = articleMapper.deleteById(articleId);
         if (deleted != 1) {
@@ -100,8 +99,15 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
 
-    private void validateOwner(Article article, Long loginMemberId) {
-        if (!article.getMemberId().equals(loginMemberId)) {
+    private void validateOwner(Long articleId, Long loginMemberId) {
+
+        ArticleAuthView articleAuthView = articleMapper.selectAuthById(articleId);
+
+        if (articleAuthView == null) {
+            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
+        }
+
+        if (!articleAuthView.getMemberId().equals(loginMemberId)) {
             throw new NoPermissionException("본인 게시글만 접근할 수 있습니다.");
         }
     }

@@ -36,9 +36,9 @@
     <resultMap id="memberProfileViewMap"
                type="com.saebom.bulletinboard.member.dto.MemberProfileView">
         <constructor>
-            <arg column="username" javaType="string"/>
-            <arg column="name" javaType="string"/>
-            <arg column="email" javaType="string"/>
+            <arg column="username" javaType="java.lang.String"/>
+            <arg column="name" javaType="java.lang.String"/>
+            <arg column="email" javaType="java.lang.String"/>
             <arg column="created_at" javaType="java.time.LocalDateTime"/>
             <arg column="updated_at" javaType="java.time.LocalDateTime"/>
         </constructor>
@@ -47,9 +47,9 @@
     <resultMap id="memberEditViewMap"
                type="com.saebom.bulletinboard.member.dto.MemberEditView">
         <constructor>
-            <arg column="username" javaType="string"/>
-            <arg column="name" javaType="string"/>
-            <arg column="email" javaType="string"/>
+            <arg column="username" javaType="java.lang.String"/>
+            <arg column="name" javaType="java.lang.String"/>
+            <arg column="email" javaType="java.lang.String"/>
             <arg column="updated_at" javaType="java.time.LocalDateTime"/>
         </constructor>
     </resultMap>
@@ -57,8 +57,8 @@
     <resultMap id="memberAuthViewMap"
                type="com.saebom.bulletinboard.member.dto.MemberAuthView">
         <constructor>
-            <idArg column="id" javaType="long"/>
-            <arg column="password" javaType="string"/>
+            <idArg column="id" javaType="java.lang.Long"/>
+            <arg column="password" javaType="java.lang.String"/>
             <arg column="status" javaType="com.saebom.bulletinboard.global.domain.Status"
                  typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
         </constructor>
@@ -67,9 +67,9 @@
     <resultMap id="loginMemberViewMap"
                type="com.saebom.bulletinboard.member.dto.LoginMemberView">
         <constructor>
-            <arg column="id" javaType="long"/>
-            <arg column="username" javaType="string"/>
-            <arg column="name" javaType="string"/>
+            <arg column="id" javaType="java.lang.Long"/>
+            <arg column="username" javaType="java.lang.String"/>
+            <arg column="name" javaType="java.lang.String"/>
             <arg column="role"
                  javaType="com.saebom.bulletinboard.global.domain.Role"
                  typeHandler="com.saebom.bulletinboard.global.mybatis.RoleTypeHandler"/>

@@ -16,7 +16,7 @@ public class MemberProfileView {
     public MemberProfileView(String username, String name, String email,
                              LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.username = username;
-        this.name = username;
+        this.name = name;
         this.email = email;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

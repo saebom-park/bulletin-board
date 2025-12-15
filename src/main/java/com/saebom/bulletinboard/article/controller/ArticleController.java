@@ -1,11 +1,14 @@
 package com.saebom.bulletinboard.article.controller;
 
 import com.saebom.bulletinboard.article.dto.ArticleCreateForm;
+import com.saebom.bulletinboard.article.dto.ArticleDetailView;
+import com.saebom.bulletinboard.article.dto.ArticleEditView;
+import com.saebom.bulletinboard.article.dto.ArticleListView;
 import com.saebom.bulletinboard.article.dto.ArticleUpdateForm;
-import com.saebom.bulletinboard.article.dto.ArticleDto;
 import com.saebom.bulletinboard.comment.dto.CommentCreateForm;
+import com.saebom.bulletinboard.comment.dto.CommentEditView;
 import com.saebom.bulletinboard.comment.dto.CommentUpdateForm;
-import com.saebom.bulletinboard.comment.dto.CommentDto;
+import com.saebom.bulletinboard.comment.dto.CommentView;
 import com.saebom.bulletinboard.article.service.ArticleService;
 import com.saebom.bulletinboard.comment.service.CommentService;
 import com.saebom.bulletinboard.global.session.SessionConst;
@@ -37,7 +40,7 @@ public class ArticleController {
 
     @GetMapping
     public String list(Model model) {
-        List<ArticleDto> articles = articleService.getArticles();
+        List<ArticleListView> articles = articleService.getArticleList();
         model.addAttribute("articles", articles);
         return "articles/list";
     }
@@ -56,24 +59,24 @@ public class ArticleController {
             log.warn("게시글 조회수 증가 실패 - articleId={}", id, e);
         }
 
-        ArticleDto article = articleService.getArticle(id);
-        List<CommentDto> comments = commentService.getCommentsByArticle(id);
+        ArticleDetailView articleDetailView = articleService.getArticleDetail(id);
+        List<CommentView> comments = commentService.getCommentList(id);
 
         Long loginMemberId = getLoginMemberId(request);
 
-        model.addAttribute("article", article);
+        model.addAttribute("article", articleDetailView);
         model.addAttribute("comments", comments);
         model.addAttribute("commentCreateForm", new CommentCreateForm());
 
         if (editCommentId != null) {
-            CommentDto comment = commentService.getComment(editCommentId);
+            CommentEditView commentEditView = commentService.getCommentEditView(editCommentId);
 
-            if (loginMemberId == null || !comment.getMemberId().equals(loginMemberId)) {
+            if (loginMemberId == null || !commentEditView.getMemberId().equals(loginMemberId)) {
                 return "redirect:/articles/" + id;
             }
 
             CommentUpdateForm commentUpdateForm = new CommentUpdateForm();
-            commentUpdateForm.setContent(comment.getContent());
+            commentUpdateForm.setContent(commentEditView.getContent());
             model.addAttribute("commentUpdateForm", commentUpdateForm);
             model.addAttribute("editCommentId", editCommentId);
         }
@@ -107,31 +110,28 @@ public class ArticleController {
             return "redirect:/login";
         }
 
-        Long articleId = articleService.createArticle(
-                loginMemberId,
-                form.getTitle(),
-                form.getContent()
-        );
+        Long articleId = articleService.createArticle(loginMemberId, form);
 
         return "redirect:/articles/" + articleId;
     }
 
     @GetMapping("/{id}/edit")
     public String showEditForm(@PathVariable Long id, HttpServletRequest request, Model model) {
+
         Long loginMemberId = getLoginMemberId(request);
         if (loginMemberId == null) {
             return "redirect:/login";
         }
 
-        ArticleDto article = articleService.getArticle(id);
+        ArticleEditView articleEditView = articleService.getArticleEditView(id);
 
-        if (!article.getMemberId().equals(loginMemberId)) {
+        if (!articleEditView.getMemberId().equals(loginMemberId)) {
             return "redirect:/articles/" + id;
         }
 
         ArticleUpdateForm form = new ArticleUpdateForm();
-        form.setTitle(article.getTitle());
-        form.setContent(article.getContent());
+        form.setTitle(articleEditView.getTitle());
+        form.setContent(articleEditView.getContent());
 
         model.addAttribute("articleUpdateForm", form);
         model.addAttribute("articleId", id);
@@ -157,7 +157,7 @@ public class ArticleController {
             return "redirect:/login";
         }
 
-        articleService.updateArticle(id, loginMemberId, form.getTitle(), form.getContent());
+        articleService.updateArticle(id, loginMemberId, form);
 
         return "redirect:/articles/" + id;
     }
