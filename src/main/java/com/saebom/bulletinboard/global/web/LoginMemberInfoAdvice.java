@@ -1,6 +1,6 @@
 package com.saebom.bulletinboard.global.web;
 
-import com.saebom.bulletinboard.member.domain.Member;
+import com.saebom.bulletinboard.member.dto.LoginMemberView;
 import com.saebom.bulletinboard.member.service.MemberService;
 import com.saebom.bulletinboard.global.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,8 +24,8 @@ public class LoginMemberInfoAdvice {
 
         Long loginMemberId = (session != null) ? (Long) session.getAttribute(SessionConst.LOGIN_MEMBER) : null;
         if (loginMemberId != null) {
-            Member member = memberService.getMember(loginMemberId);
-            model.addAttribute("loginMember", member);
+            LoginMemberView loginMemberView = memberService.getLoginMember(loginMemberId);
+            model.addAttribute("loginMember", loginMemberView);
         }
 
         String requestURI = request.getRequestURI();

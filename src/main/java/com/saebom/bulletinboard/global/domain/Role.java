@@ -13,4 +13,12 @@ public enum Role {
     public String value() {
         return value;
     }
+
+    public static Role fromValue(String value) {
+        for (Role role : values()) {
+            if (role.value.equals(value)) return role;
+        }
+        throw new IllegalArgumentException("Unknown role value: " + value);
+    }
+
 }

@@ -93,7 +93,7 @@
                 <span>Articles</span>
             </a>
 
-            <a th:if="${loginMember != null and loginMember.role == 'ROLE_ADMIN'}"
+            <a th:if="${loginMember != null and loginMember.admin}"
                th:href="@{/admin/members}"
                class="bb-sidebar__link"
                th:classappend="${#strings.startsWith(path, '/admin/members')} ? ' bb-sidebar__link--active' : ''">

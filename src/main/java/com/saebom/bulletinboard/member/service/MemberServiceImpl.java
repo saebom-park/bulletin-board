@@ -1,6 +1,11 @@
 package com.saebom.bulletinboard.member.service;
 
 import com.saebom.bulletinboard.member.domain.Member;
+import com.saebom.bulletinboard.member.dto.LoginMemberView;
+import com.saebom.bulletinboard.member.dto.MemberAuthView;
+import com.saebom.bulletinboard.member.dto.MemberEditView;
+import com.saebom.bulletinboard.member.dto.MemberProfileView;
+import com.saebom.bulletinboard.member.dto.MemberUpdateForm;
 import com.saebom.bulletinboard.global.domain.Role;
 import com.saebom.bulletinboard.global.domain.Status;
 import com.saebom.bulletinboard.global.exception.LoginFailedException;
@@ -10,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,13 +27,6 @@ public class MemberServiceImpl implements MemberService {
     public MemberServiceImpl(MemberMapper memberMapper, PasswordEncoder passwordEncoder) {
         this.memberMapper = memberMapper;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Override
-    public boolean isUsernameDuplicate(String username) {
-        Member existedMember = memberMapper.findByUsername(username);
-
-        return existedMember != null;
     }
 
     @Override
@@ -53,66 +51,91 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public boolean isUsernameDuplicate(String username) {
+        return memberMapper.existsByUsername(username);
+    }
+
+    @Override
     public Long loginMember(String username, String password) {
 
-        Member member = memberMapper.findByUsername(username);
-        if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
+        MemberAuthView memberAuthView = memberMapper.selectAuthByUsername(username);
+        if (memberAuthView == null || !passwordEncoder.matches(password, memberAuthView.getPassword())) {
             throw new LoginFailedException("아이디 또는 패스워드가 일치하지 않습니다.");
         }
 
-        if (!Status.ACTIVE.equals(member.getStatus())) {
+        if (!Status.ACTIVE.equals(memberAuthView.getStatus())) {
             throw new LoginFailedException("활성화되지 않은 계정입니다.");
         }
 
-        return member.getId();
+        return memberAuthView.getId();
     }
 
     @Override
-    public Member getMember(Long id) {
+    public MemberProfileView getMyProfile(Long memberId) {
 
-        Member member = memberMapper.findById(id);
-        if (member == null) {
-            throw new IllegalArgumentException("회원을 찾을 수 없습니다. id=" + id);
+        MemberProfileView memberProfileView = memberMapper.selectProfileById(memberId);
+        if (memberProfileView == null) {
+            throw new IllegalArgumentException("회원을 찾을 수 없습니다.");
         }
 
-        return member;
+        return memberProfileView;
     }
 
     @Override
-    public Member findByUsername(String username) { return memberMapper.findByUsername(username); }
+    public MemberEditView getMyEditView(Long memberId) {
+
+        MemberEditView memberEditView = memberMapper.selectEditViewById(memberId);
+        if (memberEditView == null) {
+            throw new IllegalArgumentException("회원을 찾을 수 없습니다.");
+        }
+
+        return memberEditView;
+    }
+    
+    @Override
+    public LocalDateTime getMyPasswordChangedAt(Long memberId) {
+        return memberMapper.selectPasswordChangedAtById(memberId);
+    }
 
     @Override
-    public List<Member> getMembers() {
-        return memberMapper.findAll();
+    public boolean isAdmin(Long memberId) {
+        Role role = memberMapper.selectRoleById(memberId);
+
+        return role == Role.ADMIN;
+    }
+
+    @Override
+    public LoginMemberView getLoginMember(Long memberId) {
+        return memberMapper.selectLoginMemberById(memberId);
     }
 
     @Override
     @Transactional
-    public void updateMember(Member member) {
+    public void updateMyProfile(Long memberId, MemberUpdateForm form) {
 
-        int updated = memberMapper.update(member);
+        int updated = memberMapper.updateProfile(memberId, form.getName(), form.getEmail());
         if (updated != 1) {
-            throw new IllegalStateException("회원 수정에 실패했습니다. username=" + member.getUsername());
+            throw new IllegalStateException("회원 정보 수정에 실패했습니다.");
         }
     }
 
     @Override
-    public void validatePassword(Long id, String rawPassword) {
+    public void validateMyPassword(Long id, String rawPassword) {
 
-        Member member = memberMapper.findById(id);
+        MemberAuthView memberAuthView = memberMapper.selectAuthById(id);
 
-        if (member == null) {
+        if (memberAuthView == null) {
             throw new IllegalArgumentException("회원을 찾을 수 없습니다. id=" + id);
         }
 
-        if (!passwordEncoder.matches(rawPassword, member.getPassword())) {
+        if (!passwordEncoder.matches(rawPassword, memberAuthView.getPassword())) {
             throw new WrongPasswordException("패스워드가 일치하지 않습니다.");
         }
     }
 
     @Override
     @Transactional
-    public void updatePassword(Long id, String newPassword) {
+    public void updateMyPassword(Long id, String newPassword) {
 
         String encodedPassword = passwordEncoder.encode(newPassword);
 
@@ -124,31 +147,15 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void withdrawMember(Long id) {
+    public void withdrawMyAccount(Long id) {
         updateStatusInternal(id, Status.WITHDRAW);
-    }
-
-    @Override
-    @Transactional
-    public void updateStatus(Long id, Status status) {
-        updateStatusInternal(id, status);
     }
 
     private void updateStatusInternal(Long id, Status status) {
 
-        int updated = memberMapper.updateStatus(id, status.name());
+        int updated = memberMapper.updateStatus(id, status);
         if (updated != 1) {
             throw new IllegalStateException("상태 변경에 실패했습니다. id=" + id);
-        }
-    }
-
-    @Override
-    @Transactional
-    public void deleteMember(Long id) {
-
-        int deleted = memberMapper.deleteById(id);
-        if (deleted != 1) {
-            throw new IllegalStateException("회원 삭제에 실패했습니다. id=" + id);
         }
     }
 

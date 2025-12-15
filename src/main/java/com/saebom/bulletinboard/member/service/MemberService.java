@@ -1,26 +1,45 @@
 package com.saebom.bulletinboard.member.service;
 
 import com.saebom.bulletinboard.member.domain.Member;
-import com.saebom.bulletinboard.global.domain.Status;
+import com.saebom.bulletinboard.member.dto.LoginMemberView;
+import com.saebom.bulletinboard.member.dto.MemberEditView;
+import com.saebom.bulletinboard.member.dto.MemberProfileView;
+import com.saebom.bulletinboard.member.dto.MemberUpdateForm;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 public interface MemberService {
 
-    boolean isUsernameDuplicate(String username);
+    // 회원 가입
     Long registerMember(Member member);
 
+    // 아이디 중복 체크
+    boolean isUsernameDuplicate(String username);
+
+    // 로그인
     Long loginMember(String username, String password);
 
-    Member getMember(Long id);
-    Member findByUsername(String username);
-    List<Member> getMembers();
+    // 프로필
+    MemberProfileView getMyProfile(Long memberId);
+    MemberEditView getMyEditView(Long memberId);
 
-    void updateMember(Member member);
-    void validatePassword(Long id, String rawPassword);
-    void updatePassword(Long id, String newPassword);
-    void withdrawMember(Long id);
-    void updateStatus(Long id, Status status);
-    void deleteMember(Long id);
+    // 패스워드 변경일
+    LocalDateTime getMyPasswordChangedAt(Long memberId);
+
+    // 권한 조회
+    boolean isAdmin(Long memberId);
+
+    // 로그인 회원 조회
+    LoginMemberView getLoginMember(Long memberId);
+
+    // 프로필 업데이트
+    void updateMyProfile(Long memberId, MemberUpdateForm form);
+
+    // 패스워드
+    void validateMyPassword(Long id, String rawPassword);
+    void updateMyPassword(Long id, String newPassword);
+
+    // 탈퇴
+    void withdrawMyAccount(Long id);
 
 }

@@ -1,9 +1,10 @@
 package com.saebom.bulletinboard.member.controller;
 
 import com.saebom.bulletinboard.member.domain.Member;
+import com.saebom.bulletinboard.member.dto.MemberEditView;
+import com.saebom.bulletinboard.member.dto.MemberProfileView;
 import com.saebom.bulletinboard.member.dto.MemberCreateForm;
 import com.saebom.bulletinboard.member.dto.UsernameCheckForm;
-import com.saebom.bulletinboard.member.dto.MemberProfileView;
 import com.saebom.bulletinboard.member.dto.MemberUpdateForm;
 import com.saebom.bulletinboard.member.dto.PasswordCheckForm;
 import com.saebom.bulletinboard.member.dto.PasswordChangeForm;
@@ -112,8 +113,8 @@ public class MemberController {
             Model model
     ) {
 
-        Member member = memberService.getMember(loginMemberId);
-        model.addAttribute("member", MemberProfileView.from(member));
+        MemberProfileView memberProfileView = memberService.getMyProfile(loginMemberId);
+        model.addAttribute("member", memberProfileView);
 
         return "member/profile";
     }
@@ -124,13 +125,13 @@ public class MemberController {
             Model model
     ) {
 
-        Member member = memberService.getMember(loginMemberId);
+        MemberEditView memberEditView = memberService.getMyEditView(loginMemberId);
 
         MemberUpdateForm form = new MemberUpdateForm();
-        form.setName(member.getName());
-        form.setEmail(member.getEmail());
+        form.setName(memberEditView.getName());
+        form.setEmail(memberEditView.getEmail());
 
-        model.addAttribute("member", member);
+        model.addAttribute("member", memberEditView);
         model.addAttribute("memberUpdateForm", form);
 
         return "member/edit";
@@ -144,17 +145,13 @@ public class MemberController {
             Model model
     ) {
 
-        Member member = memberService.getMember(loginMemberId);
-
         if (bindingResult.hasErrors()) {
-            model.addAttribute("member", member);
+            MemberEditView memberEditView = memberService.getMyEditView(loginMemberId);
+            model.addAttribute("member", memberEditView);
             return "member/edit";
         }
 
-        member.setName(form.getName());
-        member.setEmail(form.getEmail());
-
-        memberService.updateMember(member);
+        memberService.updateMyProfile(loginMemberId, form);
 
         return "redirect:/members/me";
     }
@@ -183,7 +180,7 @@ public class MemberController {
         }
 
         try {
-            memberService.validatePassword(loginMemberId, form.getPassword());
+            memberService.validateMyPassword(loginMemberId, form.getPassword());
 
             HttpSession session = request.getSession(false);
 
@@ -219,8 +216,7 @@ public class MemberController {
             return "redirect:/members/me/password/check";
         }
 
-        Member member = memberService.getMember(loginMemberId);
-        model.addAttribute("passwordChangedAt", member.getPasswordChangedAt());
+        model.addAttribute("passwordChangedAt", memberService.getMyPasswordChangedAt(loginMemberId));
         model.addAttribute("passwordChangeForm", new PasswordChangeForm());
 
         return "member/password-new";
@@ -244,8 +240,7 @@ public class MemberController {
             return "redirect:/members/me/password/check";
         }
 
-        Member member = memberService.getMember(loginMemberId);
-        model.addAttribute("passwordChangedAt", member.getPasswordChangedAt());
+        model.addAttribute("passwordChangedAt", memberService.getMyPasswordChangedAt(loginMemberId));
 
         if (bindingResult.hasErrors()) {
             return "member/password-new";
@@ -256,7 +251,7 @@ public class MemberController {
             return "member/password-new";
         }
 
-        memberService.updatePassword(loginMemberId, form.getNewPassword());
+        memberService.updateMyPassword(loginMemberId, form.getNewPassword());
 
         session.removeAttribute(SessionConst.PASSWORD_CHECKED);
 
@@ -294,13 +289,13 @@ public class MemberController {
         }
 
         try {
-            memberService.validatePassword(loginMemberId, form.getPassword());
+            memberService.validateMyPassword(loginMemberId, form.getPassword());
         } catch(WrongPasswordException e) {
             bindingResult.rejectValue("password", "wrong", e.getMessage());
             return "member/withdraw";
         }
 
-        memberService.withdrawMember(loginMemberId);
+        memberService.withdrawMyAccount(loginMemberId);
 
         HttpSession session = request.getSession(false);
         if (session != null) {

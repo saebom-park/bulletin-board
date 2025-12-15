@@ -39,9 +39,7 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
         }
 
         // 2) 로그인 권한 체크 (DB에서 role 조회)
-        Member member = memberService.getMember(loginMemberId);
-
-        if (member == null || !Role.ADMIN.value().equals(member.getRole())) {
+        if (!memberService.isAdmin(loginMemberId)) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
             return false;

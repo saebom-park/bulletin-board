@@ -1,10 +1,16 @@
 package com.saebom.bulletinboard.member.repository;
 
 import com.saebom.bulletinboard.member.domain.Member;
+import com.saebom.bulletinboard.member.dto.LoginMemberView;
+import com.saebom.bulletinboard.member.dto.MemberAuthView;
+import com.saebom.bulletinboard.member.dto.MemberEditView;
+import com.saebom.bulletinboard.member.dto.MemberProfileView;
+import com.saebom.bulletinboard.global.domain.Role;
+import com.saebom.bulletinboard.global.domain.Status;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Mapper
 public interface MemberMapper {
@@ -12,17 +18,32 @@ public interface MemberMapper {
     // 회원 저장
     int insert(Member member);
 
-    // PK로 회원 조회
-    Member findById(@Param("id") Long id);
+    // 아이디 중복 체크
+    boolean existsByUsername(@Param("username") String username);
 
-    // username으로 회원 조회
-    Member findByUsername(@Param("username") String username);
+    // PK로 회원 프로필 조회
+    MemberProfileView selectProfileById(@Param("id") Long id);
 
-    // 회원 전체 조회
-    List<Member> findAll();
+    // PK로 회원 수정 뷰 조회
+    MemberEditView selectEditViewById(@Param("id") Long id);
+
+    // 권한 조회
+    MemberAuthView selectAuthById(@Param("id") Long id);
+    MemberAuthView selectAuthByUsername(@Param("username") String username);
+    
+    // 패스워드 변경일 조회
+    LocalDateTime selectPasswordChangedAtById(@Param("id") Long id);
+
+    // 권한 조회
+    Role selectRoleById(@Param("id") Long id);
+
+    // 로그인 한 회원 정보 조회
+    LoginMemberView selectLoginMemberById(@Param("id") Long id);
 
     // 회원 정보 수정
-    int update(Member member);
+    int updateProfile(@Param("id") Long id,
+                      @Param("name") String name,
+                      @Param("email") String email);
 
     // 회원 패스워드 변경
     int updatePassword(@Param("id") Long id,
@@ -30,9 +51,6 @@ public interface MemberMapper {
 
     // 회원 상태 변경
     int updateStatus(@Param("id") Long id,
-                     @Param("status") String status);
-
-    // 회원 삭제
-    int deleteById(@Param("id") Long id);
+                     @Param("status") Status status);
 
 }

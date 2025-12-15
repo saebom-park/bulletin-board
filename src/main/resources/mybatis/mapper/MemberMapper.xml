@@ -5,38 +5,75 @@
 
 <mapper namespace="com.saebom.bulletinboard.member.repository.MemberMapper">
 
-    <sql id="memberColumns">
-        id,
+    <sql id="memberProfileColumns">
         username,
-        password,
         name,
         email,
-        role,
         created_at,
-        updated_at,
-        password_changed_at,
-        last_login_at,
-        login_fail_count,
-        account_locked,
-        account_locked_at,
+        updated_at
+    </sql>
+
+    <sql id="memberEditColumns">
+        username,
+        name,
+        email,
+        updated_at
+    </sql>
+
+    <sql id="memberAuthColumns">
+        id,
+        password,
         status
     </sql>
 
-    <resultMap id="memberResultMap" type="com.saebom.bulletinboard.member.domain.Member">
-        <id property="id" column="id"/>
-        <result property="username" column="username"/>
-        <result property="password" column="password"/>
-        <result property="name" column="name"/>
-        <result property="email" column="email"/>
-        <result property="role" column="role"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="updatedAt" column="updated_at"/>
-        <result property="passwordChangedAt" column="password_changed_at"/>
-        <result property="lastLoginAt" column="last_login_at"/>
-        <result property="loginFailCount" column="login_fail_count"/>
-        <result property="accountLocked" column="account_locked"/>
-        <result property="accountLockedAt" column="account_locked_at"/>
-        <result property="status" column="status"/>
+    <sql id="loginMemberColumns">
+        id,
+        username,
+        name,
+        role
+    </sql>
+
+    <resultMap id="memberProfileViewMap"
+               type="com.saebom.bulletinboard.member.dto.MemberProfileView">
+        <constructor>
+            <arg column="username" javaType="string"/>
+            <arg column="name" javaType="string"/>
+            <arg column="email" javaType="string"/>
+            <arg column="created_at" javaType="java.time.LocalDateTime"/>
+            <arg column="updated_at" javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="memberEditViewMap"
+               type="com.saebom.bulletinboard.member.dto.MemberEditView">
+        <constructor>
+            <arg column="username" javaType="string"/>
+            <arg column="name" javaType="string"/>
+            <arg column="email" javaType="string"/>
+            <arg column="updated_at" javaType="java.time.LocalDateTime"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="memberAuthViewMap"
+               type="com.saebom.bulletinboard.member.dto.MemberAuthView">
+        <constructor>
+            <idArg column="id" javaType="long"/>
+            <arg column="password" javaType="string"/>
+            <arg column="status" javaType="com.saebom.bulletinboard.global.domain.Status"
+                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="loginMemberViewMap"
+               type="com.saebom.bulletinboard.member.dto.LoginMemberView">
+        <constructor>
+            <arg column="id" javaType="long"/>
+            <arg column="username" javaType="string"/>
+            <arg column="name" javaType="string"/>
+            <arg column="role"
+                 javaType="com.saebom.bulletinboard.global.domain.Role"
+                 typeHandler="com.saebom.bulletinboard.global.mybatis.RoleTypeHandler"/>
+        </constructor>
     </resultMap>
 
     <insert id="insert"
@@ -61,34 +98,60 @@
         )
     </insert>
 
-    <select id="findById"
-            parameterType="long"
-            resultMap="memberResultMap">
-        SELECT
-        <include refid="memberColumns"/>
-        FROM members
-        WHERE id = #{id}
-    </select>
-
-    <select id="findByUsername"
-            parameterType="string"
-            resultMap="memberResultMap">
-        SELECT
-        <include refid="memberColumns"/>
+    <select id="existsByUsername" resultType="boolean">
+        SELECT COUNT(*) > 0
         FROM members
         WHERE username = #{username}
     </select>
 
-    <select id="findAll"
-            resultMap="memberResultMap">
+    <select id="selectProfileById" resultMap="memberProfileViewMap">
         SELECT
-        <include refid="memberColumns"/>
+        <include refid="memberProfileColumns"/>
         FROM members
-        ORDER BY id DESC
+        WHERE id = #{id}
     </select>
 
-    <update id="update"
-            parameterType="com.saebom.bulletinboard.member.domain.Member">
+    <select id="selectEditViewById" resultMap="memberEditViewMap">
+        SELECT
+        <include refid="memberEditColumns"/>
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAuthById" resultMap="memberAuthViewMap">
+        SELECT
+        <include refid="memberAuthColumns"/>
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectAuthByUsername" resultMap="memberAuthViewMap">
+        SELECT
+        <include refid="memberAuthColumns"/>
+        FROM members
+        WHERE username = #{username}
+    </select>
+
+    <select id="selectPasswordChangedAtById" resultType="java.time.LocalDateTime">
+        SELECT password_changed_at
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectRoleById" resultType="com.saebom.bulletinboard.global.domain.Role">
+        SELECT role
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectLoginMemberById" resultMap="loginMemberViewMap">
+        SELECT
+        <include refid="loginMemberColumns"/>
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateProfile">
         UPDATE members
         SET
             name = #{name},
@@ -110,11 +173,5 @@
             status = #{status}
         WHERE id = #{id}
     </update>
-
-    <delete id="deleteById"
-            parameterType="long">
-        DELETE FROM members
-        WHERE id = #{id}
-    </delete>
 
 </mapper>
