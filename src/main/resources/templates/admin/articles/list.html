@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content" class="bb-stack bb-stack--lg">
+
+    <div class="bb-card bb-card--spaced">
+
+        <!-- 헤더 -->
+        <div class="bb-card__header bb-card__header--split">
+            <div>
+                <h1 class="bb-page-title">게시글 관리</h1>
+                <p class="bb-page-subtitle">
+                    전체 게시글을 조회하고 관리할 수 있습니다.
+                </p>
+            </div>
+
+            <!-- 추후 필터 영역 확장 가능 -->
+            <div class="bb-actions bb-actions--right">
+                <!-- 예: 상태 필터, 검색 -->
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- 데스크탑 테이블 -->
+        <!-- ===================== -->
+        <div class="bb-table-wrapper bb-admin-table-desktop">
+            <table class="bb-table">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th class="bb-col-action">관리</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:if="${#lists.isEmpty(articles)}">
+                    <td colspan="6" class="bb-table-empty">
+                        조회된 게시글이 없습니다.
+                    </td>
+                </tr>
+
+                <tr th:each="a, stat : ${articles}">
+                    <td th:text="${#lists.size(articles) - stat.index}">1</td>
+
+                    <!-- 제목 → 상세 페이지 -->
+                    <td>
+                        <a th:href="@{|/admin/articles/${a.id}|}"
+                           class="bb-admin-article-link"
+                           th:text="${a.title}">
+                            게시글 제목
+                        </a>
+                    </td>
+
+                    <!-- 작성자 -->
+                    <td th:text="${a.writerText}">이름</td>
+
+                    <!-- 작성일 -->
+                    <td th:text="${#temporals.format(a.createdAt, 'yyyy-MM-dd')}">
+                        2025-12-15
+                    </td>
+
+                    <!-- 관리 버튼 -->
+                    <td class="bb-col-action">
+
+                        <form th:action="@{|/admin/articles/${a.id}/delete|}"
+                              method="post"
+                              class="bb-inline bb-inline--tight"
+                              onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
+                            <button type="submit"
+                                    class="bb-btn bb-btn--danger bb-btn--sm">
+                                삭제
+                            </button>
+                        </form>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===================== -->
+        <!-- 모바일 카드 리스트 -->
+        <!-- ===================== -->
+        <div class="bb-admin-list-mobile">
+
+            <p class="bb-table-empty"
+               th:if="${#lists.isEmpty(articles)}">
+                조회된 게시글이 없습니다.
+            </p>
+
+            <ul class="bb-admin-card-list"
+                th:if="${!#lists.isEmpty(articles)}">
+
+                <li th:each="a : ${articles}" class="bb-admin-card">
+
+                    <!-- 카드 정보 영역 -->
+                    <a th:href="@{|/admin/articles/${a.id}|}"
+                       class="bb-admin-card-link">
+
+                        <div class="bb-admin-card__top">
+                            <span class="bb-admin-card__title"
+                                  th:text="${a.title}">
+                                게시글 제목
+                            </span>
+                        </div>
+
+                        <div class="bb-admin-card__meta">
+                            <span th:text="${a.writerText}">이름</span>
+                            <span class="bb-admin-card__dot">·</span>
+                            <span th:text="${#temporals.format(a.createdAt, 'yyyy-MM-dd')}">
+                                2025-01-01
+                            </span>
+                        </div>
+                    </a>
+
+                    <!-- 카드 하단 액션 -->
+                    <div class="bb-admin-card__actions">
+                        <form th:action="@{|/admin/articles/${a.id}/delete|}"
+                              method="post"
+                              onsubmit="return confirm('정말 이 게시글을 삭제하시겠습니까?');">
+                            <button type="submit"
+                                    class="bb-btn bb-btn--danger bb-btn--sm bb-btn--block">
+                                삭제
+                            </button>
+                        </form>
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+
+        <p class="bb-form-hint" style="margin-top: 10px;">
+            * 삭제된 게시글은 복구할 수 없습니다.
+        </p>
+
+    </div>
+
+</section>
+</body>
+</html>

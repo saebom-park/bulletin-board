@@ -1,0 +1,178 @@
+<!--
+File: src/main/resources/templates/admin/articles/detail.html
+-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout(~{::content})}">
+<body>
+<section th:fragment="content" class="bb-stack bb-stack--lg">
+
+    <div class="bb-card bb-card--spaced">
+
+        <!-- Header -->
+        <div class="bb-card__header bb-card__header--split">
+            <div>
+                <h1 class="bb-page-title">게시글 상세</h1>
+                <p class="bb-page-subtitle">
+                    관리자는 게시글 상태를 관리하고, 내용 확인 후 조치할 수 있습니다.
+                </p>
+            </div>
+
+            <div class="bb-actions bb-actions--right">
+                <a th:href="@{/admin/articles}" class="bb-btn bb-btn--subtle bb-btn--sm">
+                    목록
+                </a>
+
+                <!-- 필요 시 edit 페이지로 -->
+                <a th:href="@{|/admin/articles/${article.id}/edit|}"
+                   class="bb-btn bb-btn--ghost bb-btn--sm">
+                    수정
+                </a>
+
+                <!-- 삭제(또는 숨김) -->
+                <form th:action="@{|/admin/articles/${article.id}/delete|}"
+                      method="post"
+                      style="margin:0; display:inline-block;">
+                    <button type="submit" class="bb-btn bb-btn--danger bb-btn--sm"
+                            onclick="return confirm('정말 삭제하시겠습니까?');">
+                        삭제
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Meta card -->
+        <div class="bb-section">
+            <div class="bb-admin-detail">
+                <div class="bb-admin-detail__top">
+                    <h2 class="bb-admin-detail__title" th:text="${article.title}">
+                        제목
+                    </h2>
+
+                    <div class="bb-admin-detail__badges">
+                        <!-- 상태 뱃지(선택) -->
+                        <span class="bb-badge bb-badge--role">
+                            공개
+                        </span>
+                    </div>
+                </div>
+
+                <div class="bb-admin-detail__meta">
+                    <div class="bb-admin-detail__meta-item">
+                        <span class="bb-admin-detail__meta-label">작성자</span>
+                        <span class="bb-admin-detail__meta-value"
+                              th:text="${article.writerText}">
+                            @writer(이름)
+                        </span>
+                    </div>
+
+                    <div class="bb-admin-detail__meta-item">
+                        <span class="bb-admin-detail__meta-label">게시글 ID</span>
+                        <span class="bb-admin-detail__meta-value"
+                              th:text="${article.id}">
+                            1
+                        </span>
+                    </div>
+
+                    <div class="bb-admin-detail__meta-item">
+                        <span class="bb-admin-detail__meta-label">조회수</span>
+                        <span class="bb-admin-detail__meta-value"
+                              th:text="${article.viewCount}">
+                            0
+                        </span>
+                    </div>
+
+                    <div class="bb-admin-detail__meta-item">
+                        <span class="bb-admin-detail__meta-label">작성일</span>
+                        <span class="bb-admin-detail__meta-value"
+                              th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
+                            2025-12-15 09:00
+                        </span>
+                    </div>
+
+                    <div class="bb-admin-detail__meta-item" th:if="${article.updatedAt != null}">
+                        <span class="bb-admin-detail__meta-label">수정일</span>
+                        <span class="bb-admin-detail__meta-value"
+                              th:text="${#temporals.format(article.updatedAt, 'yyyy-MM-dd HH:mm')}">
+                            2025-12-15 09:10
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="bb-divider"/>
+
+        <!-- Content -->
+        <div class="bb-section">
+            <h3 class="bb-admin-section-title">내용</h3>
+            <div class="bb-admin-content-box">
+                <p class="bb-admin-content-text"
+                   th:text="${article.content}">
+                    본문 내용
+                </p>
+            </div>
+        </div>
+
+        <!-- Admin actions (optional) -->
+        <div class="bb-section">
+            <h3 class="bb-admin-section-title">관리</h3>
+
+            <div class="bb-admin-actions-grid">
+
+                <!-- 예: 상태 변경 -->
+                <div class="bb-admin-action-card">
+                    <div class="bb-admin-action-card__head">
+                        <div>
+                            <div class="bb-admin-action-card__title">상태 변경</div>
+                            <div class="bb-admin-action-card__desc">게시글 공개/숨김 상태를 변경합니다.</div>
+                        </div>
+                    </div>
+
+                    <form th:action="@{|/admin/articles/${article.id}/status|}"
+                          method="post"
+                          class="bb-inline bb-inline--tight bb-admin-action-card__form">
+                        <select name="status" class="bb-select bb-select--sm">
+                            <option value="VISIBLE">공개</option>
+                            <option value="HIDDEN">숨김</option>
+                        </select>
+                        <button type="submit" class="bb-btn bb-btn--primary bb-btn--sm">적용</button>
+                    </form>
+
+                    <p class="bb-form-hint" style="margin:10px 0 0;">
+                        * 상태 변경은 즉시 반영됩니다.
+                    </p>
+                </div>
+
+                <!-- 예: 공지 고정(선택) -->
+                <div class="bb-admin-action-card">
+                    <div class="bb-admin-action-card__head">
+                        <div>
+                            <div class="bb-admin-action-card__title">관리 메모</div>
+                            <div class="bb-admin-action-card__desc">내부 메모를 남겨서 관리 히스토리를 남깁니다.</div>
+                        </div>
+                    </div>
+
+                    <form th:action="@{|/admin/articles/${article.id}/memo|}"
+                          method="post"
+                          class="bb-stack bb-stack--sm bb-admin-action-card__form">
+                        <textarea name="memo"
+                                  class="bb-textarea"
+                                  style="min-height:120px;"
+                                  placeholder="예) 신고 3건 확인, 임시 숨김 처리"></textarea>
+
+                        <div class="bb-actions bb-actions--right">
+                            <button type="submit" class="bb-btn bb-btn--subtle bb-btn--sm">저장</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+</body>
+</html>
