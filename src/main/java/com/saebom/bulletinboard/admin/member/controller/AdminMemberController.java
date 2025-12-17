@@ -34,7 +34,7 @@ public class AdminMemberController {
         model.addAttribute("members", members);
         model.addAttribute("statuses", Status.values());
 
-        return "admin/members";
+        return "admin/members/list";
     }
 
     @GetMapping("/{memberId}")
@@ -53,7 +53,7 @@ public class AdminMemberController {
         model.addAttribute("statuses", Status.values());
         model.addAttribute("roles", Role.values());
 
-        return "admin/member-edit";
+        return "admin/members/edit";
     }
 
     @PostMapping("/{memberId}/status")
@@ -69,7 +69,7 @@ public class AdminMemberController {
             adminMemberService.updateStatus(adminId, memberId, status);
             redirectAttributes.addFlashAttribute(
                     "successMessage",
-                    "회원 상태가 성공적으로 변경되었습니다."
+                    "회원 상태가 정상적으로 변경되었습니다."
             );
         } catch (IllegalArgumentException e) {
             // 정책 위반(본인 변경, WITHDRAW 요청 등)
@@ -105,7 +105,7 @@ public class AdminMemberController {
             model.addAttribute("member", view);
             model.addAttribute("statuses", Status.values());
             model.addAttribute("roles", Role.values());
-            return "admin/member-edit";
+            return "admin/members/edit";
         }
 
         try {
@@ -122,7 +122,7 @@ public class AdminMemberController {
             model.addAttribute("statuses", Status.values());
             model.addAttribute("roles", Role.values());
             model.addAttribute("errorMessage", e.getMessage());
-            return "admin/member-edit";
+            return "admin/members/edit";
         } catch (IllegalStateException e) {
             // rowcount 불일치 등
             AdminMemberEditView view = adminMemberService.getMemberEditView(memberId);
@@ -130,7 +130,7 @@ public class AdminMemberController {
             model.addAttribute("statuses", Status.values());
             model.addAttribute("roles", Role.values());
             model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
-            return "admin/member-edit";
+            return "admin/members/edit";
         }
 
         return "redirect:/admin/members";
