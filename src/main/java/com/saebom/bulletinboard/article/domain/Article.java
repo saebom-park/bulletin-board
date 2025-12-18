@@ -11,23 +11,26 @@ public class Article {
     private Integer viewCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private ArticleStatus status;
+    private String adminMemo;
+    private LocalDateTime adminMemoUpdatedAt;
+    private Long adminMemoAdminId;
 
     // constructor
     public Article() {
 
     }
 
-    private Article(Long memberId, String title, String content, Integer viewCount) {
+    private Article(Long memberId, String title, String content) {
         this.memberId = memberId;
         this.title = title;
         this.content = content;
-        this.viewCount = viewCount;
     }
 
     // method
     // 생성 책임
     public static Article createArticle(Long memberId, String title, String content) {
-        return new Article(memberId, title, content, 0);
+        return new Article(memberId, title, content);
     }
 
     // getter
@@ -38,6 +41,10 @@ public class Article {
     public Integer getViewCount() { return viewCount; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public ArticleStatus getStatus() { return status; }
+    public String getAdminMemo() { return adminMemo; }
+    public LocalDateTime getAdminMemoUpdatedAt() { return adminMemoUpdatedAt; }
+    public Long getAdminMemoAdminId() { return adminMemoAdminId; }
 
     // setter
     public void setId(Long id) { this.id = id; }

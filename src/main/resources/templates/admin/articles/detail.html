@@ -87,7 +87,7 @@ File: src/main/resources/templates/admin/articles/detail.html
                         <span class="bb-admin-detail__meta-label">작성일</span>
                         <span class="bb-admin-detail__meta-value"
                               th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
-                            2025-12-15 09:00
+                            2025-01-01 00:00
                         </span>
                     </div>
 
@@ -95,7 +95,7 @@ File: src/main/resources/templates/admin/articles/detail.html
                         <span class="bb-admin-detail__meta-label">수정일</span>
                         <span class="bb-admin-detail__meta-value"
                               th:text="${#temporals.format(article.updatedAt, 'yyyy-MM-dd HH:mm')}">
-                            2025-12-15 09:10
+                            2025-01-01 00:00
                         </span>
                     </div>
                 </div>
@@ -121,51 +121,47 @@ File: src/main/resources/templates/admin/articles/detail.html
 
             <div class="bb-admin-actions-grid">
 
-                <!-- 예: 상태 변경 -->
+                <!-- 상태 변경 + 관리자 메모 -->
                 <div class="bb-admin-action-card">
+
                     <div class="bb-admin-action-card__head">
                         <div>
-                            <div class="bb-admin-action-card__title">상태 변경</div>
-                            <div class="bb-admin-action-card__desc">게시글 공개/숨김 상태를 변경합니다.</div>
+                            <div class="bb-admin-action-card__title">게시글 관리</div>
+                            <div class="bb-admin-action-card__desc">
+                                게시글 상태 변경 시 관리자 메모를 반드시 남겨야 합니다.
+                            </div>
                         </div>
                     </div>
 
                     <form th:action="@{|/admin/articles/${article.id}/status|}"
-                          method="post"
-                          class="bb-inline bb-inline--tight bb-admin-action-card__form">
-                        <select name="status" class="bb-select bb-select--sm">
-                            <option value="VISIBLE">공개</option>
-                            <option value="HIDDEN">숨김</option>
-                        </select>
-                        <button type="submit" class="bb-btn bb-btn--primary bb-btn--sm">적용</button>
-                    </form>
+                        th:object="${statusForm}"
+                        method="post"
+                        class="bb-stack bb-stack--sm bb-admin-action-card__form">
 
-                    <p class="bb-form-hint" style="margin:10px 0 0;">
-                        * 상태 변경은 즉시 반영됩니다.
-                    </p>
-                </div>
-
-                <!-- 예: 공지 고정(선택) -->
-                <div class="bb-admin-action-card">
-                    <div class="bb-admin-action-card__head">
-                        <div>
-                            <div class="bb-admin-action-card__title">관리 메모</div>
-                            <div class="bb-admin-action-card__desc">내부 메모를 남겨서 관리 히스토리를 남깁니다.</div>
+                        <div class="bb-form-group">
+                            <label class="bb-form-label">게시글 상태</label>
+                            <select th:field="*{status}"
+                                    class="bb-select bb-select--sm bb-select--block"
+                                    required>
+                                <option value="PUBLIC">공개</option>
+                                <option value="HIDDEN">숨김</option>
+                            </select>
                         </div>
-                    </div>
 
-                    <form th:action="@{|/admin/articles/${article.id}/memo|}"
-                          method="post"
-                          class="bb-stack bb-stack--sm bb-admin-action-card__form">
-                        <textarea name="memo"
-                                  class="bb-textarea"
-                                  style="min-height:120px;"
-                                  placeholder="예) 신고 3건 확인, 임시 숨김 처리"></textarea>
+                        <div class="bb-form-group">
+                            <label class="bb-form-label">관리자 메모 <span style="color:#ef4444;">*</span></label>
+                            <textarea th:field="*{adminMemo}"
+                                    class="bb-textarea"
+                                    required
+                                    style="min-height:120px;"
+                                    placeholder="예) 신고 3건 확인 후 임시 숨김 처리"></textarea>
+                        </div>
 
                         <div class="bb-actions bb-actions--right">
-                            <button type="submit" class="bb-btn bb-btn--subtle bb-btn--sm">저장</button>
+                            <button type="submit" class="bb-btn bb-btn--primary bb-btn--sm">변경 적용</button>
                         </div>
                     </form>
+
                 </div>
 
             </div>

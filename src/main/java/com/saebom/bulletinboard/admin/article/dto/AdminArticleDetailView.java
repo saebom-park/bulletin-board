@@ -1,5 +1,7 @@
 package com.saebom.bulletinboard.admin.article.dto;
 
+import com.saebom.bulletinboard.article.domain.ArticleStatus;
+
 import java.time.LocalDateTime;
 
 public class AdminArticleDetailView {
@@ -11,11 +13,13 @@ public class AdminArticleDetailView {
     private final Integer viewCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final ArticleStatus status;
+    private final String adminMemo;
+    private final LocalDateTime adminMemoUpdatedAt;
+    private final Long adminMemoAdminId;
 
     private final String memberUsername;
     private final String memberName;
-
-    // TODO(Admin): later - deleted/status, reportCount, moderatedAt, moderatedBy
 
     // constructor
     public AdminArticleDetailView(
@@ -26,6 +30,10 @@ public class AdminArticleDetailView {
             Integer viewCount,
             LocalDateTime createdAt,
             LocalDateTime updatedAt,
+            ArticleStatus status,
+            String adminMemo,
+            LocalDateTime adminMemoUpdatedAt,
+            Long adminMemoAdminId,
             String memberUsername,
             String memberName
     ) {
@@ -36,6 +44,10 @@ public class AdminArticleDetailView {
         this.viewCount = viewCount;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.status = status;
+        this.adminMemo = adminMemo;
+        this.adminMemoUpdatedAt = adminMemoUpdatedAt;
+        this.adminMemoAdminId = adminMemoAdminId;
         this.memberUsername = memberUsername;
         this.memberName = memberName;
     }
@@ -48,6 +60,10 @@ public class AdminArticleDetailView {
     public Integer getViewCount() { return viewCount; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public ArticleStatus getStatus() { return status; }
+    public String getAdminMemo() { return adminMemo; }
+    public LocalDateTime getAdminMemoUpdatedAt() { return adminMemoUpdatedAt; }
+    public Long getAdminMemoAdminId() { return adminMemoAdminId; }
     public String getMemberUsername() { return memberUsername; }
     public String getMemberName() { return memberName; }
 

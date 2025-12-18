@@ -1,5 +1,7 @@
 package com.saebom.bulletinboard.admin.article.dto;
 
+import com.saebom.bulletinboard.article.domain.ArticleStatus;
+
 import java.time.LocalDateTime;
 
 public class AdminArticleListView {
@@ -8,19 +10,19 @@ public class AdminArticleListView {
     private final String title;
     private final Integer viewCount;
     private final LocalDateTime createdAt;
+    private final ArticleStatus status;
 
     private final String memberUsername;
     private final String memberName;
 
-    // TODO(Admin): later - reportCount, deleted/status, moderatedAt
-
     // constructor
     public AdminArticleListView(Long id, String title, Integer viewCount, LocalDateTime createdAt,
-                           String memberUsername, String memberName) {
+                                ArticleStatus status, String memberUsername, String memberName) {
         this.id = id;
         this.title = title;
         this.viewCount = viewCount;
         this.createdAt = createdAt;
+        this.status = status;
         this.memberUsername = memberUsername;
         this.memberName = memberName;
     }
@@ -30,6 +32,7 @@ public class AdminArticleListView {
     public String getTitle() { return title; }
     public Integer getViewCount() { return viewCount; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public ArticleStatus getStatus() { return status; }
     public String getMemberUsername() { return memberUsername; }
     public String getMemberName() { return memberName; }
 

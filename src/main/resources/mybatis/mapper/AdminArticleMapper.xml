@@ -10,6 +10,7 @@
         a.title,
         a.view_count,
         a.created_at,
+        a.status,
         m.username AS member_username,
         m.name AS member_name
     </sql>
@@ -22,6 +23,10 @@
         a.view_count,
         a.created_at,
         a.updated_at,
+        a.status,
+        a.admin_memo,
+        a.admin_memo_updated_at,
+        a.admin_memo_admin_id,
         m.username AS member_username,
         m.name AS member_name
     </sql>
@@ -32,6 +37,9 @@
             <arg column="title" javaType="java.lang.String"/>
             <arg column="view_count" javaType="java.lang.Integer"/>
             <arg column="created_at" javaType="java.time.LocalDateTime"/>
+            <arg column="status"
+                 javaType="com.saebom.bulletinboard.article.domain.ArticleStatus"
+                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
             <arg column="member_username" javaType="java.lang.String"/>
             <arg column="member_name" javaType="java.lang.String"/>
         </constructor>
@@ -46,6 +54,12 @@
             <arg column="view_count" javaType="java.lang.Integer"/>
             <arg column="created_at" javaType="java.time.LocalDateTime"/>
             <arg column="updated_at" javaType="java.time.LocalDateTime"/>
+            <arg column="status"
+                 javaType="com.saebom.bulletinboard.article.domain.ArticleStatus"
+                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+            <arg column="admin_memo" javaType="java.lang.String"/>
+            <arg column="admin_memo_updated_at" javaType="java.time.LocalDateTime"/>
+            <arg column="admin_memo_admin_id" javaType="java.lang.Long"/>
             <arg column="member_username" javaType="java.lang.String"/>
             <arg column="member_name" javaType="java.lang.String"/>
         </constructor>
@@ -68,6 +82,16 @@
         JOIN members m ON a.member_id = m.id
         WHERE a.id = #{id}
     </select>
+
+    <update id="updateStatusById">
+        UPDATE articles
+        SET
+            status = #{status},
+            admin_memo = #{adminMemo},
+            admin_memo_updated_at = NOW(),
+            admin_memo_admin_id = #{adminId}
+        WHERE id = #{id}
+    </update>
 
     <delete id="deleteById">
         DELETE FROM articles
