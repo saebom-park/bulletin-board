@@ -1,7 +1,3 @@
-<!--
-File: src/main/resources/templates/admin/articles/detail.html
--->
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layout :: layout(~{::content})}">
@@ -12,160 +8,196 @@ File: src/main/resources/templates/admin/articles/detail.html
 
         <!-- Header -->
         <div class="bb-card__header bb-card__header--split">
-            <div>
+            <div class="bb-page-head">
                 <h1 class="bb-page-title">게시글 상세</h1>
-                <p class="bb-page-subtitle">
-                    관리자는 게시글 상태를 관리하고, 내용 확인 후 조치할 수 있습니다.
-                </p>
+                <p class="bb-page-subtitle">관리자는 게시글 상태를 관리하고, 댓글을 확인 후 조치할 수 있습니다.</p>
             </div>
 
             <div class="bb-actions bb-actions--right">
-                <a th:href="@{/admin/articles}" class="bb-btn bb-btn--subtle bb-btn--sm">
-                    목록
-                </a>
-
-                <!-- 필요 시 edit 페이지로 -->
-                <a th:href="@{|/admin/articles/${article.id}/edit|}"
-                   class="bb-btn bb-btn--ghost bb-btn--sm">
-                    수정
-                </a>
-
-                <!-- 삭제(또는 숨김) -->
-                <form th:action="@{|/admin/articles/${article.id}/delete|}"
-                      method="post"
-                      style="margin:0; display:inline-block;">
+                <a th:href="@{/admin/articles}" class="bb-btn bb-btn--subtle bb-btn--sm">목록</a>
+                <a th:href="@{|/admin/articles/${article.id}/edit|}" class="bb-btn bb-btn--subtle bb-btn--sm">수정</a>
+                <form th:action="@{|/admin/articles/${article.id}/delete|}" method="post" style="margin:0;">
                     <button type="submit" class="bb-btn bb-btn--danger bb-btn--sm"
-                            onclick="return confirm('정말 삭제하시겠습니까?');">
-                        삭제
-                    </button>
+                            onclick="return confirm('정말 삭제할까요?');">삭제</button>
                 </form>
             </div>
         </div>
 
-        <!-- Meta card -->
-        <div class="bb-section">
-            <div class="bb-admin-detail">
-                <div class="bb-admin-detail__top">
-                    <h2 class="bb-admin-detail__title" th:text="${article.title}">
-                        제목
-                    </h2>
+        <!-- 제목 + 상태 -->
+        <div class="bb-admin-detail__title-row">
+            <h2 class="bb-admin-detail__title" th:text="${article.title}">제목</h2>
+            <span class="bb-pill"
+                  th:classappend="${article.public} ? ' bb-pill--success' : ' bb-pill--danger'"
+                  th:text="${article.statusText}">공개</span>
+        </div>
 
-                    <div class="bb-admin-detail__badges">
-                        <!-- 상태 뱃지(선택) -->
-                        <span class="bb-badge bb-badge--role">
-                            공개
-                        </span>
-                    </div>
-                </div>
+        <!-- 메타 카드들 -->
+        <div class="bb-admin-detail__meta-grid">
+            <div class="bb-admin-detail__meta-item">
+                <span class="bb-admin-detail__meta-label">작성자</span>
+                <span class="bb-admin-detail__meta-value" th:text="${article.writerText}">writer</span>
+            </div>
 
-                <div class="bb-admin-detail__meta">
-                    <div class="bb-admin-detail__meta-item">
-                        <span class="bb-admin-detail__meta-label">작성자</span>
-                        <span class="bb-admin-detail__meta-value"
-                              th:text="${article.writerText}">
-                            @writer(이름)
-                        </span>
-                    </div>
+            <div class="bb-admin-detail__meta-item">
+                <span class="bb-admin-detail__meta-label">게시글 ID</span>
+                <span class="bb-admin-detail__meta-value" th:text="${article.id}">1</span>
+            </div>
 
-                    <div class="bb-admin-detail__meta-item">
-                        <span class="bb-admin-detail__meta-label">게시글 ID</span>
-                        <span class="bb-admin-detail__meta-value"
-                              th:text="${article.id}">
-                            1
-                        </span>
-                    </div>
+            <div class="bb-admin-detail__meta-item">
+                <span class="bb-admin-detail__meta-label">조회수</span>
+                <span class="bb-admin-detail__meta-value" th:text="${article.viewCount}">0</span>
+            </div>
 
-                    <div class="bb-admin-detail__meta-item">
-                        <span class="bb-admin-detail__meta-label">조회수</span>
-                        <span class="bb-admin-detail__meta-value"
-                              th:text="${article.viewCount}">
-                            0
-                        </span>
-                    </div>
+            <div class="bb-admin-detail__meta-item">
+                <span class="bb-admin-detail__meta-label">작성일</span>
+                <span class="bb-admin-detail__meta-value"
+                      th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</span>
+            </div>
 
-                    <div class="bb-admin-detail__meta-item">
-                        <span class="bb-admin-detail__meta-label">작성일</span>
-                        <span class="bb-admin-detail__meta-value"
-                              th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}">
-                            2025-01-01 00:00
-                        </span>
-                    </div>
-
-                    <div class="bb-admin-detail__meta-item" th:if="${article.updatedAt != null}">
-                        <span class="bb-admin-detail__meta-label">수정일</span>
-                        <span class="bb-admin-detail__meta-value"
-                              th:text="${#temporals.format(article.updatedAt, 'yyyy-MM-dd HH:mm')}">
-                            2025-01-01 00:00
-                        </span>
-                    </div>
-                </div>
+            <div class="bb-admin-detail__meta-item" th:if="${article.updatedAt != null}">
+                <span class="bb-admin-detail__meta-label">수정일</span>
+                <span class="bb-admin-detail__meta-value"
+                      th:text="${#temporals.format(article.updatedAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</span>
             </div>
         </div>
 
-        <hr class="bb-divider"/>
-
-        <!-- Content -->
+        <!-- 본문 -->
         <div class="bb-section">
             <h3 class="bb-admin-section-title">내용</h3>
-            <div class="bb-admin-content-box">
-                <p class="bb-admin-content-text"
-                   th:text="${article.content}">
-                    본문 내용
-                </p>
+            <div class="bb-admin-detail__content">
+                <pre class="bb-admin-detail__content-pre" th:text="${article.content}">내용</pre>
             </div>
         </div>
 
-        <!-- Admin actions (optional) -->
-        <div class="bb-section">
-            <h3 class="bb-admin-section-title">관리</h3>
+        <!-- ====== 여기부터: “관리패널(우측)” + “댓글관리(풀폭)” 구조 ====== -->
+        <div class="bb-admin-detail-layout">
 
-            <div class="bb-admin-actions-grid">
-
-                <!-- 상태 변경 + 관리자 메모 -->
-                <div class="bb-admin-action-card">
-
+            <!-- 우측: 게시글 관리(상태 + 관리자메모 필수) -->
+            <aside class="bb-admin-side">
+                <div class="bb-admin-action-card bb-admin-action-card--sticky">
                     <div class="bb-admin-action-card__head">
                         <div>
                             <div class="bb-admin-action-card__title">게시글 관리</div>
                             <div class="bb-admin-action-card__desc">
-                                게시글 상태 변경 시 관리자 메모를 반드시 남겨야 합니다.
+                                상태 변경 시 관리자 메모를 반드시 남겨야 합니다.
                             </div>
                         </div>
                     </div>
 
+                    <!-- 상태 관리 폼 -->
                     <form th:action="@{|/admin/articles/${article.id}/status|}"
-                        th:object="${statusForm}"
-                        method="post"
-                        class="bb-stack bb-stack--sm bb-admin-action-card__form">
+                          method="post"
+                          th:object="${statusForm}"
+                          class="bb-stack bb-stack--sm bb-admin-action-card__form">
 
                         <div class="bb-form-group">
                             <label class="bb-form-label">게시글 상태</label>
-                            <select th:field="*{status}"
-                                    class="bb-select bb-select--sm bb-select--block"
-                                    required>
-                                <option value="PUBLIC">공개</option>
+                            <select th:field="*{status}" class="bb-select bb-select--sm">
+                                <option value="VISIBLE">공개</option>
                                 <option value="HIDDEN">숨김</option>
                             </select>
                         </div>
 
                         <div class="bb-form-group">
-                            <label class="bb-form-label">관리자 메모 <span style="color:#ef4444;">*</span></label>
+                            <label class="bb-form-label">관리자 메모 <span class="bb-required">*</span></label>
                             <textarea th:field="*{adminMemo}"
-                                    class="bb-textarea"
-                                    required
-                                    style="min-height:120px;"
-                                    placeholder="예) 신고 3건 확인 후 임시 숨김 처리"></textarea>
+                                      class="bb-textarea"
+                                      style="min-height:120px;"
+                                      placeholder="예) 신고 3건 확인 → 임시 숨김 처리"
+                                      required></textarea>
+
+                            <p class="bb-form-hint" style="margin:6px 0 0;">
+                                * 메모는 변경 사유 기록용이며 내부 관리 히스토리로 활용됩니다.
+                            </p>
                         </div>
 
                         <div class="bb-actions bb-actions--right">
-                            <button type="submit" class="bb-btn bb-btn--primary bb-btn--sm">변경 적용</button>
+                            <button type="submit" class="bb-btn bb-btn--primary bb-btn--sm">
+                                변경 적용
+                            </button>
                         </div>
                     </form>
 
                 </div>
+            </aside>
 
+            <!-- 아래: 댓글 관리(풀폭) -->
+            <div class="bb-admin-comments bb-section">
+                <div class="bb-admin-comments__head">
+                    <div>
+                        <h3 class="bb-admin-section-title" style="margin:0;">댓글 관리</h3>
+                        <p class="bb-page-subtitle" style="margin:6px 0 0;">
+                            댓글 확인 후 숨김/삭제 등의 조치를 할 수 있습니다.
+                        </p>
+                    </div>
+
+                    <!-- (선택) 댓글 필터/검색 -->
+                    <form th:action="@{|/admin/articles/${article.id}|}" method="get"
+                          class="bb-inline bb-inline--tight">
+                        <select name="commentStatus" class="bb-select bb-select--sm">
+                            <option value="">전체</option>
+                            <option value="VISIBLE">공개</option>
+                            <option value="HIDDEN">숨김</option>
+                        </select>
+                        <button type="submit" class="bb-btn bb-btn--subtle bb-btn--sm">필터</button>
+                    </form>
+                </div>
+
+                <!-- 댓글 리스트 -->
+                <div class="bb-admin-comments__list">
+
+                    <div class="bb-table-empty" th:if="${#lists.isEmpty(comments)}">
+                        댓글이 없습니다.
+                    </div>
+
+                    <div th:if="${!#lists.isEmpty(comments)}" class="bb-admin-comment-cards">
+                        <div th:each="c : ${comments}" class="bb-admin-comment-card">
+                            <div class="bb-admin-comment-card__top">
+                                <div class="bb-admin-comment-card__who">
+                                    <span class="bb-admin-comment-card__writer" th:text="${c.writerText}">작성자</span>
+                                    <span class="bb-admin-comment-card__dot">·</span>
+                                    <span class="bb-admin-comment-card__date"
+                                          th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01</span>
+                                </div>
+
+                                <span class="bb-pill bb-pill--sm"
+                                      th:classappend="c.public ? ' bb-pill--success' : ' bb-pill--danger'"
+                                      th:text="c.public ? '공개' : '숨김'">공개</span>
+                            </div>
+
+                            <div class="bb-admin-comment-card__body" th:text="${c.content}">
+                                댓글 내용
+                            </div>
+
+                            <div class="bb-admin-comment-card__actions">
+
+                                <!-- 상태 변경 (셀렉트 + 적용) -->
+                                <form th:action="@{|/admin/comments/${c.id}/status|}" method="post" class="bb-admin-comment-action" style="margin:0;">
+                                    <select name="status" class="bb-select bb-select--sm bb-select--compact">
+                                        <option value="VISIBLE" th:selected="${c.public}">공개</option>
+                                        <option value="HIDDEN" th:selected="${!c.public}">숨김</option>
+                                    </select>
+
+                                    <button type="submit" class="bb-btn bb-btn--subtle bb-btn--sm">적용</button>
+                                </form>
+
+                                <!-- 삭제 -->
+                                <form th:action="@{|/admin/comments/${c.id}/delete|}" method="post" style="margin:0;">
+                                    <button type="submit"
+                                            class="bb-btn bb-btn--danger bb-btn--sm"
+                                            onclick="return confirm('댓글을 삭제할까요?');">삭제</button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
             </div>
+
         </div>
+        <!-- ====== /관리패널 + 댓글관리 ====== -->
 
     </div>
 

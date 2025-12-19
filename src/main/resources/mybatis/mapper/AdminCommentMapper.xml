@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.saebom.bulletinboard.admin.comment.repository.AdminCommentMapper">
+
+    <sql id="commentListColumns">
+        c.id,
+        c.content,
+        c.created_at,
+        c.updated_at,
+        c.status,
+        c.admin_memo,
+        c.admin_memo_updated_at,
+        m.username AS member_username,
+        m.name AS member_name,
+        m2.username AS admin_memo_username,
+        m2.name AS admin_memo_name
+    </sql>
+
+    <resultMap id="commentListViewMap" type="com.saebom.bulletinboard.admin.comment.dto.AdminCommentListView">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Long"/>
+            <arg column="content" javaType="java.lang.String"/>
+            <arg column="created_at" javaType="java.time.LocalDateTime"/>
+            <arg column="updated_at" javaType="java.time.LocalDateTime"/>
+            <arg column="status" javaType="com.saebom.bulletinboard.comment.domain.CommentStatus"
+                 typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+            <arg column="admin_memo" javaType="java.lang.String"/>
+            <arg column="admin_memo_updated_at" javaType="java.time.LocalDateTime"/>
+            <arg column="member_username" javaType="java.lang.String"/>
+            <arg column="member_name" javaType="java.lang.String"/>
+            <arg column="admin_memo_username" javaType="java.lang.String"/>
+            <arg column="admin_memo_name" javaType="java.lang.String"/>
+        </constructor>
+    </resultMap>
+
+    <select id="selectListByArticleId"
+            resultMap="commentListViewMap">
+        SELECT
+        <include refid="commentListColumns"/>
+        FROM comments c
+        JOIN members m ON c.member_id = m.id
+        LEFT JOIN members m2 ON c.admin_memo_admin_id = m2.id
+        WHERE c.article_id = #{articleId}
+        ORDER BY c.created_at ASC
+    </select>
+
+    <update id="updateStatusById">
+        UPDATE comments
+        SET
+            status = #{status},
+            admin_memo = #{adminMemo},
+            admin_memo_updated_at = NOW(),
+            admin_memo_admin_id = #{adminId}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM comments
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

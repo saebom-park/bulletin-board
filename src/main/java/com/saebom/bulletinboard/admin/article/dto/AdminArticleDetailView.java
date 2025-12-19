@@ -68,7 +68,9 @@ public class AdminArticleDetailView {
     public String getMemberName() { return memberName; }
 
     // helper method
-    public String getWriterText() {
-        return memberName + "(" + memberUsername + ")";
-    }
+    public String getWriterText() { return memberName + "(" + memberUsername + ")"; }
+
+    public boolean isPublic() { return status == ArticleStatus.PUBLIC; }
+
+    public String getStatusText() { return isPublic() ? "공개" : "숨김"; }
 }

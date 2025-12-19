@@ -40,4 +40,8 @@ public class AdminArticleListView {
     public String getWriterText() {
         return memberName + "(" + memberUsername + ")";
     }
+
+    public boolean isPublic() { return status == ArticleStatus.PUBLIC; }
+
+    public String getStatusText() { return isPublic() ? "공개" : "숨김"; }
 }

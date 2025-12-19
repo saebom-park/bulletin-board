@@ -4,6 +4,8 @@ import com.saebom.bulletinboard.admin.article.dto.AdminArticleDetailView;
 import com.saebom.bulletinboard.admin.article.dto.AdminArticleListView;
 import com.saebom.bulletinboard.admin.article.dto.AdminArticleStatusUpdateForm;
 import com.saebom.bulletinboard.admin.article.service.AdminArticleService;
+import com.saebom.bulletinboard.admin.comment.dto.AdminCommentListView;
+import com.saebom.bulletinboard.admin.comment.service.AdminCommentService;
 import com.saebom.bulletinboard.global.web.LoginSessionUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -20,10 +22,12 @@ import java.util.List;
 public class AdminArticleController {
 
     private final AdminArticleService adminArticleService;
+    private final AdminCommentService adminCommentService;
 
     // constructor
-    public AdminArticleController(AdminArticleService adminArticleService) {
+    public AdminArticleController(AdminArticleService adminArticleService, AdminCommentService adminCommentService) {
         this.adminArticleService = adminArticleService;
+        this.adminCommentService = adminCommentService;
     }
 
     @GetMapping
@@ -44,10 +48,13 @@ public class AdminArticleController {
         AdminArticleDetailView article = adminArticleService.getArticleDetail(articleId);
         model.addAttribute("article", article);
 
-        AdminArticleStatusUpdateForm form = new AdminArticleStatusUpdateForm();
-        form.setStatus(article.getStatus());
-        form.setAdminMemo(article.getAdminMemo());
-        model.addAttribute("statusForm", form);
+        AdminArticleStatusUpdateForm articleStatusForm = new AdminArticleStatusUpdateForm();
+        articleStatusForm.setStatus(article.getStatus());
+        articleStatusForm.setAdminMemo(article.getAdminMemo());
+        model.addAttribute("statusForm", articleStatusForm);
+
+        List<AdminCommentListView> comments = adminCommentService.getCommentList(articleId);
+        model.addAttribute("comments", comments);
 
         return "admin/articles/detail";
     }

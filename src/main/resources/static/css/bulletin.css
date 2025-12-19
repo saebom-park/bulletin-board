@@ -1,12 +1,17 @@
+/* =========================================================
+   bulletin.css (cleaned)
+   - duplicates removed
+   - sections reordered
+   - admin detail unified
+   ========================================================= */
+
 /* ===========================
    Reset & Base
    =========================== */
 
 *,
 *::before,
-*::after {
-    box-sizing: border-box;
-}
+*::after { box-sizing: border-box; }
 
 html, body {
     margin: 0;
@@ -47,6 +52,25 @@ body.bb-body {
     color: var(--bs-text-main);
 }
 
+a {
+    color: var(--bs-primary);
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+a:hover { color: var(--bs-primary-dark); }
+
+/* reset form buttons */
+button,
+input[type="submit"] {
+    font-family: inherit;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+
 /* ===========================
    Layout
    =========================== */
@@ -56,7 +80,24 @@ body.bb-body {
     min-height: 100vh;
 }
 
-/* Sidebar */
+.bb-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 24px 28px;
+}
+
+.bb-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+/* ===========================
+   Sidebar
+   =========================== */
 
 .bb-sidebar {
     width: 240px;
@@ -150,214 +191,12 @@ body.bb-body {
     opacity: 1;
 }
 
-/* Sidebar footer */
-
 .bb-sidebar__footer {
     margin-top: auto;
     font-size: 11px;
     color: #6b7280;
 }
 
-/* ===========================
-   Alert / Flash Message
-   =========================== */
-
-.bb-alert {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    padding: 14px 16px;
-    border-radius: 14px;
-
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 1.5;
-
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-    animation: bb-alert-fade-in 0.25s ease-out;
-}
-
-/* 아이콘 영역 (가상 아이콘) */
-.bb-alert::before {
-    content: "";
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-/* 성공 */
-.bb-alert--success {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #166534;
-}
-
-.bb-alert--success::before {
-    content: "✓";
-    background: #22c55e;
-    color: #ffffff;
-    font-weight: 700;
-}
-
-/* 에러 */
-.bb-alert--danger {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #7f1d1d;
-}
-
-.bb-alert--danger::before {
-    content: "!";
-    background: #ef4444;
-    color: #ffffff;
-    font-weight: 800;
-}
-
-/* 살짝 떠오르는 애니메이션 */
-@keyframes bb-alert-fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(-6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ===========================
-   Toast (Flash Message)
-   =========================== */
-
-.bb-toast-area {
-    position: fixed;
-    top: 18px;
-    right: 18px;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: min(360px, calc(100vw - 36px));
-}
-
-.bb-toast {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-
-    padding: 14px 14px 14px 14px;
-    border-radius: 16px;
-
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
-    backdrop-filter: blur(10px);
-
-    animation: bb-toast-in 0.22s ease-out;
-}
-
-.bb-toast__icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-
-    font-weight: 800;
-    font-size: 13px;
-    color: #ffffff;
-}
-
-.bb-toast__body {
-    min-width: 0;
-    flex: 1;
-}
-
-.bb-toast__title {
-    margin: 0;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-}
-
-.bb-toast__msg {
-    margin-top: 3px;
-    font-size: 13px;
-    line-height: 1.55;
-    opacity: 0.95;
-    word-break: break-word;
-}
-
-.bb-toast__close {
-    margin-left: 6px;
-    width: 28px;
-    height: 28px;
-    border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    background: rgba(255, 255, 255, 0.55);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #0f172a;
-    font-weight: 800;
-    transition: background .12s ease, transform .12s ease;
-}
-
-.bb-toast__close:hover {
-    background: rgba(255, 255, 255, 0.85);
-    transform: translateY(-1px);
-}
-
-/* variants */
-.bb-toast--success {
-    background: rgba(240, 253, 244, 0.92);
-    border: 1px solid rgba(187, 247, 208, 0.95);
-    color: #166534;
-}
-.bb-toast--success .bb-toast__icon {
-    background: linear-gradient(135deg, #10b981, #22c55e);
-}
-
-.bb-toast--danger {
-    background: rgba(254, 242, 242, 0.92);
-    border: 1px solid rgba(254, 202, 202, 0.95);
-    color: #7f1d1d;
-}
-.bb-toast--danger .bb-toast__icon {
-    background: linear-gradient(135deg, #ef4444, #f97373);
-}
-
-/* out animation */
-.bb-toast--hide {
-    animation: bb-toast-out 0.18s ease-in forwards;
-}
-
-@keyframes bb-toast-in {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bb-toast-out {
-    from { opacity: 1; transform: translateY(0); }
-    to   { opacity: 0; transform: translateY(-8px); }
-}
-
-/* mobile */
-@media (max-width: 768px) {
-    .bb-toast-area {
-        top: 12px;
-        right: 12px;
-        width: min(360px, calc(100vw - 24px));
-    }
-}
 
 /* ===========================
    Sidebar User Card
@@ -396,11 +235,19 @@ body.bb-body {
     letter-spacing: -0.03em;
 }
 
+.bb-sidebar__user-avatar--guest { opacity: 0.9; }
+
 .bb-sidebar__user-texts {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    min-width: 0;            /* 줄바꿈 자연스럽게 */
+    min-width: 0;
+}
+
+.bb-sidebar__name-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .bb-sidebar__user-name {
@@ -415,13 +262,6 @@ body.bb-body {
     color: #cbd5f5;
 }
 
-.bb-sidebar__name-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* 오른쪽 뱃지 */
 .bb-sidebar__user-badge {
     padding: 4px 10px;
     border-radius: 999px;
@@ -431,43 +271,13 @@ body.bb-body {
     font-weight: 600;
 }
 
-/* ===========================
-   Role Badge (공통)
-   =========================== */
-
-.bb-role-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    border-radius: 999px;
-
-    font-size: 11px;
-    font-weight: 600;
-    line-height: 1;
-
-    background: #ecfdf5;   /* 연한 초록 */
-    color: #059669;        /* 초록 텍스트 */
-}
-
-/* 관리자 전용 색상 */
-.bb-role-badge--admin {
-    background: #eef2ff;   /* 연한 인디고 */
-    color: #3730a3;
-}
-
 .bb-sidebar__user-inline {
     display: flex;
     gap: 8px;
 }
 
-.bb-sidebar__user-inline--spaced {
-    margin-top: 6px;
-}
-
-/* 로그인 상태 → 가운데 정렬 */
-.bb-sidebar__user-inline--center {
-    justify-content: center;
-}
+.bb-sidebar__user-inline--spaced { margin-top: 6px; }
+.bb-sidebar__user-inline--center { justify-content: center; }
 
 .bb-sidebar__inline-btn {
     padding: 6px 10px;
@@ -477,11 +287,9 @@ body.bb-body {
     border-radius: 999px;
     text-decoration: none;
     border: 1px solid rgba(255,255,255,0.16);
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     transition: background .12s ease, opacity .12s ease;
 }
 
@@ -490,7 +298,6 @@ body.bb-body {
     opacity: 1;
 }
 
-/* 로그아웃 전용 색감 */
 .bb-sidebar__inline-btn--logout {
     color: #fca5a5;
     border-color: rgba(251,113,133,0.25);
@@ -502,19 +309,42 @@ body.bb-body {
     color: #f87171;
 }
 
-/* 게스트 전용 약간 더 부드러운 아바타 색 */
-.bb-sidebar__user-avatar--guest {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    opacity: 0.9;
-}
-
-/* 회원가입 버튼을 조금 더 라이트하게 */
 .bb-sidebar__inline-btn--outline {
     background: transparent;
     border: 1px solid rgba(148, 163, 184, 0.6);
 }
 
-/* Header brand link (Saebom Board 클릭 영역) */
+/* Role badge */
+.bb-role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.bb-role-badge--admin {
+    background: #eef2ff;
+    color: #3730a3;
+}
+
+
+/* ===========================
+   Header
+   =========================== */
+
+.bb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
 .bb-header__brand-link {
     text-decoration: none;
     color: inherit;
@@ -524,88 +354,10 @@ body.bb-body {
     margin-bottom: 6px;
 }
 
-/* Brand 아래에 페이지 타이틀 묶음 */
 .bb-header__page {
     display: flex;
     flex-direction: column;
     gap: 4px;
-}
-
-/* 햄버거 버튼 기본은 데스크탑에서 숨김 */
-.bb-header__menu-btn {
-    display: none;
-    align-items: center;       /* 버튼 안에서 아이콘 수직 가운데 */
-    justify-content: center;   /* 버튼 안에서 아이콘 수평 가운데 */
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border-radius: 999px;
-    border: 1px solid #e5e7eb;
-    background: #ffffff;
-    cursor: pointer;
-}
-
-/* 아이콘 컨테이너 */
-.bb-header__menu-icon {
-    position: relative;
-    width: 14px;   /* 햄버거 가로 길이 */
-    height: 10px;  /* 햄버거 전체 높이 */
-}
-
-/* 3줄 공통 스타일 */
-.bb-header__menu-icon::before,
-.bb-header__menu-icon::after,
-.bb-header__menu-icon span {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: #0f172a; /* 짙은 남색/검정 느낌 */
-    border-radius: 999px;
-}
-
-/* 가운데 줄 */
-.bb-header__menu-icon span {
-    top: 4px;
-}
-
-/* 위/아래 줄 */
-.bb-header__menu-icon::before {
-    top: 0;
-}
-
-.bb-header__menu-icon::after {
-    bottom: 0;
-}
-
-/* 사이드바 열렸을 때 스크롤 잠그기 */
-.bb-body--no-scroll {
-    overflow: hidden;
-}
-
-/* 사이드바 백드롭 기본 숨김 (데스크탑) */
-.bb-sidebar-backdrop {
-    display: none;
-}
-
-/* Main area */
-
-.bb-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px 24px 28px;
-}
-
-/* Header */
-
-.bb-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 18px;
 }
 
 .bb-header__title-group {
@@ -640,14 +392,47 @@ body.bb-body {
     border: 1px solid rgba(148, 163, 184, 0.4);
 }
 
-/* Content */
-
-.bb-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+/* mobile menu button */
+.bb-header__menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    cursor: pointer;
 }
+
+.bb-header__menu-icon {
+    position: relative;
+    width: 14px;
+    height: 10px;
+}
+
+.bb-header__menu-icon::before,
+.bb-header__menu-icon::after,
+.bb-header__menu-icon span {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0f172a;
+    border-radius: 999px;
+}
+
+.bb-header__menu-icon span { top: 4px; }
+.bb-header__menu-icon::before { top: 0; }
+.bb-header__menu-icon::after { bottom: 0; }
+
+/* sidebar overlay */
+.bb-body--no-scroll { overflow: hidden; }
+
+.bb-sidebar-backdrop { display: none; }
+
 
 /* ===========================
    Cards & Sections
@@ -660,9 +445,7 @@ body.bb-body {
     padding: 20px 22px 22px;
 }
 
-.bb-card--spaced {
-    padding: 22px 24px 24px;
-}
+.bb-card--spaced { padding: 22px 24px 24px; }
 
 .bb-card__header {
     display: flex;
@@ -683,42 +466,13 @@ body.bb-body {
     color: var(--bs-text-soft);
 }
 
-/* Section spacing inside cards */
+.bb-section { margin-top: 10px; }
+.bb-section + .bb-section { margin-top: 18px; }
 
-.bb-section {
-    margin-top: 10px;
-}
-
-.bb-section + .bb-section {
-    margin-top: 18px;
-}
 
 /* ===========================
-   Buttons & Links
+   Buttons
    =========================== */
-
-a {
-    color: var(--bs-primary);
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.15s ease, opacity 0.15s ease;
-}
-
-a:hover {
-    color: var(--bs-primary-dark);
-}
-
-/* Reset form buttons */
-
-button,
-input[type="submit"] {
-    font-family: inherit;
-    border: none;
-    background: none;
-    padding: 0;
-}
-
-/* Button base */
 
 .bb-btn {
     display: inline-flex;
@@ -737,17 +491,12 @@ input[type="submit"] {
     color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
 }
 
-/* Sizes */
-
 .bb-btn--sm {
     height: 28px;
     padding: 0 10px;
     font-size: 12px;
 }
 
-/* Variants */
-
-/* Primary Button: White Text */
 .bb-btn--primary {
     background: var(--bs-primary);
     border-color: var(--bs-primary);
@@ -758,7 +507,7 @@ input[type="submit"] {
 .bb-btn--primary:hover {
     background: var(--bs-primary-dark);
     border-color: var(--bs-primary-dark);
-    color: #ffffff; /* Hover에서도 글씨 유지 */
+    color: #ffffff;
     box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15),
     0 10px 20px rgba(16, 185, 129, 0.35);
     transform: translateY(-1px);
@@ -781,16 +530,18 @@ input[type="submit"] {
     color: var(--bs-text-muted);
 }
 
-.bb-btn--subtle:hover {
-    background: rgba(148, 163, 184, 0.08);
+.bb-btn--subtle:hover { background: rgba(148, 163, 184, 0.08); }
+
+.bb-btn--danger {
+    background: #ef4444;
+    color: #ffffff;
+    border: 1px solid #ef4444;
 }
 
-/*
- * Danger 버튼은 기존 파일에서 2번 정의되어 충돌 위험이 있었음.
- * - 현재 동작(마지막 정의가 이김)을 유지하기 위해,
- *   강한 danger는 .bb-btn--danger로 유지
- * - 연한 danger는 .bb-btn--danger-soft로 분리
- */
+.bb-btn--danger:hover {
+    background: #dc2626;
+    border-color: #dc2626;
+}
 
 .bb-btn--danger-soft {
     background: #fee2e2;
@@ -798,11 +549,7 @@ input[type="submit"] {
     color: var(--bs-danger);
 }
 
-.bb-btn--danger-soft:hover {
-    background: #fecaca;
-}
-
-/* Disabled */
+.bb-btn--danger-soft:hover { background: #fecaca; }
 
 .bb-btn:disabled {
     opacity: 0.55;
@@ -811,30 +558,27 @@ input[type="submit"] {
     transform: none;
 }
 
-/* 중복확인 버튼 기본 상태(활성) → 텍스트 초록색 */
-#usernameCheckBtn {
-    color: #16a34a; /* 초록 */
-    font-weight: 600;
-}
-
-/* disabled 상태 → 텍스트 회색 */
-#usernameCheckBtn:disabled {
-    color: #9ca3af !important;  /* 연회색 */
-    cursor: not-allowed;
-    opacity: 1;                 /* 흐려지지 않게 유지 */
-}
-
-/* Action groups */
-
+/* actions */
 .bb-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
 }
 
-.bb-actions--right {
-    justify-content: flex-end;
+.bb-actions--right { justify-content: flex-end; }
+
+/* username check button */
+#usernameCheckBtn {
+    color: #16a34a;
+    font-weight: 600;
 }
+
+#usernameCheckBtn:disabled {
+    color: #9ca3af !important;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
 
 /* ===========================
    Typography & Meta
@@ -866,13 +610,12 @@ input[type="submit"] {
     color: #4b5563;
 }
 
-/* Content text */
-
 .bb-content-text {
     font-size: 14px;
     line-height: 1.8;
     white-space: pre-wrap;
 }
+
 
 /* ===========================
    Table (List)
@@ -890,9 +633,7 @@ table {
     font-size: 13px;
 }
 
-thead {
-    background: #f8fafc;
-}
+thead { background: #f8fafc; }
 
 th, td {
     padding: 10px 12px;
@@ -908,24 +649,15 @@ th {
     letter-spacing: 0.06em;
 }
 
-tbody tr:hover {
-    background: #f9fafb;
-}
-
-tbody tr:last-child td {
-    border-bottom: none;
-}
+tbody tr:hover { background: #f9fafb; }
+tbody tr:last-child td { border-bottom: none; }
 
 tbody td a {
     font-weight: 500;
     color: var(--bs-text-main);
 }
 
-tbody td a:hover {
-    color: var(--bs-primary);
-}
-
-/* Empty row */
+tbody td a:hover { color: var(--bs-primary); }
 
 .bb-table-empty {
     text-align: center;
@@ -933,13 +665,12 @@ tbody td a:hover {
     color: var(--bs-text-soft);
 }
 
+
 /* ===========================
    Forms
    =========================== */
 
-.bb-form-group {
-    margin-bottom: 16px;
-}
+.bb-form-group { margin-bottom: 16px; }
 
 .bb-form-label {
     display: block;
@@ -984,16 +715,8 @@ tbody td a:hover {
     min-height: 200px;
 }
 
-/* Field error / success / feedback (중복 제거) */
-
-.bb-field-feedback {
-    margin-top: 4px;
-    font-size: 12px;
-}
-
-.bb-field-success {
-    color: #16a34a;
-}
+.bb-field-feedback { margin-top: 4px; font-size: 12px; }
+.bb-field-success { color: #16a34a; }
 
 .bb-field-error {
     margin-top: 4px;
@@ -1007,8 +730,231 @@ tbody td a:hover {
     background: #fef2f2;
 }
 
+
 /* ===========================
-   Comments
+   Select (Admin / Forms)
+   =========================== */
+
+.bb-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    height: 34px;
+    padding: 0 38px 0 12px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+
+    background-color: #f9fafb;
+    background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+
+    color: var(--bs-text-main);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+
+    outline: none;
+    cursor: pointer;
+
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.bb-select:focus {
+    border-color: var(--bs-primary);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18);
+}
+
+.bb-select:hover { background-color: #ffffff; }
+
+.bb-admin-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* ===========================
+   Alerts / Toast
+   =========================== */
+
+.bb-alert {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+    animation: bb-alert-fade-in 0.25s ease-out;
+}
+
+.bb-alert::before {
+    content: "";
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bb-alert--success {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.bb-alert--success::before {
+    content: "✓";
+    background: #22c55e;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.bb-alert--danger {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #7f1d1d;
+}
+
+.bb-alert--danger::before {
+    content: "!";
+    background: #ef4444;
+    color: #ffffff;
+    font-weight: 800;
+}
+
+@keyframes bb-alert-fade-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* toast */
+.bb-toast-area {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: min(360px, calc(100vw - 36px));
+}
+
+.bb-toast {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    padding: 14px;
+    border-radius: 16px;
+
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+    backdrop-filter: blur(10px);
+
+    animation: bb-toast-in 0.22s ease-out;
+}
+
+.bb-toast__icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    font-weight: 800;
+    font-size: 13px;
+    color: #ffffff;
+}
+
+.bb-toast__body { min-width: 0; flex: 1; }
+
+.bb-toast__title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+.bb-toast__msg {
+    margin-top: 3px;
+    font-size: 13px;
+    line-height: 1.55;
+    opacity: 0.95;
+    word-break: break-word;
+}
+
+.bb-toast__close {
+    margin-left: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(255, 255, 255, 0.55);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    font-weight: 800;
+    transition: background .12s ease, transform .12s ease;
+}
+
+.bb-toast__close:hover {
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateY(-1px);
+}
+
+.bb-toast--success {
+    background: rgba(240, 253, 244, 0.92);
+    border: 1px solid rgba(187, 247, 208, 0.95);
+    color: #166534;
+}
+
+.bb-toast--success .bb-toast__icon {
+    background: linear-gradient(135deg, #10b981, #22c55e);
+}
+
+.bb-toast--danger {
+    background: rgba(254, 242, 242, 0.92);
+    border: 1px solid rgba(254, 202, 202, 0.95);
+    color: #7f1d1d;
+}
+
+.bb-toast--danger .bb-toast__icon {
+    background: linear-gradient(135deg, #ef4444, #f97373);
+}
+
+.bb-toast--hide { animation: bb-toast-out 0.18s ease-in forwards; }
+
+@keyframes bb-toast-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bb-toast-out {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-8px); }
+}
+
+
+/* ===========================
+   Comments (user)
    =========================== */
 
 .bb-comments {
@@ -1046,9 +992,7 @@ tbody td a:hover {
     border-bottom: 1px solid #edf2f7;
 }
 
-.bb-comment-item:last-child {
-    border-bottom: none;
-}
+.bb-comment-item:last-child { border-bottom: none; }
 
 .bb-comment-content {
     font-size: 14px;
@@ -1072,6 +1016,7 @@ tbody td a:hover {
     margin-left: 6px;
 }
 
+
 /* ===========================
    Utility
    =========================== */
@@ -1089,9 +1034,7 @@ tbody td a:hover {
     gap: 8px;
 }
 
-.bb-stack--lg {
-    gap: 14px;
-}
+.bb-stack--lg { gap: 14px; }
 
 .bb-row {
     display: flex;
@@ -1099,15 +1042,15 @@ tbody td a:hover {
     gap: 10px;
 }
 
-.bb-row--between {
-    justify-content: space-between;
-}
+.bb-row--between { justify-content: space-between; }
+
 
 /* ===========================
-   Login Page
+   Pages: Login / Signup
    =========================== */
 
-.bb-login-wrapper {
+.bb-login-wrapper,
+.bb-signup-wrapper {
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -1126,7 +1069,17 @@ tbody td a:hover {
     text-align: center;
 }
 
-.bb-login-title {
+.bb-signup-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bs-card-bg);
+    border-radius: var(--bs-radius-lg);
+    box-shadow: var(--bs-shadow-soft);
+    padding: 32px 30px 36px;
+}
+
+.bb-login-title,
+.bb-signup-title {
     margin: 0;
     font-size: 20px;
     font-weight: 700;
@@ -1134,16 +1087,15 @@ tbody td a:hover {
     letter-spacing: -0.02em;
 }
 
-.bb-login-sub {
+.bb-login-sub,
+.bb-signup-sub {
     margin: 8px 0 24px;
     font-size: 13px;
     color: var(--bs-text-soft);
 }
 
-.bb-login-form-group {
-    text-align: left;
-    margin-bottom: 18px;
-}
+.bb-login-form-group,
+.bb-signup-card .bb-form-group { margin-bottom: 18px; }
 
 .bb-login-label {
     display: block;
@@ -1151,6 +1103,7 @@ tbody td a:hover {
     font-size: 13px;
     font-weight: 500;
     color: #374151;
+    text-align: left;
 }
 
 .bb-login-input {
@@ -1171,14 +1124,12 @@ tbody td a:hover {
     outline: none;
 }
 
-/* 에러 메시지 (게시판 폼과 톤 맞춤) */
 .bb-login-error {
     color: var(--bs-danger);
     font-size: 12px;
     margin-top: 4px;
 }
 
-/* 로그인 버튼 */
 .bb-login-btn {
     width: 100%;
     margin-top: 22px;
@@ -1204,16 +1155,13 @@ tbody td a:hover {
     transform: translateY(-1px);
 }
 
-/* ===========================
-   Notice / Info Message (Login Prompt)
-   =========================== */
-
+/* notice/info */
 .bb-info-box {
     padding: 16px 18px;
     border-radius: var(--bs-radius-md);
-    background: #f0fdf4; /* 아주 연한 초록 */
-    border: 1px solid #bbf7d0; /* 연녹색 라인 */
-    color: #166534; /* 깊은 녹색 텍스트 */
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
     font-size: 13px;
     line-height: 1.6;
 }
@@ -1224,91 +1172,35 @@ tbody td a:hover {
     font-weight: 600;
 }
 
-.bb-info-box a:hover {
-    color: var(--bs-primary-dark);
-}
+.bb-info-box a:hover { color: var(--bs-primary-dark); }
 
-/* ===========================
-   Signup Page
-   =========================== */
+/* signup extras */
+.bb-check-btn { margin-left: 6px; white-space: nowrap; }
 
-.bb-signup-wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bs-bg);
-    padding: 20px;
-}
-
-.bb-signup-card {
-    width: 100%;
-    max-width: 420px;
-    background: var(--bs-card-bg);
-    border-radius: var(--bs-radius-lg);
-    box-shadow: var(--bs-shadow-soft);
-    padding: 32px 30px 36px;
-}
-
-.bb-signup-title {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--bs-text-main);
-    letter-spacing: -0.02em;
-}
-
-.bb-signup-sub {
-    margin: 8px 0 24px;
-    font-size: 13px;
-    color: var(--bs-text-soft);
-}
-
-/* 아이디 중복확인 버튼 (중복 제거: 한 번에 합침) */
-.bb-check-btn {
-    margin-left: 6px;
-    white-space: nowrap; /* 버튼 줄바꿈 방지 */
-}
-
-/* 결과 메시지 공통 */
 .bb-signup-card .bb-row {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.bb-signup-card .bb-row .bb-input {
-    flex: 1;    /* 입력창이 남은 공간을 차지하게 함 */
-}
+.bb-signup-card .bb-row .bb-input { flex: 1; }
 
-/* Username check icons */
 .bb-check-icon {
-    display: none;                 /* 기본은 숨김 */
+    display: none;
     width: 16px;
     height: 16px;
     margin-right: 4px;
     vertical-align: -2px;
 }
 
-.bb-check-icon svg {
-    width: 100%;
-    height: 100%;
-}
+.bb-check-icon svg { width: 100%; height: 100%; }
 
-/* 성공 상태일 때: 초록 체크만 보이도록 */
-.bb-field-success .bb-check-icon--success {
-    display: inline-flex;
-    color: #16a34a;
-}
+.bb-field-success .bb-check-icon--success { display: inline-flex; color: #16a34a; }
+.bb-field-error .bb-check-icon--error { display: inline-flex; color: #ef4444; }
 
-/* 실패 상태일 때: 빨간 X만 보이도록 */
-.bb-field-error .bb-check-icon--error {
-    display: inline-flex;
-    color: #ef4444;
-}
 
 /* ===========================
-   Profile (My Page)
+   Page: Profile (My Page)
    =========================== */
 
 .bb-profile-list {
@@ -1329,14 +1221,9 @@ tbody td a:hover {
     border-top: 1px solid #f3f4f6;
 }
 
-.bb-profile-row:first-child {
-    border-top: none;
-}
+.bb-profile-row:first-child { border-top: none; }
 
-/* dt 텍스트를 칩 형태로 */
-.bb-profile-row dt {
-    margin: 0;
-}
+.bb-profile-row dt { margin: 0; }
 
 .bb-profile-row dt span {
     display: inline-flex;
@@ -1356,29 +1243,21 @@ tbody td a:hover {
     word-break: break-all;
 }
 
-/* 하단 버튼 영역 여백 */
-.bb-profile-actions {
-    margin-top: 20px;
-}
+.bb-profile-actions { margin-top: 20px; }
+.bb-profile-container { max-width: 100%; }
 
-/* My Page card width fix */
-.bb-profile-container {
-    max-width: 100%;
-}
-
-/* 작은 힌트 텍스트 */
 .bb-form-hint {
     margin-top: 6px;
     font-size: 12px;
-    color: #6b7280; /* gray-500 */
+    color: #6b7280;
 }
 
-/* 회원 탈퇴 영역 */
+/* profile danger block */
 .bb-profile-danger {
     margin-top: 20px;
     padding: 12px 14px;
     border-radius: 14px;
-    background: #fef2f2;            /* 연한 레드 배경 */
+    background: #fef2f2;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -1394,20 +1273,19 @@ tbody td a:hover {
 .bb-profile-danger__title {
     font-size: 12px;
     font-weight: 600;
-    color: #b91c1c;                 /* red-700 */
+    color: #b91c1c;
 }
 
 .bb-profile-danger__desc {
     font-size: 12px;
-    color: #6b7280;                 /* gray-500 */
+    color: #6b7280;
 }
 
-/* 탈퇴 버튼: 과하게 크지 않은 아웃라인 버튼 */
 .bb-profile-danger__btn {
     align-self: center;
     padding: 6px 14px;
     border-radius: 999px;
-    border: 1px solid #f97373;      /* red-400 */
+    border: 1px solid #f97373;
     background: #ffffff;
     font-size: 12px;
     color: #b91c1c;
@@ -1416,40 +1294,23 @@ tbody td a:hover {
     white-space: nowrap;
 }
 
-.bb-profile-danger__btn:hover {
-    background: #fee2e2;            /* hover 시 살짝만 강조 */
-}
+.bb-profile-danger__btn:hover { background: #fee2e2; }
 
 .bb-link-danger {
     background: none;
     border: none;
     padding: 0;
     font-size: 12px;
-    color: #ef4444; /* red-500 */
+    color: #ef4444;
     cursor: pointer;
     text-decoration: underline;
 }
 
-.bb-link-danger:hover {
-    color: #b91c1c; /* red-700 */
-}
+.bb-link-danger:hover { color: #b91c1c; }
 
-/* 탈퇴 페이지 Danger 스타일 */
 .bb-profile-badge--danger {
     background: #fef2f2;
     color: #b91c1c;
-}
-
-/* 강한 Danger 버튼 (기존 최종 동작 유지) */
-.bb-btn--danger {
-    background: #ef4444;
-    color: #ffffff;
-    border: 1px solid #ef4444;
-}
-
-.bb-btn--danger:hover {
-    background: #dc2626;
-    border-color: #dc2626;
 }
 
 .bb-danger-text {
@@ -1460,25 +1321,31 @@ tbody td a:hover {
     line-height: 1.5;
 }
 
-/* 기본: 모바일 카드 레이아웃 숨김 (데스크탑에서만 테이블 보이게) */
-.bb-article-list-mobile {
-    display: none;
-}
+
+/* ===========================
+   Lists: Articles (mobile cards)
+   =========================== */
+
+.bb-article-list-mobile { display: none; }
 
 .bb-article-actions-bottom {
     margin-top: 12px;
     display: flex;
-    justify-content: flex-end;  /* 우측 정렬 */
+    justify-content: flex-end;
     align-items: center;
     gap: 8px;
 }
 
 .bb-article-actions-bottom form {
     margin: 0;
-    display: inline-block;      /* 줄바꿈 방지 */
+    display: inline-block;
 }
 
-/* 결과 메시지 공통 블록 */
+
+/* ===========================
+   Result block (success/danger)
+   =========================== */
+
 .bb-result {
     text-align: center;
     padding: 24px 20px 20px;
@@ -1497,13 +1364,11 @@ tbody td a:hover {
     color: #ffffff;
 }
 
-/* 성공용 아이콘 배경 */
 .bb-result__icon--success {
     background: linear-gradient(135deg, #10b981, #22c55e);
     box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
 }
 
-/* 위험/탈퇴용 아이콘 배경 */
 .bb-result__icon--danger {
     background: linear-gradient(135deg, #ef4444, #f97373);
     box-shadow: 0 10px 25px rgba(248, 113, 113, 0.35);
@@ -1529,71 +1394,20 @@ tbody td a:hover {
     margin: 0;
 }
 
-/* 하단 버튼 영역 정렬 */
 .bb-result-actions {
     margin-top: 18px;
     display: flex;
     justify-content: center;
 }
 
+
 /* ===========================
-   Select (Admin / Forms)
+   Admin: Members (mobile cards)
    =========================== */
 
-.bb-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    height: 34px;
-    padding: 0 38px 0 12px;
-    border-radius: 999px;
-    border: 1px solid #d1d5db;
-
-    background-color: #f9fafb;
-    color: var(--bs-text-main);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-
-    outline: none;
-    cursor: pointer;
-
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-
-/* 오른쪽 화살표(커스텀) */
-.bb-select {
-    background-image:
-            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px 16px;
-}
-
-.bb-select:focus {
-    border-color: var(--bs-primary);
-    background-color: #ffffff;
-    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.18);
-}
-
-/* hover 톤 살짝 */
-.bb-select:hover {
-    background-color: #ffffff;
-}
-
-/* select 옆 버튼이랑 한 줄로 예쁘게 */
-.bb-admin-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Admin members: 모바일 카드 기본은 숨김 */
 .bb-admin-list-mobile { display: none; }
 .bb-admin-table-desktop { display: block; }
 
-/* 카드 리스트 */
 .bb-admin-card-list {
     list-style: none;
     margin: 0;
@@ -1650,9 +1464,7 @@ tbody td a:hover {
     color: #6b7280;
 }
 
-.bb-admin-card__dot {
-    color: #9ca3af;
-}
+.bb-admin-card__dot { color: #9ca3af; }
 
 .bb-admin-card__actions {
     margin-top: 10px;
@@ -1675,141 +1487,11 @@ tbody td a:hover {
     text-decoration: none;
 }
 
-/* 모바일에서만 카드 보이게 */
-@media (max-width: 768px) {
-    .bb-admin-table-desktop { display: none; }
-    .bb-admin-list-mobile { display: block; margin-top: 12px; }
-}
 
+/* ===========================
+   Admin: Article Detail (unified)
+   =========================== */
 
-/* Responsive */
-@media (max-width: 960px) {
-
-    .bb-layout {
-        min-height: 100vh;
-    }
-
-    /* 사이드바: 화면 밖으로 숨겨놨다가, 클래스 붙으면 들어오게 */
-    .bb-sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        width: 220px;
-        z-index: 1000;
-        transform: translateX(-100%);            /* 기본: 왼쪽 밖으로 숨김 */
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .bb-sidebar--open {
-        transform: translateX(0);                /* open일 때 왼쪽에서 슬라이드 인 */
-        box-shadow: 14px 0 40px rgba(15, 23, 42, 0.45);
-    }
-
-    .bb-main {
-        padding: 14px 14px 24px;
-    }
-
-    .bb-header {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-    }
-
-    .bb-header__title-group {
-        flex-direction: row;
-        gap: 8px;
-    }
-
-    /* 모바일에서만 햄버거 버튼 보이게 */
-    .bb-header__menu-btn {
-        display: inline-flex;
-        margin-top: 4px;
-    }
-
-    /* 사이드바 뒷배경(어두운 레이어) */
-    .bb-sidebar-backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.45);
-        z-index: 900;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-    }
-
-    .bb-sidebar-backdrop--visible {
-        opacity: 1;
-        pointer-events: auto;
-    }
-}
-
-/* =========================================================
-   Admin Article Detail (append to bulletin.css)
-   ========================================================= */
-
-.bb-admin-detail {
-    border-radius: var(--bs-radius-lg);
-    border: 1px solid var(--bs-border-subtle);
-    background: #ffffff;
-    padding: 16px 16px 14px;
-}
-
-.bb-admin-detail__top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 10px;
-}
-
-.bb-admin-detail__title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: #0f172a;
-    line-height: 1.3;
-}
-
-.bb-admin-detail__badges {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.bb-admin-detail__meta {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px 12px;
-}
-
-.bb-admin-detail__meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: #f8fafc;
-    border: 1px solid rgba(148, 163, 184, 0.25);
-}
-
-.bb-admin-detail__meta-label {
-    font-size: 11px;
-    color: var(--bs-text-soft);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
-.bb-admin-detail__meta-value {
-    font-size: 13px;
-    font-weight: 600;
-    color: #0f172a;
-    word-break: break-word;
-}
-
-/* Section title */
 .bb-admin-section-title {
     margin: 0 0 10px;
     font-size: 14px;
@@ -1818,7 +1500,6 @@ tbody td a:hover {
     letter-spacing: -0.01em;
 }
 
-/* Content box */
 .bb-admin-content-box {
     border-radius: var(--bs-radius-lg);
     border: 1px solid var(--bs-border-subtle);
@@ -1834,7 +1515,7 @@ tbody td a:hover {
     color: #111827;
 }
 
-/* Admin action cards grid */
+/* action cards grid */
 .bb-admin-actions-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1845,7 +1526,7 @@ tbody td a:hover {
     border-radius: var(--bs-radius-lg);
     border: 1px solid var(--bs-border-subtle);
     background: #ffffff;
-    padding: 14px 14px 14px;
+    padding: 14px;
 }
 
 .bb-admin-action-card__head {
@@ -1869,46 +1550,325 @@ tbody td a:hover {
     line-height: 1.4;
 }
 
-.bb-admin-action-card__form .bb-textarea {
-    background: #f9fafb;
+.bb-admin-action-card__form .bb-textarea { background: #f9fafb; }
+
+/* detail shell */
+.bb-admin-detail {
+    border-radius: var(--bs-radius-lg);
+    border: 1px solid var(--bs-border-subtle);
+    background: #ffffff;
+    padding: 16px 16px 14px;
 }
 
-/* Responsive */
+.bb-admin-detail__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.bb-admin-detail__title-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:6px;
+}
+
+.bb-admin-detail__title{
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.bb-admin-detail__badges{
+    display:flex;
+    align-items:center;
+    gap: 6px;
+}
+
+.bb-admin-detail__meta-grid{
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap:12px;
+    margin-top:14px;
+}
+
+.bb-admin-detail__meta-item{
+    border: 1px solid var(--bs-border-subtle);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: var(--bs-card-bg);
+}
+
+.bb-admin-detail__meta-label{
+    display:block;
+    font-size: 12px;
+    color: var(--bs-text-muted);
+    margin-bottom: 6px;
+}
+
+.bb-admin-detail__meta-value{
+    display:block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--bs-text-main);
+}
+
+.bb-admin-detail__content{
+    border: 1px solid var(--bs-border-subtle);
+    border-radius: 14px;
+    background: var(--bs-card-bg);
+    padding: 14px;
+}
+
+.bb-admin-detail__content-pre{
+    margin:0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--bs-text-main);
+}
+
+/* pills */
+.bb-pill{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    border: 1px solid var(--bs-border-subtle);
+    background: #fff;
+}
+
+.bb-pill--sm{ padding: 5px 9px; font-size: 11px; }
+
+.bb-pill--success{
+    border-color: rgba(0, 214, 163, .35);
+    color: #008d6d;
+    background: rgba(0, 214, 163, .10);
+}
+
+.bb-pill--danger{
+    border-color: rgba(239, 68, 68, .35);
+    color: #b91c1c;
+    background: rgba(239, 68, 68, .10);
+}
+
+.bb-admin-detail-layout{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.bb-admin-side{ grid-column: 1 }
+
+.bb-admin-comments{
+    grid-column: 1 / -1;
+    margin-top: 0;
+}
+
+.bb-admin-action-card--sticky{
+    position: static;
+}
+
+/* memo */
+.bb-admin-memo-box{
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--bs-border-subtle);
+}
+
+.bb-admin-memo-box__label{
+    font-size: 12px;
+    color: var(--bs-text-muted);
+    margin-bottom: 6px;
+}
+
+.bb-admin-memo-box__text{
+    font-size: 13px;
+    color: var(--bs-text-main);
+    line-height: 1.6;
+}
+
+.bb-required{ color: var(--bs-danger); font-weight: 900; }
+
+/* comments */
+.bb-admin-comments__head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.bb-admin-comment-cards{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.bb-admin-comment-card{
+    border: 1px solid var(--bs-border-subtle);
+    border-radius: 16px;
+    background: var(--bs-card-bg);
+    padding: 14px;
+    box-shadow: var(--bs-shadow-soft);
+}
+
+.bb-admin-comment-card__top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.bb-admin-comment-card__who{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.bb-admin-comment-card__writer{
+    font-weight: 800;
+    color: var(--bs-text-main);
+    font-size: 13px;
+}
+
+.bb-admin-comment-card__dot{ color: var(--bs-text-soft); }
+
+.bb-admin-comment-card__date{
+    color: var(--bs-text-muted);
+    font-size: 12px;
+}
+
+.bb-admin-comment-card__body{
+    color: var(--bs-text-main);
+    font-size: 13px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 64px;
+}
+
+.bb-admin-comment-card__actions{
+    display:flex;
+    justify-content:flex-end;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.bb-admin-comment-action{
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* compact select for action row */
+.bb-select--compact{
+    height: 30px;
+    padding: 0 34px 0 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ===========================
+   Responsive
+   - 960: layout shift (sidebar overlay)
+   - 768: mobile card views
+   =========================== */
+
 @media (max-width: 960px) {
-    .bb-admin-detail__meta {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .bb-layout { min-height: 100vh; }
+
+    .bb-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 220px;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .bb-admin-actions-grid {
-        grid-template-columns: 1fr;
+
+    .bb-sidebar--open {
+        transform: translateX(0);
+        box-shadow: 14px 0 40px rgba(15, 23, 42, 0.45);
+    }
+
+    .bb-main { padding: 14px 14px 24px; }
+
+    .bb-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .bb-header__title-group {
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .bb-header__menu-btn {
+        display: inline-flex;
+        margin-top: 4px;
+    }
+
+    .bb-sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        z-index: 900;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+    }
+
+    .bb-sidebar-backdrop--visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* admin responsive */
+    .bb-admin-detail__meta-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .bb-admin-detail-layout { grid-template-columns: 1fr; }
+    .bb-admin-side { grid-column: 1; grid-row: auto; }
+    .bb-admin-action-card--sticky { position: static; }
+    .bb-admin-comment-cards { grid-template-columns: 1fr; }
+    .bb-admin-comments__head { flex-direction: column; align-items: stretch; }
+
+    /* toast */
+    .bb-toast-area {
+        top: 12px;
+        right: 12px;
+        width: min(360px, calc(100vw - 24px));
     }
 }
 
 @media (max-width: 768px) {
-    .bb-admin-detail__top {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .bb-admin-detail__meta {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* 모바일 카드 레이아웃 */
-@media (max-width: 768px) {
-
-    .bb-login-wrapper {
-        align-items: flex-start;  /* 위쪽 정렬 */
-        padding-top: 100px;        /* 위에만 여백 */
-    }
-
+    /* login/signup align top */
+    .bb-login-wrapper,
     .bb-signup-wrapper {
-        align-items: flex-start;  /* 위쪽 정렬 */
-        padding-top: 100px;        /* 위에만 여백 */
+        align-items: flex-start;
+        padding-top: 100px;
     }
 
-    .bb-login-card {
-        max-width: 100%;          /* 좌우 꽉 차게 (여백은 padding으로) */
-    }
+    .bb-login-card { max-width: 100%; }
 
     .bb-profile-row {
         grid-template-columns: 110px 1fr;
@@ -1916,16 +1876,9 @@ tbody td a:hover {
         font-size: 13px;
     }
 
-    /* 테이블 감추기 */
-    .bb-article-table-desktop {
-        display: none;
-    }
-
-    /* 카드 리스트 보이기 */
-    .bb-article-list-mobile {
-        display: block;
-        margin-top: 12px;
-    }
+    /* table -> cards (articles) */
+    .bb-article-table-desktop { display: none; }
+    .bb-article-list-mobile { display: block; margin-top: 12px; }
 
     .bb-article-card-list {
         list-style: none;
@@ -1966,20 +1919,35 @@ tbody td a:hover {
         align-items: center;
     }
 
-    .bb-article-card__dot {
-        color: #9ca3af;
-    }
+    .bb-article-card__dot { color: #9ca3af; }
 
-    .bb-article-card__views span {
-        margin-left: 2px;
-    }
+    .bb-article-card__views span { margin-left: 2px; }
 
     .bb-article-actions-bottom {
         margin-top: 10px;
         gap: 6px;
     }
 
-    .bb-card__header {
-        display: block;
+    .bb-comment-actions-bottom {
+        justify-content: flex-end;   /* 오른쪽 끝 */
+        flex-wrap: wrap;             /* 줄바꿈 허용 */
+        row-gap: 6px;                /* 줄 간격 */
+        column-gap: 6px;             /* 버튼 간격 */
     }
+
+    .bb-comment-actions-bottom form {
+        display: inline-flex;        /* form이 block처럼 떨어지는 것 방지 */
+        margin: 0;
+    }
+
+    .bb-card__header { display: block; }
+
+    /* admin members mobile */
+    .bb-admin-table-desktop { display: none; }
+    .bb-admin-list-mobile { display: block; margin-top: 12px; }
+
+    /* admin detail micro */
+    .bb-admin-detail__top { flex-direction: column; align-items: flex-start; }
+    .bb-admin-detail__meta-grid { grid-template-columns: 1fr; }
+    .bb-admin-actions-grid { grid-template-columns: 1fr; }
 }
