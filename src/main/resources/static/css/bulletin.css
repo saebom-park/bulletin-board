@@ -605,7 +605,7 @@ input[type="submit"] {
 
 .bb-page-title {
     margin: 0 0 10px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
 }
 
@@ -630,7 +630,7 @@ input[type="submit"] {
 }
 
 .bb-content-text {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.8;
     white-space: pre-wrap;
 }
@@ -656,7 +656,7 @@ thead { background: #f8fafc; }
 
 th, td {
     padding: 10px 12px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #edf2f7;
 }
 
@@ -715,7 +715,7 @@ tbody td a:hover { color: var(--bs-primary); }
     border-radius: var(--bs-radius-md);
     border: 1px solid #d1d5db;
     padding: 9px 11px;
-    font-size: 14px;
+    font-size: 13px;
     font-family: inherit;
     outline: none;
     background-color: #f9fafb;
@@ -1014,7 +1014,7 @@ tbody td a:hover { color: var(--bs-primary); }
 .bb-comment-item:last-child { border-bottom: none; }
 
 .bb-comment-content {
-    font-size: 14px;
+    font-size: 13px;
     white-space: pre-wrap;
 }
 
@@ -1130,7 +1130,7 @@ tbody td a:hover { color: var(--bs-primary); }
     border-radius: var(--bs-radius-md);
     border: 1px solid #d1d5db;
     padding: 9px 11px;
-    font-size: 14px;
+    font-size: 13px;
     background: #f9fafb;
     font-family: inherit;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
@@ -1234,7 +1234,7 @@ tbody td a:hover { color: var(--bs-primary); }
     display: grid;
     grid-template-columns: 130px 1fr;
     padding: 10px 14px;
-    font-size: 14px;
+    font-size: 13px;
     column-gap: 16px;
     align-items: center;
     border-top: 1px solid #f3f4f6;
@@ -1460,10 +1460,12 @@ tbody td a:hover { color: var(--bs-primary); }
     align-items: baseline;
     justify-content: space-between;
     gap: 10px;
+    font-size: 13px;
+    font-weight: bold;
 }
 
 .bb-admin-card__name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #020617;
 }
@@ -1513,7 +1515,7 @@ tbody td a:hover { color: var(--bs-primary); }
 
 .bb-admin-section-title {
     margin: 0 0 10px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #0f172a;
     letter-spacing: -0.01em;
@@ -1528,7 +1530,7 @@ tbody td a:hover { color: var(--bs-primary); }
 
 .bb-admin-content-text {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.85;
     white-space: pre-wrap;
     color: #111827;
@@ -1557,7 +1559,7 @@ tbody td a:hover { color: var(--bs-primary); }
 }
 
 .bb-admin-action-card__title {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #0f172a;
     margin-bottom: 3px;
@@ -1589,23 +1591,29 @@ tbody td a:hover { color: var(--bs-primary); }
 
 .bb-admin-detail__title-row{
     display:flex;
-    align-items:center;
+    align-items: flex-start;
     justify-content:space-between;
     gap:12px;
     margin-top:6px;
 }
 
 .bb-admin-detail__title{
-    font-size: 20px;
-    font-weight: 800;
+    flex: 1;
+    min-width: 0;
     margin: 0;
+    font-size: 17px;
+    font-weight: 800;
     line-height: 1.2;
+    word-break: break-word;
 }
 
 .bb-admin-detail__badges{
-    display:flex;
-    align-items:center;
-    gap: 6px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    margin-top: 2px;       /* 미세 보정 */
 }
 
 .bb-admin-detail__meta-grid{
@@ -1631,7 +1639,7 @@ tbody td a:hover { color: var(--bs-primary); }
 
 .bb-admin-detail__meta-value{
     display:block;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--bs-text-main);
 }
@@ -1648,7 +1656,7 @@ tbody td a:hover { color: var(--bs-primary); }
     white-space: pre-wrap;
     word-break: break-word;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.7;
     color: var(--bs-text-main);
 }

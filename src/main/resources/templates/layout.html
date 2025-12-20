@@ -84,23 +84,38 @@
 
         <!-- Nav: active 처리 + Admin 메뉴 권한 분기 -->
         <nav class="bb-sidebar__nav" th:with="path=${currentPath}">
-            <div class="bb-sidebar__nav-title">Overview</div>
+
+            <!-- Public / Common -->
+            <div class="bb-sidebar__nav-title">Menu</div>
 
             <a th:href="@{/articles}"
                class="bb-sidebar__link"
                th:classappend="${#strings.startsWith(path, '/articles')} ? ' bb-sidebar__link--active' : ''">
                 <span class="bb-sidebar__link-icon">◆</span>
-                <span>Articles</span>
+                <span>전체 게시글</span>
             </a>
 
-            <a th:if="${loginMember != null and loginMember.admin}"
-               th:href="@{/admin/members}"
-               class="bb-sidebar__link"
-               th:classappend="${#strings.startsWith(path, '/admin/members')} ? ' bb-sidebar__link--active' : ''">
-                <span class="bb-sidebar__link-icon">◎</span>
-                <span>Members</span>
-            </a>
+            <!-- Admin -->
+            <div th:if="${loginMember != null and loginMember.admin}">
+                <div class="bb-sidebar__nav-title" style="margin-top:14px;">Admin</div>
+
+                <a th:href="@{/admin/articles}"
+                   class="bb-sidebar__link"
+                   th:classappend="${#strings.startsWith(path, '/admin/articles')} ? ' bb-sidebar__link--active' : ''">
+                    <span class="bb-sidebar__link-icon">▣</span>
+                    <span>게시글 관리</span>
+                </a>
+
+                <a th:href="@{/admin/members}"
+                   class="bb-sidebar__link"
+                   th:classappend="${#strings.startsWith(path, '/admin/members')} ? ' bb-sidebar__link--active' : ''">
+                    <span class="bb-sidebar__link-icon">◎</span>
+                    <span>회원 관리</span>
+                </a>
+            </div>
+
         </nav>
+
 
         <div class="bb-sidebar__footer">
             <div>spring-dev-journey</div>

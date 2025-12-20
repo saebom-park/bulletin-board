@@ -93,7 +93,7 @@
                         <div class="bb-form-group">
                             <label class="bb-form-label">게시글 상태</label>
                             <select th:field="*{status}" class="bb-select bb-select--sm">
-                                <option value="VISIBLE">공개</option>
+                                <option value="PUBLIC">공개</option>
                                 <option value="HIDDEN">숨김</option>
                             </select>
                         </div>
@@ -136,7 +136,7 @@
                           class="bb-inline bb-inline--tight">
                         <select name="commentStatus" class="bb-select bb-select--sm">
                             <option value="">전체</option>
-                            <option value="VISIBLE">공개</option>
+                            <option value="PUBLIC">공개</option>
                             <option value="HIDDEN">숨김</option>
                         </select>
                         <button type="submit" class="bb-btn bb-btn--subtle bb-btn--sm">필터</button>
@@ -174,7 +174,7 @@
                                 <!-- 상태 변경 (셀렉트 + 적용) -->
                                 <form th:action="@{|/admin/comments/${c.id}/status|}" method="post" class="bb-admin-comment-action" style="margin:0;">
                                     <select name="status" class="bb-select bb-select--sm bb-select--compact">
-                                        <option value="VISIBLE" th:selected="${c.public}">공개</option>
+                                        <option value="PUBLIC" th:selected="${c.public}">공개</option>
                                         <option value="HIDDEN" th:selected="${!c.public}">숨김</option>
                                     </select>
 
