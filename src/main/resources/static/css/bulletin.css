@@ -244,7 +244,7 @@ input[type="submit"] {
     height: 32px;
     min-width: 32px;
     border-radius: 999px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: var(--bs-primary);
     color: #ecfdf5;
     font-weight: 700;
     font-size: 16px;
