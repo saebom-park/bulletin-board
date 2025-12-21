@@ -51,7 +51,7 @@ public class AdminArticleController {
         AdminArticleStatusUpdateForm articleStatusForm = new AdminArticleStatusUpdateForm();
         articleStatusForm.setStatus(article.getStatus());
         articleStatusForm.setAdminMemo(article.getAdminMemo());
-        model.addAttribute("statusForm", articleStatusForm);
+        model.addAttribute("articleStatusForm", articleStatusForm);
 
         List<AdminCommentListView> comments = adminCommentService.getCommentList(articleId);
         model.addAttribute("comments", comments);
@@ -61,7 +61,7 @@ public class AdminArticleController {
 
     @PostMapping("/{articleId}/status")
     public String editStatus(
-            @Valid @ModelAttribute("statusForm") AdminArticleStatusUpdateForm form,
+            @Valid @ModelAttribute("articleStatusForm") AdminArticleStatusUpdateForm form,
             BindingResult bindingResult,
             @PathVariable("articleId") Long articleId,
             HttpServletRequest request,
@@ -71,7 +71,7 @@ public class AdminArticleController {
         if (bindingResult.hasErrors()) {
             AdminArticleDetailView article = adminArticleService.getArticleDetail(articleId);
             model.addAttribute("article", article);
-            model.addAttribute("statusForm", form);
+            model.addAttribute("articleStatusForm", form);
 
             return "admin/articles/detail";
         }
@@ -83,30 +83,4 @@ public class AdminArticleController {
 
     }
 
-    @PostMapping("/{articleId}/delete")
-    public String delete(
-            @PathVariable("articleId") Long articleId,
-            HttpServletRequest request,
-            RedirectAttributes redirectAttributes
-    ) {
-
-        try {
-            Long adminId = LoginSessionUtils.requireLoginMemberId(request);
-            adminArticleService.deleteArticle(adminId, articleId);
-
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    "게시글이 정상적으로 삭제되었습니다."
-            );
-        } catch (IllegalStateException e) {
-
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    "게시글 삭제에 실패했습니다"
-            );
-        }
-
-        return "redirect:/admin/articles";
-
-    }
 }

@@ -1,10 +1,16 @@
 package com.saebom.bulletinboard.admin.comment.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+
 import com.saebom.bulletinboard.comment.domain.CommentStatus;
 
 public class AdminCommentStatusUpdateForm {
 
+    @NotNull
     private CommentStatus status;
+
+    @NotBlank
     private String adminMemo;
 
     // getter

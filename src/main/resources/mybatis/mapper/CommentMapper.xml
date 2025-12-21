@@ -5,6 +5,10 @@
 
 <mapper namespace="com.saebom.bulletinboard.comment.repository.CommentMapper">
 
+    <sql id="excludeHiddenCondition">
+        AND c.status != 'HIDDEN'
+    </sql>
+
     <sql id="commentViewColumns">
         c.id,
         c.member_id,
@@ -71,6 +75,7 @@
         FROM comments c
         JOIN members m ON c.member_id = m.id
         WHERE c.article_id = #{articleId}
+        <include refid="excludeHiddenCondition"/>
         ORDER BY c.created_at ASC
     </select>
 

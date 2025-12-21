@@ -5,6 +5,10 @@
 
 <mapper namespace="com.saebom.bulletinboard.article.repository.ArticleMapper">
 
+    <sql id="excludeHiddenCondition">
+        AND a.status != 'HIDDEN'
+    </sql>
+
     <sql id="articleListColumns">
         a.id,
         a.title,
@@ -100,6 +104,8 @@
         <include refid="articleListColumns"/>
         FROM articles a
         JOIN members m ON a.member_id = m.id
+        WHERE 1 = 1
+        <include refid="excludeHiddenCondition"/>
         ORDER BY a.created_at DESC
     </select>
 

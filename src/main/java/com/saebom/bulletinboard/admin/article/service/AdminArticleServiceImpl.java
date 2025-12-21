@@ -55,21 +55,4 @@ public class AdminArticleServiceImpl implements AdminArticleService {
         }
     }
 
-    @Override
-    @Transactional
-    public void deleteArticle(Long adminId, Long articleId) {
-
-        int deleted = adminArticleMapper.deleteById(articleId);
-        if (deleted == 0) {
-            throw new ArticleNotFoundException("게시글을 찾을 수 없습니다.");
-        }
-
-        if (deleted != 1) {
-            throw new IllegalStateException("게시글 삭제에 실패했습니다.");
-        }
-
-        log.info("[ADMIN_ACTION] type=ADMIN_DELETE_ARTICLE adminId={} articleId={}", adminId, articleId);
-
-    }
-
 }

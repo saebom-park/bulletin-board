@@ -41,7 +41,7 @@
                     <tr th:each="article, stat : ${articles}">
                         <!-- 최신 글이 위로 오도록 번호 계산 -->
                         <td th:text="${#lists.size(articles) - stat.index}">1</td>
-                        <td>
+                        <td style="text-align: left;">
                             <a th:href="@{/articles/{id}(id=${article.id})}"
                                th:text="${article.title}">
                                 제목

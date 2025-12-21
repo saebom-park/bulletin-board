@@ -13,7 +13,4 @@ public interface AdminCommentService {
     // 게시글 상태 변경
     void updateStatus(Long adminId, Long commentId, AdminCommentStatusUpdateForm form);
 
-    // 게시글 삭제
-    void deleteComment(Long adminId, Long commentId);
-
 }

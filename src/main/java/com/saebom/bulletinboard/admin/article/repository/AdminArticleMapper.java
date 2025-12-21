@@ -23,7 +23,4 @@ public interface AdminArticleMapper {
                          @Param("adminMemo") String adminMemo,
                          @Param("adminId") Long adminId);
 
-    // 게시글 삭제
-    int deleteById(@Param("id") Long id);
-
 }

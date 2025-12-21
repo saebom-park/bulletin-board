@@ -45,20 +45,4 @@ public class AdminCommentServiceImpl implements AdminCommentService {
 
     }
 
-    @Override
-    @Transactional
-    public void deleteComment(Long adminId, Long commentId) {
-
-        int deleted = adminCommentMapper.deleteById(commentId);
-        if (deleted == 0) {
-            throw new CommentNotFoundException("댓글을 찾을 수 없습니다.");
-        }
-
-        if (deleted != 1) {
-            throw new IllegalStateException("댓글 삭제에 실패했습니다.");
-        }
-
-        log.info("[ADMIN_ACTION] type=ADMIN_DELETE_COMMENT adminId={} commentId={}", adminId, commentId);
-
-    }
 }

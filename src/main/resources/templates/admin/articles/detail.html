@@ -15,10 +15,6 @@
 
             <div class="bb-actions bb-actions--right">
                 <a th:href="@{/admin/articles}" class="bb-btn bb-btn--subtle bb-btn--sm">목록</a>
-                <form th:action="@{|/admin/articles/${article.id}/delete|}" method="post" style="margin:0;">
-                    <button type="submit" class="bb-btn bb-btn--danger bb-btn--sm"
-                            onclick="return confirm('정말 삭제할까요?');">삭제</button>
-                </form>
             </div>
         </div>
 
@@ -86,7 +82,7 @@
                     <!-- 상태 관리 폼 -->
                     <form th:action="@{|/admin/articles/${article.id}/status|}"
                           method="post"
-                          th:object="${statusForm}"
+                          th:object="${articleStatusForm}"
                           class="bb-stack bb-stack--sm bb-admin-action-card__form">
 
                         <div class="bb-form-group">
@@ -160,8 +156,10 @@
                                 </div>
 
                                 <span class="bb-pill bb-pill--sm"
-                                      th:classappend="c.public ? ' bb-pill--success' : ' bb-pill--danger'"
-                                      th:text="c.public ? '공개' : '숨김'">공개</span>
+                                      th:classappend="${c.public} ? ' bb-pill--success' : ' bb-pill--danger'"
+                                      th:text="${c.public} ? '공개' : '숨김'">
+                                    공개
+                                </span>
                             </div>
 
                             <div class="bb-admin-comment-card__body" th:text="${c.content}">
@@ -170,21 +168,35 @@
 
                             <div class="bb-admin-comment-card__actions">
 
-                                <!-- 상태 변경 (셀렉트 + 적용) -->
-                                <form th:action="@{|/admin/comments/${c.id}/status|}" method="post" class="bb-admin-comment-action" style="margin:0;">
+                                <!-- 상태 변경 (셀렉트 + 관리자메모 + 적용) -->
+                                <form th:action="@{|/admin/comments/${c.id}/status|}"
+                                      method="post"
+                                      class="bb-admin-comment-action"
+                                      style="margin:0;">
+
+                                    <!-- 복귀용 -->
+                                    <input type="hidden" name="articleId" th:value="${article.id}" />
+
                                     <select name="status" class="bb-select bb-select--sm bb-select--compact">
                                         <option value="PUBLIC" th:selected="${c.public}">공개</option>
                                         <option value="HIDDEN" th:selected="${!c.public}">숨김</option>
                                     </select>
 
-                                    <button type="submit" class="bb-btn bb-btn--subtle bb-btn--sm">적용</button>
-                                </form>
+                                    <!-- 관리자 메모 (필수) -->
+                                    <input type="text"
+                                           name="adminMemo"
+                                           class="bb-input bb-input--sm bb-input--compact"
+                                           th:value="${c.adminMemo}"
+                                           placeholder="관리자 메모 (필수)"
+                                           required />
 
-                                <!-- 삭제 -->
-                                <form th:action="@{|/admin/comments/${c.id}/delete|}" method="post" style="margin:0;">
-                                    <button type="submit"
-                                            class="bb-btn bb-btn--danger bb-btn--sm"
-                                            onclick="return confirm('댓글을 삭제할까요?');">삭제</button>
+                                    <!-- @Valid 실패 시: 해당 댓글에서만 고정 문구 -->
+                                    <p class="bb-field-error"
+                                       th:if="${commentErrorId != null and commentErrorId == c.id}">
+                                        관리자 메모를 입력해 주세요.
+                                    </p>
+
+                                    <button type="submit" class="bb-btn bb-btn--subtle bb-btn--sm">적용</button>
                                 </form>
 
                             </div>

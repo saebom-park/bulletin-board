@@ -57,9 +57,4 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteById">
-        DELETE FROM comments
-        WHERE id = #{id}
-    </delete>
-
 </mapper>

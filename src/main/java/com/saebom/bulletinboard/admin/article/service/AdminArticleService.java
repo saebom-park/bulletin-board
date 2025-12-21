@@ -18,7 +18,4 @@ public interface AdminArticleService {
     // 게시글 상태 수정
     void updateStatus(Long adminId, Long articleId, AdminArticleStatusUpdateForm form);
 
-    // 게시글 삭제
-    void deleteArticle(Long adminId, Long articleId);
-
 }

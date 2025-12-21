@@ -20,7 +20,4 @@ public interface AdminCommentMapper {
                      @Param("adminMemo") String adminMemo,
                      @Param("adminId") Long adminId);
 
-    // 댓글 삭제
-    int deleteById(@Param("id") Long id);
-
 }

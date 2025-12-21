@@ -93,9 +93,4 @@
         WHERE id = #{id}
     </update>
 
-    <delete id="deleteById">
-        DELETE FROM articles
-        WHERE id = #{id}
-    </delete>
-
 </mapper>
