@@ -24,6 +24,7 @@ public class CommentController {
             @PathVariable Long articleId,
             @Valid @ModelAttribute("commentCreateForm") CommentCreateForm form,
             BindingResult bindingResult,
+            @RequestParam(required = false) String returnUrl,
             HttpServletRequest request
     ) {
         if (bindingResult.hasErrors()) {
@@ -32,15 +33,18 @@ public class CommentController {
 
         Long loginMemberId = LoginSessionUtils.requireLoginMemberId(request);
 
-        Long commentId = commentService.createComment(articleId, loginMemberId, form);
+        commentService.createComment(articleId, loginMemberId, form);
 
-        return "redirect:/articles/" + articleId;
+        String target = returnUrl + "/" + articleId;
+
+        return "redirect:" + safeReturnUrlOrDefault(target, "/articles/" + articleId);
     }
 
     @PostMapping("/comments/{commentId}/edit")
     public String update(
             @PathVariable Long commentId,
-            @RequestParam(value = "articleId") Long articleId,
+            @RequestParam() Long articleId,
+            @RequestParam(required = false) String returnUrl,
             @Valid @ModelAttribute("commentUpdateForm") CommentUpdateForm form,
             BindingResult bindingResult,
             HttpServletRequest request
@@ -53,19 +57,34 @@ public class CommentController {
 
         commentService.updateComment(commentId, loginMemberId, form);
 
-        return "redirect:/articles/" + articleId;
+        String target = returnUrl + "/" + articleId;
+
+        return "redirect:" + safeReturnUrlOrDefault(target, "/articles/" + articleId);
     }
 
     @PostMapping("/comments/{commentId}/delete")
     public String delete(
             @PathVariable Long commentId,
-            @RequestParam(value = "articleId") Long articleId,
+            @RequestParam() Long articleId,
+            @RequestParam(required = false) String returnUrl,
             HttpServletRequest request
     ) {
         Long loginMemberId = LoginSessionUtils.requireLoginMemberId(request);
 
         commentService.deleteComment(commentId, loginMemberId);
-        return "redirect:/articles/" + articleId;
+
+        String target = returnUrl + "/" + articleId;
+
+        return "redirect:" + safeReturnUrlOrDefault(target, "/articles/" + articleId);
+    }
+
+    private String safeReturnUrlOrDefault(String returnUrl, String defaultUrl) {
+
+        if (returnUrl == null || returnUrl.isBlank()) return defaultUrl;
+        if (!returnUrl.startsWith("/")) return defaultUrl;
+        if (returnUrl.startsWith("//")) return defaultUrl;
+
+        return returnUrl;
     }
 
 }

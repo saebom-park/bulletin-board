@@ -21,16 +21,17 @@ public class Article {
 
     }
 
-    private Article(Long memberId, String title, String content) {
+    private Article(Long memberId, String title, String content, Integer viewCount) {
         this.memberId = memberId;
         this.title = title;
         this.content = content;
+        this.viewCount = viewCount;
     }
 
     // method
     // 생성 책임
     public static Article createArticle(Long memberId, String title, String content) {
-        return new Article(memberId, title, content);
+        return new Article(memberId, title, content, 0);
     }
 
     // getter

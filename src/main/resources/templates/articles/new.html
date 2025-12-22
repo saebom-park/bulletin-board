@@ -18,6 +18,8 @@
               th:object="${articleCreateForm}"
               method="post">
 
+            <input type="hidden" name="returnUrl" th:value="${returnUrl}"/>
+
             <div class="bb-form-group">
                 <label for="title" class="bb-form-label">제목</label>
                 <input id="title" type="text" th:field="*{title}"

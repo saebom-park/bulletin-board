@@ -125,9 +125,11 @@ public class ArticleController {
     }
 
     @GetMapping("/new")
-    public String showCreateForm(HttpServletRequest request, Model model) {
+    public String showCreateForm(@RequestParam(required = false) String returnUrl,
+                                 HttpServletRequest request, Model model) {
 
         model.addAttribute("articleCreateForm", new ArticleCreateForm());
+        model.addAttribute("returnUrl", (returnUrl != null ? returnUrl : "/articles"));
         return "articles/new";
     }
 
@@ -135,20 +137,27 @@ public class ArticleController {
     public String create(
             @Valid @ModelAttribute("articleCreateForm") ArticleCreateForm form,
             BindingResult bindingResult,
-            HttpServletRequest request
+            @RequestParam(required = false) String returnUrl,
+            HttpServletRequest request,
+            Model model
     ) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("returnUrl", (returnUrl != null ? returnUrl : "/articles"));
             return "articles/new";
         }
 
         Long loginMemberId = LoginSessionUtils.requireLoginMemberId(request);
         Long articleId = articleService.createArticle(loginMemberId, form);
 
-        return "redirect:/articles/" + articleId;
+        String target = returnUrl + "/" + articleId;
+
+        return "redirect:" + safeReturnUrlOrDefault(target, "/articles/" + articleId);
     }
 
     @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable Long id, HttpServletRequest request, Model model) {
+    public String showEditForm(@PathVariable Long id,
+                               @RequestParam(required = false) String returnUrl,
+                               HttpServletRequest request, Model model) {
 
         Long loginMemberId = LoginSessionUtils.requireLoginMemberId(request);
 
@@ -164,6 +173,7 @@ public class ArticleController {
 
         model.addAttribute("articleUpdateForm", form);
         model.addAttribute("articleId", id);
+        model.addAttribute("returnUrl", (returnUrl != null ? returnUrl : "/articles"));
 
         return "articles/edit";
     }
@@ -173,11 +183,13 @@ public class ArticleController {
             @PathVariable Long id,
             @Valid @ModelAttribute("articleUpdateForm") ArticleUpdateForm form,
             BindingResult bindingResult,
+            @RequestParam(required = false) String returnUrl,
             HttpServletRequest request,
             Model model
     ) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("articleId", id);
+            model.addAttribute("returnUrl", (returnUrl != null ? returnUrl : "/articles"));
             return "articles/edit";
         }
 
@@ -185,16 +197,25 @@ public class ArticleController {
 
         articleService.updateArticle(id, loginMemberId, form);
 
-        return "redirect:/articles/" + id;
+        String target = returnUrl + "/" + id;
+
+        return "redirect:" + safeReturnUrlOrDefault(target, "/articles/" + id);
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id, HttpServletRequest request) {
+    public String delete(@PathVariable Long id,
+                         @RequestParam(value = "returnUrl", required = false) String returnUrl,
+                         HttpServletRequest request) {
 
         Long loginMemberId = LoginSessionUtils.requireLoginMemberId(request);
 
         articleService.deleteArticle(id, loginMemberId);
-        return "redirect:/articles";
+
+        log.info("returnUrl param = [{}]", request.getParameter("returnUrl"));
+        log.info("returnUrl @RequestParam = [{}]", returnUrl);
+
+
+        return "redirect:" + safeReturnUrlOrDefault(returnUrl, "/articles");
     }
 
     // 헬퍼 메서드
@@ -205,6 +226,15 @@ public class ArticleController {
         }
 
         return (Long) session.getAttribute(SessionConst.LOGIN_MEMBER);
+    }
+
+    private String safeReturnUrlOrDefault(String returnUrl, String defaultUrl) {
+
+        if (returnUrl == null || returnUrl.isBlank()) return defaultUrl;
+        if (!returnUrl.startsWith("/")) return defaultUrl;
+        if (returnUrl.startsWith("//")) return defaultUrl;
+
+        return returnUrl;
     }
 
 }
