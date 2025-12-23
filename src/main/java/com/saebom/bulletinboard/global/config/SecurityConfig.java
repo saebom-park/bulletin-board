@@ -21,26 +21,37 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        // 정적 리소스
+                        // 정적/공용
+                        .requestMatchers("/", "/error", "/favicon.ico").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
 
-                        // 공개: 게시글 목록
-                        .requestMatchers(HttpMethod.GET, "/articles").permitAll()
-
-                        // 공개: 게시글 상세 (숫자 ID만)
-                        .requestMatchers(articleDetailGetOnly).permitAll()
-
-                        // 로그인/회원가입 화면 (필요시 조정)
+                        // 로그인/회원가입 관련 (너 프로젝트에 맞춰 유지)
                         .requestMatchers("/login", "/members/new", "/members").permitAll()
+
+                        // "new"는 상세 공개 규칙보다 먼저 잠가야 함 (중요)
+                        .requestMatchers("/articles/new").authenticated()
+
+                        // 공개: 목록 (슬래시 버전까지)
+                        .requestMatchers(HttpMethod.GET, "/articles", "/articles/").permitAll()
+
+                        // 공개: 상세(숫자 id만)
+                        .requestMatchers(articleDetailGetOnly).permitAll()
 
                         // 관리자
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        .requestMatchers("/.well-known/**").permitAll()
 
                         // 그 외 전부 로그인 필요
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .usernameParameter("username")
+                        .passwordParameter("password")
+                        .defaultSuccessUrl("/articles", false)
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
