@@ -50,7 +50,7 @@
             <div class="bb-sidebar__user-inline bb-sidebar__user-inline--spaced bb-sidebar__user-inline--center">
                 <a href="/members/me" class="bb-sidebar__inline-btn">MyPage</a>
 
-                <form action="/logout" method="post" style="margin:0;">
+                <form th:action="@{/logout}" method="post" style="margin:0;">
                     <input type="hidden" name="redirectURL" value="/articles">
                     <button type="submit" class="bb-sidebar__inline-btn bb-sidebar__inline-btn--logout">
                         로그아웃
