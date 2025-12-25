@@ -54,10 +54,15 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         validateNotSelf(adminId, memberId);
         validateStatusChangeAllowed(form.getStatus());
 
+        String normalizedEmail = form.getEmail().trim();
+        if (normalizedEmail.isBlank()) {
+            normalizedEmail = null;
+        }
+
         int updated = adminMemberMapper.update(
                 memberId,
                 form.getName(),
-                form.getEmail(),
+                normalizedEmail,
                 form.getRole(),
                 form.getStatus()
         );
