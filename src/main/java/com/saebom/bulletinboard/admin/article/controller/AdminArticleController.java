@@ -6,8 +6,8 @@ import com.saebom.bulletinboard.admin.article.dto.AdminArticleStatusUpdateForm;
 import com.saebom.bulletinboard.admin.article.service.AdminArticleService;
 import com.saebom.bulletinboard.admin.comment.dto.AdminCommentListView;
 import com.saebom.bulletinboard.admin.comment.service.AdminCommentService;
-import com.saebom.bulletinboard.global.web.LoginSessionUtils;
-import jakarta.servlet.http.HttpServletRequest;
+import com.saebom.bulletinboard.global.security.CurrentUserId;
+import com.saebom.bulletinboard.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,11 +23,17 @@ public class AdminArticleController {
 
     private final AdminArticleService adminArticleService;
     private final AdminCommentService adminCommentService;
+    private final MemberService memberService;
 
     // constructor
-    public AdminArticleController(AdminArticleService adminArticleService, AdminCommentService adminCommentService) {
+    public AdminArticleController(
+            AdminArticleService adminArticleService,
+            AdminCommentService adminCommentService,
+            MemberService memberService
+    ) {
         this.adminArticleService = adminArticleService;
         this.adminCommentService = adminCommentService;
+        this.memberService = memberService;
     }
 
     @GetMapping
@@ -64,8 +70,8 @@ public class AdminArticleController {
             @Valid @ModelAttribute("articleStatusForm") AdminArticleStatusUpdateForm form,
             BindingResult bindingResult,
             @PathVariable("articleId") Long articleId,
-            HttpServletRequest request,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
         if (bindingResult.hasErrors()) {
@@ -73,11 +79,16 @@ public class AdminArticleController {
             model.addAttribute("article", article);
             model.addAttribute("articleStatusForm", form);
 
+            List<AdminCommentListView> comments = adminCommentService.getCommentList(articleId);
+            model.addAttribute("comments", comments);
+
             return "admin/articles/detail";
         }
 
-        Long adminId = LoginSessionUtils.requireLoginMemberId(request);
+        Long adminId = CurrentUserId.requireMemberId(memberService);
         adminArticleService.updateStatus(adminId, articleId, form);
+
+        redirectAttributes.addFlashAttribute("successMessage", "게시글 상태가 변경되었습니다.");
 
         return "redirect:/admin/articles/" + articleId;
 

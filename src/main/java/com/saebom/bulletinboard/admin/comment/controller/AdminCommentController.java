@@ -6,8 +6,8 @@ import com.saebom.bulletinboard.admin.comment.dto.AdminCommentListView;
 import com.saebom.bulletinboard.admin.comment.dto.AdminCommentStatusUpdateForm;
 import com.saebom.bulletinboard.admin.comment.service.AdminCommentService;
 import com.saebom.bulletinboard.global.exception.CommentNotFoundException;
-import com.saebom.bulletinboard.global.web.LoginSessionUtils;
-import jakarta.servlet.http.HttpServletRequest;
+import com.saebom.bulletinboard.global.security.CurrentUserId;
+import com.saebom.bulletinboard.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,17 +18,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/comments/")
+@RequestMapping("/admin/comments")
 public class AdminCommentController {
 
     private final AdminCommentService adminCommentService;
     private final AdminArticleService adminArticleService;
+    private final MemberService memberService;
 
     // constructor
-    public AdminCommentController(AdminCommentService adminCommentService,
-                                  AdminArticleService adminArticleService) {
+    public AdminCommentController(
+            AdminCommentService adminCommentService,
+            AdminArticleService adminArticleService,
+            MemberService memberService
+    ) {
         this.adminCommentService = adminCommentService;
         this.adminArticleService = adminArticleService;
+        this.memberService = memberService;
     }
 
     @PostMapping("/{commentId}/status")
@@ -37,7 +42,6 @@ public class AdminCommentController {
             BindingResult bindingResult,
             @PathVariable("commentId") Long commentId,
             @RequestParam("articleId") Long articleId,
-            HttpServletRequest request,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
@@ -53,18 +57,15 @@ public class AdminCommentController {
         }
 
         try {
-            Long adminId = LoginSessionUtils.requireLoginMemberId(request);
+            Long adminId = CurrentUserId.requireMemberId(memberService);
 
             adminCommentService.updateStatus(adminId, commentId, form);
 
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    "댓글 상태가 정상적으로 변경되었습니다."
-            );
+            redirectAttributes.addFlashAttribute("successMessage", "댓글 상태가 정상적으로 변경되었습니다.");
 
-        } catch(CommentNotFoundException e) {
+        } catch (CommentNotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-        } catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             redirectAttributes.addFlashAttribute("errorMessage", "댓글 상태 변경에 실패했습니다.");
         }
 

@@ -9,16 +9,19 @@ import com.saebom.bulletinboard.member.dto.PasswordCheckForm;
 import com.saebom.bulletinboard.member.dto.PasswordChangeForm;
 import com.saebom.bulletinboard.member.dto.MemberWithdrawForm;
 import com.saebom.bulletinboard.member.service.MemberService;
-import com.saebom.bulletinboard.global.session.SessionConst;
+import com.saebom.bulletinboard.global.security.CurrentUserId;
 import com.saebom.bulletinboard.global.exception.WrongPasswordException;
 import jakarta.validation.Valid;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +47,9 @@ public class MemberController {
     public String signUp(
             @Valid @ModelAttribute("memberCreateForm") MemberCreateForm form,
             BindingResult bindingResult,
-            HttpServletRequest request,
             @RequestParam(defaultValue = "false") boolean usernameChecked,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
 
         model.addAttribute("usernameChecked", usernameChecked);
@@ -57,8 +60,8 @@ public class MemberController {
             }
         }
 
-        if (!form.getPassword().equals(form.getConfirmPassword())) {
-            bindingResult.rejectValue("confirmPassword", "mismatch", "변경하려는 비밀번호가 동일해야합니다.");
+        if (!form.getConfirmPassword().isBlank() && !form.getPassword().equals(form.getConfirmPassword())) {
+            bindingResult.rejectValue("confirmPassword", "mismatch", "비밀번호와 동일해야합니다.");
             return "member/signup";
         }
 
@@ -67,12 +70,11 @@ public class MemberController {
             return "member/signup";
         }
 
-        Long memberId = memberService.registerMember(form);
+        memberService.registerMember(form);
 
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, memberId);
+        redirectAttributes.addFlashAttribute("successMessage", "회원가입이 완료되었습니다.");
 
-        return "redirect:/articles";
+        return "redirect:/login?redirectURL=/articles";
     }
 
     @GetMapping("/check-username")
@@ -106,10 +108,9 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public String myPage(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            Model model
-    ) {
+    public String myPage(Model model) {
+
+        Long loginMemberId = CurrentUserId.requireMemberId(memberService);
 
         MemberProfileView memberProfileView = memberService.getMyProfile(loginMemberId);
         model.addAttribute("member", memberProfileView);
@@ -118,10 +119,9 @@ public class MemberController {
     }
 
     @GetMapping("/me/edit")
-    public String editForm(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            Model model
-    ) {
+    public String editForm(Model model) {
+
+        Long loginMemberId = CurrentUserId.requireMemberId(memberService);
 
         MemberEditView memberEditView = memberService.getMyEditView(loginMemberId);
 
@@ -139,9 +139,11 @@ public class MemberController {
     public String edit(
             @Valid @ModelAttribute("memberUpdateForm") MemberUpdateForm form,
             BindingResult bindingResult,
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
+
+        Long loginMemberId = CurrentUserId.requireMemberId(memberService);
 
         if (bindingResult.hasErrors()) {
             MemberEditView memberEditView = memberService.getMyEditView(loginMemberId);
@@ -151,14 +153,13 @@ public class MemberController {
 
         memberService.updateMyProfile(loginMemberId, form);
 
+        redirectAttributes.addFlashAttribute("successMessage", "회원 정보가 수정되었습니다.");
+
         return "redirect:/members/me";
     }
 
     @GetMapping("/me/password/check")
-    public String passwordCheckForm(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            Model model
-    ) {
+    public String passwordCheckForm(Model model) {
 
         model.addAttribute("passwordCheckForm", new PasswordCheckForm());
 
@@ -169,9 +170,10 @@ public class MemberController {
     public String checkPassword(
             @Valid @ModelAttribute("passwordCheckForm") PasswordCheckForm form,
             BindingResult bindingResult,
-            @SessionAttribute(SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            HttpServletRequest request
+            RedirectAttributes redirectAttributes
     ) {
+
+        Long loginMemberId = CurrentUserId.requireMemberId(memberService);
 
         if (bindingResult.hasErrors()) {
             return "member/password-check";
@@ -180,17 +182,11 @@ public class MemberController {
         try {
             memberService.validateMyPassword(loginMemberId, form.getPassword());
 
-            HttpSession session = request.getSession(false);
-
-            if (session == null) {
-                throw new IllegalArgumentException("세션이 유효하지 않습니다. 다시 로그인 해주세요.");
-            }
-
-            session.setAttribute(SessionConst.PASSWORD_CHECKED, true);
+            redirectAttributes.addFlashAttribute("passwordChecked", true);
 
             return "redirect:/members/me/password/new";
 
-        } catch(WrongPasswordException e) {
+        } catch (WrongPasswordException e) {
             bindingResult.rejectValue("password", "wrongPassword", e.getMessage());
 
             return "member/password-check";
@@ -200,15 +196,11 @@ public class MemberController {
 
     @GetMapping("/me/password/new")
     public String passwordChangeForm(
-            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            HttpServletRequest request,
+            @ModelAttribute("passwordChecked") Boolean passwordChecked,
             Model model
     ) {
 
-        HttpSession session = request.getSession(false);
-        Boolean passwordChecked = (session != null)
-                ? (Boolean) session.getAttribute(SessionConst.PASSWORD_CHECKED)
-                : null;
+        Long loginMemberId = CurrentUserId.requireMemberId(memberService);
 
         if (!Boolean.TRUE.equals(passwordChecked)) {
             return "redirect:/members/me/password/check";
@@ -216,6 +208,7 @@ public class MemberController {
 
         model.addAttribute("passwordChangedAt", memberService.getMyPasswordChangedAt(loginMemberId));
         model.addAttribute("passwordChangeForm", new PasswordChangeForm());
+        model.addAttribute("passwordChecked", true);
 
         return "member/password-new";
     }
@@ -224,21 +217,18 @@ public class MemberController {
     public String changePassword(
             @Valid @ModelAttribute("passwordChangeForm") PasswordChangeForm form,
             BindingResult bindingResult,
-            @SessionAttribute(SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            HttpServletRequest request,
-            Model model
+            @RequestParam(defaultValue = "false") boolean passwordChecked,
+            Model model,
+            RedirectAttributes redirectAttributes
     ) {
+        Long loginMemberId = CurrentUserId.requireMemberId(memberService);
 
-        HttpSession session = request.getSession(false);
-        Boolean passwordChecked = (session != null)
-                ? (Boolean) session.getAttribute(SessionConst.PASSWORD_CHECKED)
-                : null;
-
-        if (!Boolean.TRUE.equals(passwordChecked)) {
+        if (!passwordChecked) {
             return "redirect:/members/me/password/check";
         }
 
         model.addAttribute("passwordChangedAt", memberService.getMyPasswordChangedAt(loginMemberId));
+        model.addAttribute("passwordChecked", true);
 
         if (bindingResult.hasErrors()) {
             return "member/password-new";
@@ -250,24 +240,18 @@ public class MemberController {
         }
 
         memberService.updateMyPassword(loginMemberId, form.getNewPassword());
-
-        session.removeAttribute(SessionConst.PASSWORD_CHECKED);
+        redirectAttributes.addFlashAttribute("successMessage", "비밀번호가 변경되었습니다.");
 
         return "redirect:/members/me/password/success";
     }
 
     @GetMapping("/me/password/success")
-    public String passwordSuccessForm(
-            @SessionAttribute(SessionConst.LOGIN_MEMBER) Long loginMemberId
-    ) {
+    public String passwordSuccessForm() {
         return "member/password-success";
     }
 
     @GetMapping("/me/withdraw")
-    public String memberWithdrawForm(
-            @SessionAttribute(SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            Model model
-    ) {
+    public String memberWithdrawForm(Model model) {
 
         model.addAttribute("memberWithdrawForm", new MemberWithdrawForm());
 
@@ -278,9 +262,11 @@ public class MemberController {
     public String withdrawMember(
             @Valid @ModelAttribute("memberWithdrawForm") MemberWithdrawForm form,
             BindingResult bindingResult,
-            @SessionAttribute(SessionConst.LOGIN_MEMBER) Long loginMemberId,
-            HttpServletRequest request
+            HttpServletRequest request,
+            HttpServletResponse response
     ) {
+
+        Long loginMemberId = CurrentUserId.requireMemberId(memberService);
 
         if (bindingResult.hasErrors()) {
             return "member/withdraw";
@@ -288,17 +274,14 @@ public class MemberController {
 
         try {
             memberService.validateMyPassword(loginMemberId, form.getPassword());
-        } catch(WrongPasswordException e) {
+        } catch (WrongPasswordException e) {
             bindingResult.rejectValue("password", "wrong", e.getMessage());
             return "member/withdraw";
         }
 
         memberService.withdrawMyAccount(loginMemberId);
 
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
 
         return "redirect:/members/withdraw/success";
     }

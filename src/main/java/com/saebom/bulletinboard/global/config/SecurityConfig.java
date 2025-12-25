@@ -26,7 +26,12 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
 
                         // 로그인/회원가입 관련 (너 프로젝트에 맞춰 유지)
-                        .requestMatchers("/login", "/members/new", "/members").permitAll()
+                        .requestMatchers(
+                                "/login",
+                                "/members/new",
+                                "/members/check-username",
+                                "/members/withdraw/success"
+                        ).permitAll()
 
                         // "new"는 상세 공개 규칙보다 먼저 잠가야 함 (중요)
                         .requestMatchers("/articles/new").authenticated()
@@ -38,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(articleDetailGetOnly).permitAll()
 
                         // 관리자
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
 
                         .requestMatchers("/.well-known/**").permitAll()
 
