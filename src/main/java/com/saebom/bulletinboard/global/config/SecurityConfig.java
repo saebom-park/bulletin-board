@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(articleDetailGetOnly).permitAll()
 
                         // 관리자
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
 
                         .requestMatchers("/.well-known/**").permitAll()
 

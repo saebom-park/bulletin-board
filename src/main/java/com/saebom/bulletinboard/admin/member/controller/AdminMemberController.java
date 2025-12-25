@@ -5,9 +5,9 @@ import com.saebom.bulletinboard.global.domain.Status;
 import com.saebom.bulletinboard.admin.member.dto.AdminMemberEditView;
 import com.saebom.bulletinboard.admin.member.dto.AdminMemberListView;
 import com.saebom.bulletinboard.admin.member.dto.AdminMemberUpdateForm;
-import com.saebom.bulletinboard.global.web.LoginSessionUtils;
 import com.saebom.bulletinboard.admin.member.service.AdminMemberService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.saebom.bulletinboard.global.security.CurrentUserId;
+import com.saebom.bulletinboard.member.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,8 +22,12 @@ import java.util.List;
 public class AdminMemberController {
 
     private final AdminMemberService adminMemberService;
+    private final MemberService memberService;
 
-    public AdminMemberController(AdminMemberService adminMemberService) { this.adminMemberService = adminMemberService; }
+    public AdminMemberController(AdminMemberService adminMemberService, MemberService memberService) {
+        this.adminMemberService = adminMemberService;
+        this.memberService = memberService;
+    }
 
     @GetMapping
     public String list(@RequestParam(required = false) Status status, Model model) {
@@ -59,29 +63,19 @@ public class AdminMemberController {
     public String changeStatus(
             @PathVariable Long memberId,
             @RequestParam("status") Status status,
-            HttpServletRequest request,
             RedirectAttributes redirectAttributes
     ) {
-        Long adminId = LoginSessionUtils.requireLoginMemberId(request);
+        Long adminId = CurrentUserId.requireMemberId(memberService);
 
         try {
             adminMemberService.updateStatus(adminId, memberId, status);
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    "회원 상태가 정상적으로 변경되었습니다."
-            );
+            redirectAttributes.addFlashAttribute("successMessage", "회원 상태가 정상적으로 변경되었습니다.");
         } catch (IllegalArgumentException e) {
             // 정책 위반(본인 변경, WITHDRAW 요청 등)
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    e.getMessage()
-            );
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (IllegalStateException e) {
             // rowcount 불일치 등 처리 실패
-            redirectAttributes.addFlashAttribute(
-                    "errorMessage",
-                    "상태 변경에 실패했습니다."
-            );
+            redirectAttributes.addFlashAttribute("errorMessage", "상태 변경에 실패했습니다.");
         }
 
         return "redirect:/admin/members";
@@ -92,12 +86,11 @@ public class AdminMemberController {
             @Valid @ModelAttribute("adminMemberUpdateForm") AdminMemberUpdateForm form,
             BindingResult bindingResult,
             @PathVariable("memberId") Long memberId,
-            HttpServletRequest request,
             RedirectAttributes redirectAttributes,
             Model model
     ) {
 
-        Long adminId = LoginSessionUtils.requireLoginMemberId(request);
+        Long adminId = CurrentUserId.requireMemberId(memberService);
 
         if (bindingResult.hasErrors()) {
             AdminMemberEditView view = adminMemberService.getMemberEditView(memberId);
@@ -110,10 +103,7 @@ public class AdminMemberController {
         try {
             adminMemberService.updateMember(adminId, memberId, form);
 
-            redirectAttributes.addFlashAttribute(
-                    "successMessage",
-                    "회원 정보가 성공적으로 변경되었습니다."
-            );
+            redirectAttributes.addFlashAttribute("successMessage", "회원 정보가 성공적으로 변경되었습니다.");
         } catch (IllegalArgumentException e) {
             // 정책 위반 → edit 화면에 메시지 + 그대로 렌더링
             AdminMemberEditView view = adminMemberService.getMemberEditView(memberId);

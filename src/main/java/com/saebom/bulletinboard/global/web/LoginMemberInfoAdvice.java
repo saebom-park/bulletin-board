@@ -20,6 +20,9 @@ public class LoginMemberInfoAdvice {
     @ModelAttribute
     public void addLoginMemberInfo(Model model, HttpServletRequest request) {
 
+        // 기본값: 비로그인 템플릿도 안전하게 처리 가능
+        model.addAttribute("loginMember", null);
+
         CurrentUser.username().ifPresent(username -> {
             LoginMemberView loginMemberView = memberService.getLoginMemberByUsername(username);
             if (loginMemberView != null) {
